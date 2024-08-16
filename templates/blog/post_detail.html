@@ -1,0 +1,304 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+            crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+    <div x-data="{ isOpen: false }">
+      <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
+        <div class="container flex flex-wrap items-center justify-between mx-auto">
+          <a href="{% url 'blog:index' %}" class="flex items-center">
+            <li>
+              <a href="{% url 'blog:index' %}" class="flex items-center self-start">
+                <span 
+                  class="self-center text-xl font-semibold whitespace-nowrap 
+                    dark:text-white"
+                  >
+                  Blogspace
+                </span>
+              </a>
+              <div class="hidden md:flex space-x-4">
+                {% if user.is_authenticated %}
+                <a 
+                  href="{% url 'blog:my_posts' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 
+                    dark:text-gray-200 dark:hover:bg-gray-700 
+                    dark:hover:text-gray-100" 
+                  role="menuitem"
+                >
+                    My Blogs
+                </a>
+                <a 
+                  href="{% url 'blog:create_blog_post' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 
+                    dark:text-gray-200 dark:hover:bg-gray-700 
+                    dark:hover:text-gray-100" 
+                  role="menuitem"
+                >
+                    Post Blog
+                </a>
+                <a 
+                  href="{% url 'blog:profile' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 
+                    dark:text-gray-200 dark:hover:bg-gray-700 
+                    dark:hover:text-gray-100" 
+                  role="menuitem"
+                  >
+                    Profile
+                </a>
+                <a 
+                  href="{% url 'blog:logout' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
+                    dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                  role="menuitem"
+                  >
+                    Logout
+                </a>
+                {% else %}
+                <a 
+                  href="{% url 'blog:register' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
+                    dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                  role="menuitem"
+                >
+                    Register
+                </a>
+                <a 
+                  href="{% url 'blog:login' %}" 
+                  class="block px-4 py-2 text-sm text-gray-700 
+                    hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
+                    dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                  role="menuitem"
+                >
+                    Login
+                </a>
+                {% endif %}
+              </div>
+            </li>
+          <!-- Dropdown Toggle Button -->
+          <button 
+            @click="isOpen = !isOpen" 
+            class="md:hidden inline-flex 
+              items-center p-2 ml-3 text-sm text-gray-500 rounded-lg 
+              hover:bg-gray-100 
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-gray-200 
+              dark:text-gray-400 
+              dark:hover:bg-gray-700 
+              dark:focus:ring-gray-600" 
+            aria-controls="navbar-default" 
+            aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <!-- SVG icon for the button -->
+            <svg 
+              class="w-6 h-6" 
+              fill="currentColor" 
+              viewBox="0 0 20 20" 
+              xmlns="http://www.w3.org/2000/svg"
+              >
+              <path 
+                fill-rule="evenodd" 
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" 
+                clip-rule="evenodd"
+                >
+              </path>
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div 
+            class="md:hidden w-full" 
+            :class="{'block': isOpen, 'hidden': !isOpen}" 
+            id="navbar-default"
+            >
+            <ul 
+              class="flex flex-col p-4 mt-4 border 
+                border-gray-100 rounded-lg bg-gray-50 
+                dark:bg-gray-800 
+                dark:border-gray-700"
+              >
+              <li>
+                <a 
+                  href="{% url 'blog:index' %}" 
+                  class="block px-2 py-1 text-gray-700 
+                    hover:bg-gray-100 
+                    hover:text-gray-900 
+                    dark:text-gray-200 
+                    dark:hover:bg-gray-700 
+                    dark:hover:text-gray-100" 
+                  role="menuitem"
+                  >
+                  Home
+                </a>
+              </li>
+              {% if user.is_authenticated %}
+                <li>
+                  <a 
+                    href="{% url 'blog:profile' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900 
+                      dark:text-gray-200 
+                      dark:hover:bg-gray-700 
+                      dark:hover:text-gray-100" 
+                    role="menuitem"
+                    >
+                    Profile
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="{% url 'blog:my_posts' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900 
+                      dark:text-gray-200 
+                      dark:hover:bg-gray-700 
+                      dark:hover:text-gray-100" 
+                    role="menuitem"
+                    >
+                    My Blogs
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="{% url 'blog:create_blog_post' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900 
+                      dark:text-gray-200 
+                      dark:hover:bg-gray-700 
+                      dark:hover:text-gray-100" 
+                    role="menuitem"
+                    >
+                    Post Blog
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="{% url 'blog:logout' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900 
+                      dark:text-gray-200 
+                      dark:hover:bg-gray-700 
+                      dark:hover:text-gray-100" 
+                    role="menuitem"
+                  >
+                      Logout
+                  </a>
+                </li>
+              {% else %}
+                <li>
+                  <a 
+                    href="{% url 'blog:register' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900" 
+                    role="menuitem"
+                    >
+                    Register
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="{% url 'blog:login' %}" 
+                    class="block px-4 py-2 text-sm text-gray-700 
+                      hover:bg-gray-100 
+                      hover:text-gray-900" 
+                    role="menuitem"
+                    >
+                    Login
+                  </a>
+                </li>
+              {% endif %}
+              </ul>
+            </div> 
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="container mx-auto">
+      
+    </div>
+    <div class="container mx-auto">
+    <!-- Picture, title, subtitle, author, and job_title lines -->
+      <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
+      <p class="text-gray-500">{{ post.subtitle }}</p>
+      <p class="text-gray-500">
+        By {{ post.author }} - {{ post.job_title }}
+      </p>
+      <img
+        src="{{ post.picture.url }}"
+        alt="{{ post.title }}"
+        width="1000"
+        height="600"
+      />
+      <p>{{ post.content }}</p>
+
+      <!-- Comment section with thread-->
+      <div class="mt-4">
+        <h2 class="text-2xl font-bold">Comments</h2>
+
+        {% include 'blog/comments.html' %}
+
+        <div class="container mt-4">
+          <form action="{% url 'blog:create_comment' post.id %}" method="POST">
+            {% csrf_token %}
+            <textarea 
+              name="comment" 
+              id="comment" 
+              cols="30" 
+              rows="10" 
+              class="w-full p-2 border border-gray-200 rounded"
+              placeholder="Write your comment here"
+            ></textarea>
+            <button 
+              type="submit" 
+              class="mt-2 px-4 py-2 bg-blue-700 text-white rounded"
+            >
+              Comment
+            </button>
+          </form>
+          <div class="flex items-center">
+          <a 
+            href="{% url 'blog:index' %}" 
+            class="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Back
+          </a>
+        </div>
+        </div>
+
+        
+        
+      </div>
+    <script 
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
+      defer>
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{% block content %}
+  <div class="container">
+  {% if user.is_authenticated %}
+    <div class="container mx-auto px-2 py-4">
+      <p class="text-3xl mb-4">
+        Something went wrong. Please try again.
+      </p>
+    </div>
+  {% else %}
+    <form method="post" action="{% url 'auth_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
+  {% endif %}
+  </div>
+{% endblock %}
