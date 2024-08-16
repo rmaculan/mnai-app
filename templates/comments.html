@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<table class="comments">
+  {% for comment in root_comments %}
+  <tr>
+    <td>{% include "partials/_comment.html" with comment=comment children=True indent=False %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

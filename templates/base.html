@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django Blog{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+      #container {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
+
+      #reply-container {
+        padding: 10px;  
+      }
+
+      #reply-container,
+      .comments {
+        background-color: #f6f6ef;  
+      }
+
+      .comment-head {
+        display: flex;
+        gap: 8px;
+        font-size: 10px;
+        color: #828282;
+        margin-bottom: 4px;
+      }
+
+      .comment {
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 9pt;
+      }
+
+      .comment-body {
+        margin-bottom: 4px; 
+      }
+
+      .reply-link {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #000; 
+      }
+    </style>
+</head>
+<body>
+    <div id="container">
+      {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

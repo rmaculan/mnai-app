@@ -1,0 +1,33 @@
+{% load humanize %}
+{% load custom_tags %}
+<table>
+  <tr>
+    <td>
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+           width="{% if indent %}40{% else %}0{% endif %}"
+           height="1"/>
+    </td>
+    <td>
+      <div class="comment">
+        <div class="comment-head">
+          <div class="author-gravatar">
+            <img src="https://www.gravatar.com/avatar/{{ comment.author.username|md5 }}?d=retro&s=12" alt="Gravatar"/>
+          </div>
+          <div class="comment-author">{{ comment.author.username }}</div>
+          <div class="comment-date">{{ comment.created_at|naturaltime }}</div>
+        </div>
+        <div class="comment-body">{{ comment.content }}</div>
+        <font size="1">
+          <a href="{% url 'reply' comment_id=comment.id %}" class="reply-link">Reply</a>
+        </font>
+        {% if children %}
+        <div class="children">
+          {% for child in comment.get_children %}
+          {% include "partials/_comment.html" with comment=child children=True indent=True %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </td>
+  </tr>
+</table>
