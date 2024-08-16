@@ -10,10 +10,9 @@ from django.dispatch import receiver
 import uuid
 
 def user_directory_path(instance, filename):
-    # Adjusted to handle 'author' for Post instances
     if hasattr(instance, 'author'):
         return f'post_{instance.author.id}/{filename}'
-    elif hasattr(instance, 'user'):  # For User instances or similar structures
+    elif hasattr(instance, 'user'): 
         return f'user_{instance.user.id}/{filename}'
     else:
         raise ValueError("Instance requires 'author' or 'user'.")
@@ -37,7 +36,7 @@ class Tag(models.Model):
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
 
-
+# blog post model
 class Post(models.Model):
     id = models.UUIDField(
         primary_key=True, 
@@ -61,12 +60,7 @@ class Post(models.Model):
         verbose_name="Picture", 
         default=""
         )
-    
-    video = models.FileField(
-        upload_to='videos/', 
-        blank=True, 
-        null=True
-        )  # New field for video
+    video = models.URLField(blank=True)
     caption = models.CharField(
         max_length=10000, 
         verbose_name="Caption", 
@@ -99,7 +93,7 @@ class Post(models.Model):
                 while True:
                     if queryset.filter(slug=temp_slug).exists():
                         i += 1
-                        temp_slug = f"{base_slug}-{i}"  # Update temp_slug inside the loop
+                        temp_slug = f"{base_slug}-{i}"
                     else:
                             self.slug = temp_slug
                             break
@@ -122,7 +116,6 @@ class Comment(models.Model):
         )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    # New field for reply comment
     parent = models.ForeignKey(
         'self', 
         null=True, 
@@ -132,7 +125,7 @@ class Comment(models.Model):
         )
     
     class Meta:
-        ordering = ['-created_at']  # Add this line to order comments by creation date descending
+        ordering = ['-created_at']
 
     def create_notification(self):
         """
@@ -140,17 +133,17 @@ class Comment(models.Model):
         """
         post = self.post
         sender = self.author
-        text_preview = self.content[:90]  # Assuming you want to send a preview of the comment content
+        text_preview = self.content[:90]  
         notify = Notification.objects.create(
             post=post,
             sender=sender,
             user=post.author,
             text_preview=text_preview,
-            notification_types=2  # Assuming '2' indicates a new comment
+            notification_types=2
         )
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
+        super().save(*args, **kwargs) 
         self.create_notification()
 
     @staticmethod

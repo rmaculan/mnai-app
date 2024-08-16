@@ -49,48 +49,35 @@
   <body>
     
     <div class="container">
-     
-      <h2>Login</h2>
-      <form method="post">
-        {% csrf_token %}
-        {% if request.user.is_authenticated %}
-        <p>
-          You are logged in as {{ request.user.username }}.
-        </p>
-        <a href="{% url 'landing' %}">
-          Go to Main Page
-        </a>
-        {% else %}
-        <label for="username">
-          Username:
-        </label>
-        <input 
-          type="text" 
-          id="username" 
-          name="username" 
-        />
-        <br />
-        <label 
-          for="password"
-        >
-          Password:
-        </label>
-        <input 
-          type="password" 
-          id="password" 
-          name="password" 
-        />
-        <br />
-        <button 
-          type="submit"
-          >
-            Log In
-          </button>
-      </form>
-      {% if error %}
-      <p style="color: red">{{ error }}</p>
-      {% endif %} 
-      {% endif %}
+     <!-- stylish login with link to register if no account, forgot password link, magic link, and blockchain wallet authentication links -->
+      <div class="card">
+        <img src="{% static 'images/login.png' %}" class="card-img-top" alt="Login" />
+        <div class="card-body">
+          <h5 class="card-title">Login</h5>
+          
+         
+        
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+            <!-- username field  -->
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required />
+            </div>
+             <p class="card-text">
+              <a href="{% url 'password_reset' %}">Forgot password?</a>
+              <p class="card-text">
+             <a href="{% url 'blog:register' %}">Don't have an account?</a>
+            </p>
+            </p>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+      </div>
      
     </div>
   </body>

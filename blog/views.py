@@ -87,8 +87,7 @@ def read_blog_posts(request):
     return render(
         request, 
         'blog/index.html', 
-        {'posts': blog_posts,
-         })
+        {'posts': blog_posts,})
 
 def read_my_posts(request):
     blog_posts = Post.objects.filter(author=request.user).order_by('-publish_date')

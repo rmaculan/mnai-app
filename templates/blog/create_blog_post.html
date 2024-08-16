@@ -321,6 +321,39 @@
           </label>
           {{ form.picture }}
         </div>
+        <div class="mb-4">
+          <label 
+            for="{{ form.caption.id_for_label }}" 
+            class="block text-sm font-medium text-gray-700"
+            >
+            Caption
+          </label>
+          <input 
+            type="text" 
+            name="caption" 
+            id="{{ form.caption.id_for_label }}" 
+            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+              focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="image caption"
+            >
+          </div>
+          <!-- video url -->
+          <div class="mb-4">
+            <label 
+              for="{{ form.video.id_for_label }}" 
+              class="block text-sm font-medium text-gray-700"
+              >
+              Video
+            </label>
+            <input 
+              type="text" 
+              name="video" 
+              id="{{ form.video.id_for_label }}" 
+              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+                focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              placeholder="video url"
+              >
+        </div>
 
         <button 
           type="submit" 

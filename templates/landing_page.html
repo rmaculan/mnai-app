@@ -116,12 +116,7 @@
             <p class="mb-8">
                 Stay up-to-date with the latest news and trends.
             </p>
-            <a 
-                href="{% url 'blog:index' %}" 
-                class="btn btn-primary"
-                >
-                Check out our blog!
-            </a>
+            
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {% for blog_post in blog_posts %}
@@ -146,7 +141,8 @@
                     <p class="mb-4">
                         {{ blog_post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
                     </p>
-                    <a 
+                    <div class="container">
+                        <a 
                         href="{% url 'blog:post_detail' blog_post.id %}" 
                         class="btn btn-primary w-full">
                         Read More
@@ -154,6 +150,12 @@
                 </div>
             </div>
             {% endfor %}
+            <a 
+                href="{% url 'blog:index' %}" 
+                class="btn btn-primary mt-8"
+                >
+                Check out our blog!
+            </a>
         </div>
         <div class="text-center">
             <h2 class="text-3xl font-semibold mb-2 mt-8">
@@ -162,12 +164,7 @@
             <p class="mb-8">
                 Find the perfect item for your wardrobe, home, and everything else.
             </p>
-             <a 
-                href="{% url 'marketplace:index' %}" 
-                class="btn btn-primary"
-                >
-                Click here to start shopping!.. 
-            </a> 
+              
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {% for marketplace_item in marketplace_items %}
@@ -205,6 +202,14 @@
                 </div>
             </div>
             {% endfor %} 
+            <div class="container">
+                <a 
+                    href="{% url 'marketplace:index' %}" 
+                    class="btn btn-primary mt-8"
+                    >
+                    Check out our marketplace!
+                </a>
+            </div>
         </div>
     </section>
 
