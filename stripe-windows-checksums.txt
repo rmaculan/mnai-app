@@ -1,0 +1,2 @@
+1baacaeee96ca88dff9dbbf7145955d51cf877faa682f67a9433a340ac8cb4bf  stripe_1.21.2_windows_i386.zip
+9611a6236505b2549cf2d5f2bc4ed831bade645a088f96c70a1406bae4e6918d  stripe_1.21.2_windows_x86_64.zip
