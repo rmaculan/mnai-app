@@ -60,7 +60,12 @@ class Post(models.Model):
         verbose_name="Picture", 
         default=""
         )
-    video = models.URLField(blank=True)
+    video = models.URLField(
+        blank=True, 
+        null=True, 
+        verbose_name="Video", 
+        default=""
+        )
     caption = models.CharField(
         max_length=10000, 
         verbose_name="Caption", 
