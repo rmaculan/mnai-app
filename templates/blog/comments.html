@@ -54,7 +54,26 @@
             {% endif %}
         {% endwith %}
         </div>
+<<<<<<< HEAD
         
+=======
+        {% if post.comments.count > 5 %}
+        <script>
+            document.getElementById('toggleCommentsBtn').addEventListener('click', function() {
+                var container = document.getElementById('commentsContainer');
+                var allCommentsShown = container.innerHTML.includes('Show Less Comments');
+                
+                if (!allCommentsShown) {
+                    // Show all comments
+                    container.innerHTML = '{% for comment in post.comments.all %}<!-- Comment rendering logic -->{% endfor %}';
+                    this.textContent = 'Show Less Comments';
+                } else {
+                    // Revert to showing only 5 comments
+                    container.innerHTML = '{% for comment in post.comments.all|slice:"5" %}<!-- Comment rendering logic -->{% endfor %}';
+                    this.textContent = 'Show All Comments';
+                }
+            });
+>>>>>>> origin/main
         </script>
     {% endif %}
     {% empty %}

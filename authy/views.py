@@ -10,7 +10,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 
+<<<<<<< HEAD
 from blog.models import Post, Follow
+=======
+from blog.models import Post, Follow, Stream
+>>>>>>> origin/main
 from django.contrib.auth.models import User
 from authy.models import Profile
 from .forms import EditProfileForm, UserRegisterForm
@@ -85,12 +89,20 @@ def follow(request, username, option):
 
         if int(option) == 0:
             f.delete()
+<<<<<<< HEAD
             Post.objects.filter(following=following, user=request.user).all().delete()
+=======
+            Stream.objects.filter(following=following, user=request.user).all().delete()
+>>>>>>> origin/main
         else:
             posts = Post.objects.all().filter(user=following)[:25]
             with transaction.atomic():
                 for post in posts:
+<<<<<<< HEAD
                     stream = Post(post=post, user=request.user, date=post.posted, following=following)
+=======
+                    stream = Stream(post=post, user=request.user, date=post.posted, following=following)
+>>>>>>> origin/main
                     stream.save()
         return HttpResponseRedirect(reverse('profile', args=[username]))
 
