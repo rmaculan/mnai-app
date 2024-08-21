@@ -8,11 +8,6 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-<<<<<<< HEAD
-=======
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-
->>>>>>> origin/main
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -38,7 +33,6 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
 INSTALLED_APPS = [
     "django.contrib.humanize",
-<<<<<<< HEAD
 
     # # add later
     # 'daphne',
@@ -48,12 +42,6 @@ INSTALLED_APPS = [
     # # my apps
     'authy',
     # 'directs',
-=======
-    
-    # # my apps
-    'subs',
-    'authy',
->>>>>>> origin/main
     'notification',
     'chatbot',
     'polls',
@@ -67,15 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-=======
-
-    # # add later
-    # 'daphne',
-    # 'chat',
-    # 'comments',
-    # 'directs',
->>>>>>> origin/main
 ]
 
 ASGI_APPLICATION = 'backend.asgi.application'

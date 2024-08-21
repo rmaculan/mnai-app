@@ -14,10 +14,6 @@ urlpatterns = [
     path('blog/', include('blog.urls', namespace='blog')),
     path('marketplace/', include('marketplace.urls', namespace='marketplace')),
     path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
-<<<<<<< HEAD
-=======
-    path('subs/', include('subs.urls', namespace='subs')),
->>>>>>> origin/main
 
     # # add later
     # path("comments/", include("comments.urls")),
