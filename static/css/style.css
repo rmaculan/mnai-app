@@ -1,0 +1,131 @@
+  /* Adjust or remove margins and paddings as needed */
+  .navbar-button {
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-container {
+    padding-right: 0; /* Example adjustment */
+  }
+  /* Apply this to both the button and the navbar container */
+  .box-sizing {
+    box-sizing: border-box;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .bg-primary {
+    background-color: #f8f9fa;
+  }
+  .text-accent {
+    color: #f8f9fa;
+  }
+  .bg-primary {
+    background-color: #f8f9fa;
+  }
+  .text-accent {
+    color: #f8f9fa;
+  }
+  .text-black {
+    color: #000;
+  }
+  .text-white {
+    color: #fff;
+  }
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  .font-bold {
+    font-weight: 700;
+  }
+  .flex {
+    display: flex;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .flex-grow {
+    flex-grow: 1;
+  }
+  .justify-start {
+    justify-content: flex-start;
+  }
+  .items-start {
+    align-items: flex-start;
+  }
+  .prose {
+    max-width: 65ch;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .prose-lg {
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+  .max-w-none {
+    max-width: none;
+  }
+  .text-3xl {
+    font-size: 1.875rem;
+  }
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  .font-semibold {
+    font-weight: 600;
+  }
+  .text-gray-700 {
+    color: #4b5563;
+  }
+  .font-medium {
+    font-weight: 500;
+  }
+
+  .dropdown {
+    transition: all 0.3s ease;
+    transform-origin: top;
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+  }
+  .dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    max-height: 100px; /* Adjust based on your needs */
+  }

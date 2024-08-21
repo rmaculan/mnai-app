@@ -1,0 +1,251 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+      .btn {
+        padding: 0.5rem 1rem;
+        background-color: #2563EB;
+        color: white;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary {
+        background-color: #2563EB;
+      }
+      .btn-primary:hover {
+        background-color: #1d4ed8;
+      }
+    </style>
+    <title>AI Blog & Marketplace</title>
+  </head>
+<body class="bg-gray-100">
+    <header class="text-center p-12 bg-blue-500 text-white relative">
+        <h1 class="text-4xl font-bold mb-2">
+            Welcome to Our Platform!
+        </h1>
+        <p class="max-w-xl mx-auto mb-4">
+            Discover AI, blogs and explore items for sale.
+        </p>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent to-black opacity-50"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+      </div>
+    </header>
+
+    <!-- Welcome Greeting with auth -->
+    <div class="container mx-auto px-4 py-8">
+        {% if user.is_authenticated %}
+        <strong>
+            Welcome back, {{ user.username }}!
+        </strong>
+        <a
+            href="{% url 'blog:logout' %}" 
+            class="button"
+        >
+            Logout?
+        </a>
+        {% else %}
+        <h1>Don't have an account yet? Signing in?</h3>
+        <a 
+            href="{% url 'blog:register' %}" 
+            class="btn btn-primary"
+        >
+            Register
+        </a>
+        <a 
+            href="{% url 'blog:login' %}" 
+            class="btn btn-primary"
+        >
+            Sign In
+        </a>
+        {% endif %}
+    </div>
+ 
+    <section class="container mx-auto px-4 py-8">        
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold mb-2">
+                Explore Our Offerings
+            </h2>
+            <!-- Friendly message that summarizes site details -->
+            <p class="mb-8">
+                Here to chat with our AI? Or maybe you're looking for the latest news and trends?
+                How about shopping for the perfect item? We've got you covered!
+
+            </p>
+           
+            
+               
+        </div> 
+    </section>
+
+     <!-- Browse new articles -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="text-center">
+            {% if user.is_authenticated %}
+                <!-- hero banner for chatbot -->
+                <h2 class="text-3xl font-semibold mb-2">
+                    Chat with our Chatbot
+                </h2>
+                <p>
+                    Ask questions and get answers in real-time.
+                </p>
+                 <a
+                    href="{% url 'chatbot:chatbot' %}"
+                    class="btn btn-primary mt-8 mb-8"
+                >
+                    AI Chat
+                </a>
+            {% else %}
+                <h1>Login or Register to chat with our AI Chatbot!</h1>
+            {% endif %}
+                
+               
+            </div>
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold mb-2">
+                Browse New Articles
+            </h2>
+            <p class="mb-8">
+                Stay up-to-date with the latest news and trends.
+            </p>
+            
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for blog_post in blog_posts %}
+            <div class="col-span-full md:col-span-1">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <img 
+                        src="{{ blog_post.picture.url }}" 
+                        alt="{{ blog_post.title }}" 
+                        class="mb-4"
+                        height="600"
+                        width="400" 
+                        >
+                    <div class="mb-2">
+                       <h3 class="text-xl font-semibold">
+                            {{ blog_post.title }}
+                        </h3>
+                        <p class="text-gray-500">{{ blog_post.subtitle }}</p>
+                    </div>
+                    <strong>
+                        {{ blog_post.author }}
+                    </strong>
+                    <p class="mb-4">
+                        {{ blog_post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+                    </p>
+                    <div class="container">
+                        <a 
+                        href="{% url 'blog:post_detail' blog_post.id %}" 
+                        class="btn btn-primary w-full">
+                        Read More
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            <a 
+                href="{% url 'blog:index' %}" 
+                class="btn btn-primary mt-8"
+                >
+                Check out our blog!
+            </a>
+        </div>
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold mb-2 mt-8">
+                Shop Our Latest Items
+            </h2>
+            <p class="mb-8">
+                Find the perfect item for your wardrobe, home, and everything else.
+            </p>
+              
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for marketplace_item in marketplace_items %}
+            <div class="col-span-full md:col-span-1">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <img 
+                        src="{{ marketplace_item.image.url }}" 
+                        alt="{{ marketplace_item.name }}" 
+                        class="mb-4"
+                        height="600"
+                        width="400" 
+                        >
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold">
+                            {{ marketplace_item.name }}
+                        </h3>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <strong>
+                            {{ marketplace_item.seller }}
+                        </strong>
+                    </div>
+                    <strong>
+                        {{ marketplace_item.price }}
+                    </strong>
+                    <p class="mb-4">
+                        {{ marketplace_item.description }}
+                    </p>
+                    <a 
+                            href="{% url 'marketplace:item_detail' marketplace_item.id %}" 
+                            class="btn btn-primary">
+                            View Item
+                    </a>
+                        
+                </div>
+            </div>
+            {% endfor %} 
+            <div class="container">
+                <a 
+                    href="{% url 'marketplace:index' %}" 
+                    class="btn btn-primary mt-8"
+                    >
+                    Check out our marketplace!
+                </a>
+            </div>
+        </div>
+    </section>
+
+    
+     <!-- Shop our latest items -->
+    <section class="container mx-auto px-4 py-8">
+        
+    </section>
+
+    <!-- Take a poll -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold mb-2">
+                Take a Poll
+            </h2>
+            <p class="mb-8">
+                Share your opinion and see what others think.
+            </p>
+        </div>
+        {% if latest_question_list %}
+        <ul>
+        {% for question in latest_question_list %}
+            <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>    {% endfor %}
+        </ul>
+        {% else %}
+        <p>No polls are available.</p>
+        {% endif %}
+    </section>
+     
+    
+
+    <!-- Footer -->
+    <footer class="text-center p-4 bg-blue-500 text-white">
+        <p>
+            &copy; 2021 Blog & Marketplace
+        </p>
+    </footer>
+  </body>
+</html>

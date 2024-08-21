@@ -1,0 +1,65 @@
+{% load static %}
+<!-- comment list and template for post_details arranged from latest comment-->
+<div class="container">
+    <div id="commentsContainer">
+        {% for comment in post.comments.all|slice:"5" %}
+    <div class="comment-container">
+        <div class="comment-content">
+            <h5>
+                <a href="">
+                    <strong>{{ comment.author }}</strong>
+                </a>
+                <span class="text-muted">
+                    commented on {{ comment.created_at }}
+                </span>
+            </h5>
+            <p>{{ comment.content }}</p>
+            <!-- Edit and Delete buttons -->
+            {% if user.is_authenticated and user == comment.author %}
+                <div class="edit-delete-buttons">
+                <a 
+                    <a href="{% url 'blog:update_comment' post.id comment.id %}" class="btn btn-primary">Edit</a>
+                    >
+                    
+                </a>
+                    <a href="{% url 'blog:delete_comment' post.id comment.id %}" class="btn btn-danger">Delete</a>
+                </a>
+            </div>
+        {% endif %}
+            
+        </div>
+        <!-- Reply form -->
+        {% if user.is_authenticated %}
+            <div class="reply-form">
+                <form method="post" action="{% url 'blog:create_comment' post.id %}">
+                    {% csrf_token %}
+                    <textarea name="comment" placeholder="Your reply..."></textarea>
+                    <!-- Hidden input for parent_id -->
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <button type="submit" class="btn btn-secondary">Reply</button>
+                </form>
+            </div>
+        {% endif %}
+        <!-- Recursively display replies -->
+        {% with comment.replies.all as replies %}
+            {% if replies %}
+                {% for reply in replies %}
+                    <div class="reply-container">
+                        <div class="reply-content">
+                            <p>Reply from: <strong>{{ reply.author }}</strong> - {{ reply.content }}</p>
+                            <!-- Optionally, allow replying to replies -->
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        </div>
+        
+        </script>
+    {% endif %}
+    {% empty %}
+    <p>No comments yet</p>
+    {% endfor %}
+
+</div>
+       
