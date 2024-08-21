@@ -17,28 +17,6 @@ def user_directory_path(instance, filename):
     else:
         raise ValueError("Instance requires 'author' or 'user'.")
 
-<<<<<<< HEAD
-=======
-class Tag(models.Model):
-    title = models.CharField(max_length=75, verbose_name='Tag')
-    slug = models.SlugField(null=False, unique=True, default=uuid.uuid1)
-
-    class Meta:
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
-
-    def get_absolute_url(self):
-        return reverse('tags', args=[self.slug])
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
-
->>>>>>> origin/main
 # blog post model
 class Post(models.Model):
     id = models.UUIDField(
@@ -63,16 +41,7 @@ class Post(models.Model):
         verbose_name="Picture", 
         default=""
         )
-<<<<<<< HEAD
     video = models.URLField(blank=True, null=True, verbose_name="Video", default="")
-=======
-    video = models.URLField(
-        blank=True, 
-        null=True, 
-        verbose_name="Video", 
-        default=""
-        )
->>>>>>> origin/main
     caption = models.CharField(
         max_length=10000, 
         verbose_name="Caption", 
@@ -85,10 +54,6 @@ class Post(models.Model):
         choices=STATUS_CHOICES, 
         default='draft'
         )
-<<<<<<< HEAD
-=======
-    tags = models.ManyToManyField(Tag, blank=True, related_name='tags')
->>>>>>> origin/main
     on_delete=models.CASCADE
     likes = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0) 
@@ -156,10 +121,7 @@ class Comment(models.Model):
             text_preview=text_preview,
             notification_types=2
         )
-<<<<<<< HEAD
         notify.save()
-=======
->>>>>>> origin/main
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs) 
@@ -242,34 +204,6 @@ class Follow(models.Model):
             )
         notify.delete()
 
-<<<<<<< HEAD
-=======
-class Stream(models.Model):
-    following = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        null=True, 
-        related_name='stream_following'
-        )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    date = models.DateTimeField()
-
-    def add_post(sender, instance, *args, **kwargs):
-        post = instance
-        author = post.author
-        followers = Follow.objects.all().filter(following=author)
-
-        for follower in followers:
-            stream = Stream(
-                post=post, 
-                user=follower.follower, 
-                date=post.posted, 
-                following=author
-                )
-            stream.save()
-
->>>>>>> origin/main
 @receiver(post_save, sender=Comment)
 def comment_saved(sender, instance, created, **kwargs):
     if created:
@@ -281,14 +215,6 @@ def comment_saved(sender, instance, created, **kwargs):
             )
 
 post_save.connect(
-<<<<<<< HEAD
-=======
-    Stream.add_post, 
-    sender=Post
-    )
-
-post_save.connect(
->>>>>>> origin/main
     Likes.user_liked_post, 
     sender=Likes
     )
