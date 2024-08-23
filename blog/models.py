@@ -9,6 +9,8 @@ from notification.models import Notification
 from django.dispatch import receiver
 import uuid
 
+from notification.models import Notification
+
 def user_directory_path(instance, filename):
     if hasattr(instance, 'author'):
         return f'post_{instance.author.id}/{filename}'
@@ -55,7 +57,11 @@ class Post(models.Model):
         default='draft'
         )
     on_delete=models.CASCADE
-    likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(
+        User, 
+        related_name='liked_posts', 
+        blank=True
+        )
     likes_count = models.IntegerField(default=0) 
 
     def save(self, *args, **kwargs):
@@ -145,18 +151,24 @@ class Comment(models.Model):
         notify.delete()
     
 class Likes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(
-        Post, 
-        on_delete=models.CASCADE, 
-        related_name="post_likes"
-        )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_likes")
 
-    def user_liked_post(sender, instance, *args, **kwargs):
-        like = instance
-        post = like.post
-        sender = like.user
-        notify = Notification(post=post, sender=sender, user=post.user)
+    class Meta:
+        unique_together = ("user", "post")
+
+    @staticmethod
+    def user_liked_post(sender, instance, created, **kwargs):
+        like = instance  # This is the Likes instance
+        post = like.post  # Access the Post instance through the Likes instance
+        sender = like.user  # Access the User instance through the Likes instance
+        # Assuming Notification model expects post, sender, and user parameters
+        notify = Notification.objects.create(
+            post=post,
+            sender=sender,
+            user=post.author,  # Access the author of the post
+            notification_types=1  # Assuming 1 is the type for a like notification
+        )
         notify.save()
 
     def user_unliked_post(sender, instance, *args, **kwargs):
@@ -243,3 +255,22 @@ post_delete.connect(
     )    
    
 
+
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Likes)
+def user_liked_post(sender, instance, created, **kwargs):
+    if created:
+        # Your notification logic here
+        # Assuming 'instance' is a Likes instance
+        post = instance.post  # The post that was liked
+        sender = instance.user  # The user who liked the post
+        # Create a notification for the post's author
+        Notification.objects.create(
+            post=post,
+            sender=sender,
+            user=post.author,  # The author of the post
+            notification_types=1  # Assuming 1 indicates a like notification
+        )

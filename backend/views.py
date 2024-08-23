@@ -5,6 +5,7 @@ from marketplace.models import Item
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 import logging
+from .forms import UserRegisterForm
 
 logger = logging.getLogger(__name__)
 
@@ -35,5 +36,15 @@ def logout_view(request):
     logger.info("Logout view accessed")
     logout(request)
     return redirect('accounts:logout')
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'accounts/register.html')
 
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,8 +8,15 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from .models import Post, Comment, Likes, Follow
 from authy.models import Profile
-from django.http import HttpResponseForbidden, HttpResponseServerError
+from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
+
 import logging
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +47,8 @@ def register(request):
             user = form.save()
             login(request, user)
             
-            # Redirect to a success page.
-            return redirect('blog:index')  # Assuming 'index' redirects to your homepage
+            
+            return redirect('blog:index')  
     else:
         form = UserCreationForm()
     return render(request, 'blog/register.html', {'form': form})
@@ -58,13 +65,10 @@ def login_view(request):
         return render(request, 'registration/login.html', {'form': form})
 
 def logout_view(request):
-    # Perform any necessary actions here, e.g., logging
     logger.info("Logout view accessed")
     
-    # Use Django's built-in logout view
     logout(request)
     
-    # Redirect to the home page or another appropriate page after logout
     return redirect('blog:index')
 
 def profile(request):
@@ -88,7 +92,8 @@ def read_blog_posts(request):
     return render(
         request, 
         'blog/index.html', 
-        {'posts': blog_posts,})
+        {'posts': blog_posts,
+         })
 
 def read_my_posts(request):
     blog_posts = Post.objects.filter(author=request.user).order_by('-publish_date')
@@ -105,9 +110,9 @@ def update_blog_post(request, post_id):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('blog:index')  # Redirect to the index page after successful update
+            return redirect('blog:index') 
     else:
-        form = PostForm(instance=post)  # Ensure you're passing the `post` instance here
+        form = PostForm(instance=post) 
 
     return render(request, 'blog/update_blog_post.html', {'form': form, 'post_id': post_id})
 
@@ -126,7 +131,6 @@ def search_posts_by_author(request):
     blog_posts = Post.objects.filter(author__username__icontains=query)
     return render(request, 'blog/index.html', {'posts': blog_posts})
 
-# CRUD operations for comments
 
 # Create a comment
 @login_required
@@ -196,7 +200,36 @@ def delete_comment(request, post_id, comment_id):
     comment.delete()
     return redirect('blog:post_detail', post_id=post_id)
 
+@login_required
+@csrf_exempt
+def like_post(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_id)
+        user = request.user
+        liked_post, created = Likes.objects.get_or_create(post=post, user=user)
+        
+        # Toggle like
+        if not created:
+            liked_post.delete()  # Dislike if already liked
+            post.likes_count -= 1  # Decrement likes_count
+        else:
+            liked_post.save()  # Like the post
+            post.likes_count += 1  # Increment likes_count
+        post.save()  # Save the post to update likes_count in the database
+        
+        return redirect(reverse('blog:post_detail', args=[post_id]))
 
+@login_required
+@csrf_exempt
+def dislike_post(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_id)
+        if Likes.objects.filter(post=post, user=request.user).exists():
+            Likes.objects.filter(post=post, user=request.user).delete()
+            post.likes_count -= 1  # Decrement likes_count
+            post.save()  # Save the post to update likes_count in the database
+        
+        return redirect(reverse('blog:post_detail', args=[post_id]))
 
 
 

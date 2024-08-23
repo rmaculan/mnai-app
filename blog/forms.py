@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, Likes, Follow
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -10,3 +10,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+class LikeForm(forms.ModelForm):
+    class Meta:
+        model = Likes
+        fields = ['post', 'user']

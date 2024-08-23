@@ -81,6 +81,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.csrf',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -136,6 +137,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+CSRF_COOKIE_SECURE = True  # If using HTTPS
+
+# local host for now
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000/'] 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
