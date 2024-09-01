@@ -112,12 +112,12 @@ def register(request):
                                     password=form.cleaned_data['password1'],)
             login(request, new_user)
             # return redirect('editprofile')
-            return redirect('index')
+            return redirect('landing')
             
 
 
     elif request.user.is_authenticated:
-        return redirect('index')
+        return redirect('landing')
     else:
         form = UserRegisterForm()
     context = {
