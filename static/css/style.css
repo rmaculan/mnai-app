@@ -1,4 +1,15 @@
   /* Adjust or remove margins and paddings as needed */
+  .markdown-content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 1em;
+  }
+
+
+  
   .navbar-button {
     margin: 0;
     padding: 0;

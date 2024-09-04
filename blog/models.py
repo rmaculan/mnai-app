@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db.models.base import Model
 from django.db.models.signals import post_save, post_delete
 from django.utils.text import slugify
@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from notification.models import Notification
 from django.dispatch import receiver
 import uuid
+from PIL import Image
 
 from notification.models import Notification
 
@@ -18,6 +19,98 @@ def user_directory_path(instance, filename):
         return f'user_{instance.user.id}/{filename}'
     else:
         raise ValueError("Instance requires 'author' or 'user'.")
+    
+class Profile(AbstractUser):
+    user = models.OneToOneField(
+        User, 
+        related_name='profile', 
+        on_delete=models.CASCADE
+        )
+    
+    groups = models.ManyToManyField(
+        Group,
+        through='blog.ProfileGroup',
+        related_name='profiles'
+    )
+    
+    user_permissions = models.ManyToManyField(
+        Permission,
+        through='blog.ProfilePermission',
+        related_name='profiles'
+    )
+
+    image = models.ImageField(
+        upload_to="profile_picture", 
+        null=True, default="default.jpg"
+        )
+    first_name = models.CharField(
+        max_length=200, 
+        null=True, blank=True
+        )
+    last_name = models.CharField(
+        max_length=200, 
+        null=True, blank=True
+        )
+    bio = models.CharField(
+        max_length=500, 
+        null=True, blank=True
+        )
+    location = models.CharField(
+        max_length=200, 
+        null=True, 
+        blank=True
+        )
+    url = models.URLField(
+        max_length=200, null=True, blank=True)
+    favourite = models.ManyToManyField('blog.Post', blank=True)
+
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user.username} - Profile'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+            pass
+
+class ProfileGroup(models.Model):
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE
+        )
+    group = models.ForeignKey(
+        Group, 
+        on_delete=models.CASCADE
+        )
+
+class ProfilePermission(models.Model):
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE
+        )
+    permission = models.ForeignKey(
+        Permission, 
+        on_delete=models.CASCADE
+        )
+
+
+def create_user_profile(sender, instance, created, **kwargs):
+	if created:
+		Profile.objects.create(user=instance)
+
+def save_user_profile(sender, instance, **kwargs):
+	instance.profile.save()
+
+
 
 # blog post model
 class Post(models.Model):
@@ -225,6 +318,9 @@ def comment_saved(sender, instance, created, **kwargs):
             created, 
             **kwargs
             )
+        
+post_save.connect(create_user_profile, sender=User)
+post_save.connect(save_user_profile, sender=User)
 
 post_save.connect(
     Likes.user_liked_post, 
@@ -253,6 +349,7 @@ post_delete.connect(
     Comment.user_del_comment_post, 
     sender=Comment
     )    
+    
    
 
 

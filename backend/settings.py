@@ -37,11 +37,8 @@ INSTALLED_APPS = [
     # # add later
     # 'daphne',
     # 'chat',
-    # 'comments',
 
     # # my apps
-    'authy',
-    # 'directs',
     'notification',
     'chatbot',
     'polls',

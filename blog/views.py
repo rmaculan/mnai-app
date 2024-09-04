@@ -7,7 +7,6 @@ from .forms import PostForm, CommentForm
 from django.core.files.storage import default_storage
 from PIL import Image
 from .models import Post, Comment, Likes, Follow
-from authy.models import Profile
 from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
 
 import logging
@@ -103,24 +102,40 @@ def read_blog_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     return render(request, 'blog/post_detail.html', {'post': post})
 
-def update_blog_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    
-    if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:index') 
-    else:
-        form = PostForm(instance=post) 
+# region: removed ability to update blog post permanently for blog authenticity. Blogs will be treated as news articles ###
 
-    return render(request, 'blog/update_blog_post.html', {'form': form, 'post_id': post_id})
+# def update_blog_post(request, post_id):
+#     post = get_object_or_404(Post, pk=post_id)
+    
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, instance=post)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('blog:index') 
+#     else:
+#         form = PostForm(instance=post) 
+
+#     return render(request, 'blog/update_blog_post.html', {'form': form, 'post_id': post_id})
+
+# endregion
 
 def delete_blog_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    post.delete()
-    return redirect('blog:index')
+    
+    if request.method == 'POST':
+        # If the POST request comes from the confirmation button, proceed with deletion
+        if request.POST.get('confirm_delete'):
+            post.delete()
+            return redirect('blog:index')
+    
+    # Render the page with a confirmation dialog
+    return render(request, 'blog/delete_confirmation.html', {
+        'post': post,
+        'post_id': post_id
+    })
 
+
+# comming soon
 def search_posts(request):
     query = request.GET.get('query')
     blog_posts = Post.objects.filter(title__icontains=query)
