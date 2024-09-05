@@ -6,11 +6,14 @@ from django.views.generic.edit import CreateView
 from .forms import PostForm, CommentForm
 from django.core.files.storage import default_storage
 from PIL import Image
-from .models import Post, Comment, Likes, Follow
+from .models import Post, Comment, Likes, Follow, Profile
+from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
 
 import logging
 
+from django.core.paginator import Paginator
+from django.urls import resolve
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -70,8 +73,26 @@ def logout_view(request):
     
     return redirect('blog:index')
 
-def profile(request):
-    return render(request, 'blog/profile.html')
+# view profile
+def profile_view(request, username):
+    user = get_object_or_404(User, username=username)
+    profile = Profile.objects.get(user=user)
+    url_name =resolve(request.path).url_name
+    posts = Post.objects.filter(author=user).order_by('-publish_date')
+
+    if url_name == 'profile':
+        posts = Post.objects.filter(author=user).order_by('-publish_date')
+    else:
+        print("user has no posts")
+
+    context = {
+        'posts': posts,
+        'profile': profile,
+        'user': user,
+    }
+    return render(request, 'blog/profile.html', context)
+
+    
 
 @login_required
 def create_blog_post(request):

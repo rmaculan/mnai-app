@@ -40,26 +40,75 @@
     {% include 'blog/navbar.html' %}
 
     <main class="container mx-auto py-4">
-      <h1 class="text-3xl font-bold">Profile</h1>
-      <p class="text-center">Welcome to your profile page!</p>
+      <section class="mb-4">
+          
+          
+          <div class="banner flex items-center bg-gradient-to-r from-blue-500 to-grey-500 p-4 rounded-lg">
+            <div class="mr-4 w-32 h-32 rounded-full overflow-hidden">
+              {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
+              {% else %}
+                <img src="{% static 'media/default.jpg' %}" alt="Default" class="w-full h-full object-cover">
+              {% endif %}
+            </div>
+            <div class="flex flex-col justify-center">
+              <p class="text-sm text-white">{{ user.username }}</p>
+            </div>
+          </div>
+      </section>
 
-      <!-- profile based on authy model -->
-      <div class="flex justify-center mt-4">
-        <div class="w-1/2">
-          <div class="flex items
-          -center space-x-4">
-            <img
-              src="{% static 'img/profile.png' %}"
-              alt="Profile"
-              class="w-24 h-24 rounded-full"
-            />
-            <div>
-              <h2 class="text-xl font-bold">{{ user.first_name }}</h2>
-              <p>{{ user.email }}</p>
+      <div class="flex mt-4">
+        <div class="">
+          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-6">
+              <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="email"
+              >
+                Email
+              </label>
+              <p class="text-gray-700 text-base">{{ user.email }}</p>
+            </div>
+            <div class="mb-6">
+              <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="first_name"
+              >
+                First Name
+              </label>
+              <p class="text-gray-700 text-base">{{ user.profile.first_name }}</p>
+          </div>
+            <div class="mb-6">
+              <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="last_name"
+              >
+                Last Name
+              </label>
+              <p class="text-gray-700 text-base">{{ user.profile.last_name }}</p>
+            </div>
+            <div class="mb-6">
+              <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="location"
+              >
+                Location
+              </label>
+              <p class="text-gray-700 text-base">{{ user.profile.location }}</p>
+            </div>
+            
+        </div>  
+        </div>
+         <!-- user posts -->
+        <div class="container">
+          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-2xl font-bold mb-4">Bio</h2>
+            <!-- bio section -->
+            <div class="mb-6">
+              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
             </div>
           </div>
         </div>
-      </div>
     </main>
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"

@@ -38,10 +38,10 @@ class Profile(AbstractUser):
         through='blog.ProfilePermission',
         related_name='profiles'
     )
-
     image = models.ImageField(
         upload_to="profile_picture", 
-        null=True, default="default.jpg"
+        null=True, 
+        default=""
         )
     first_name = models.CharField(
         max_length=200, 
