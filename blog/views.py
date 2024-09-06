@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, ProfileForm
 from django.core.files.storage import default_storage
 from PIL import Image
 from .models import Post, Comment, Likes, Follow, Profile
@@ -77,22 +77,76 @@ def logout_view(request):
 def profile_view(request, username):
     user = get_object_or_404(User, username=username)
     profile = Profile.objects.get(user=user)
-    url_name =resolve(request.path).url_name
-    posts = Post.objects.filter(author=user).order_by('-publish_date')
+    
+    is_current_user = is_current_user_profile(request, username)
 
-    if url_name == 'profile':
-        posts = Post.objects.filter(author=user).order_by('-publish_date')
-    else:
-        print("user has no posts")
+    url_name = resolve(request.path).url_name
+    
+
+    posts = Post.objects.filter(author=user).order_by('-publish_date')
 
     context = {
         'posts': posts,
         'profile': profile,
         'user': user,
+        'is_current_user': is_current_user,
     }
+
     return render(request, 'blog/profile.html', context)
 
-    
+def is_current_user_profile(request, username):
+    return request.user.username == username
+
+# edit profile
+@login_required
+def edit_profile(request):
+    user = request.user.id
+    profile = Profile.objects.get(user_id=user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            profile.image = form.cleaned_data['image']
+            profile.first_name = form.cleaned_data['first_name']
+            profile.last_name = form.cleaned_data['last_name']
+            profile.bio = form.cleaned_data['bio']
+            profile.url = form.cleaned_data['url']
+            profile.location = form.cleaned_data['location']
+            profile.save()
+            return redirect('blog:profile', profile.user.username)
+    else:
+        form = ProfileForm(instance=request.user.profile)
+
+    context = {
+        'form': form,
+        'profile': profile,
+    }
+
+    return render(request, 'blog/edit_profile.html', context)
+
+# delete profile
+@login_required
+def delete_profile(request, username):
+    if request.user.username != username:
+        return HttpResponseForbidden("You don't have permission to delete this profile.")
+
+    user = get_object_or_404(User, username=username)
+    profile = Profile.objects.get(user=user)
+
+    if request.method == 'POST':
+        if request.POST.get('confirm_delete'):
+            profile.delete()
+            
+            # Log out the user
+            logout(request)
+
+            # Delete the user account
+            user.delete()
+            return redirect('blog:index')
+        else:
+            return render(request, 'blog/delete_profile_confirmation.html', {'profile': profile})
+    else:
+        return render(request, 'blog/delete_profile_confirmation.html', {'profile': profile})
 
 @login_required
 def create_blog_post(request):

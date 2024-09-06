@@ -57,6 +57,16 @@
           </div>
       </section>
 
+      <!-- edit profile link -->
+      {% if is_current_user %}
+        <div class="flex justify-end mb-4">
+          <a href="{% url 'blog:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+        </div>
+        <div class="flex justify-end mb-4">
+          <a href="{% url 'blog:delete_profile' profile.user.username %}" class="btn btn-danger">Delete Profile</a>
+        </div>
+      {% endif %}
+
       <div class="flex mt-4">
         <div class="">
           <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
