@@ -3,7 +3,8 @@ from django.db.models import QuerySet
 from blog.models import Post
 from marketplace.models import Item
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages  # Add this line to import the messages module
 import logging
 from .forms import UserRegisterForm
 
@@ -41,10 +42,12 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('accounts:login')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'accounts/register.html')
-
-
+            new_user = form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            new_user = authenticate(
+                username=form.cleaned_data['username'], 
+                password=form.cleaned_data['password1'])
+            login(request, new_user)
+            return redirect('blog:index')
+         

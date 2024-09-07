@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
 from .forms import PostForm, CommentForm, ProfileForm
@@ -9,7 +10,11 @@ from PIL import Image
 from .models import Post, Comment, Likes, Follow, Profile
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
+from .forms import UserRegisterForm
+from django.core.exceptions import ValidationError
+from django.db import transaction
 
+from django.db.utils import IntegrityError
 import logging
 
 from django.core.paginator import Paginator
@@ -48,9 +53,8 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            
-            
-            return redirect('blog:index')  
+            # Redirect to a success page.
+            return redirect('blog:index') 
     else:
         form = UserCreationForm()
     return render(request, 'blog/register.html', {'form': form})

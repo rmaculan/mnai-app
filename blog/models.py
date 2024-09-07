@@ -20,19 +20,17 @@ def user_directory_path(instance, filename):
     else:
         raise ValueError("Instance requires 'author' or 'user'.")
     
-class Profile(AbstractUser):
+class Profile(models.Model):
     user = models.OneToOneField(
         User, 
         related_name='profile', 
         on_delete=models.CASCADE
         )
-    
     groups = models.ManyToManyField(
         Group,
         through='blog.ProfileGroup',
         related_name='profiles'
     )
-    
     user_permissions = models.ManyToManyField(
         Permission,
         through='blog.ProfilePermission',
@@ -64,15 +62,14 @@ class Profile(AbstractUser):
         max_length=200, null=True, blank=True)
     favourite = models.ManyToManyField('blog.Post', blank=True)
 
-    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f'{self.user.username} - Profile'
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    
         
         img = Image.open(self.image.path)
         if img.height > 300 or img.width > 300:
@@ -80,7 +77,6 @@ class Profile(AbstractUser):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
-            pass
 
 class ProfileGroup(models.Model):
     profile = models.ForeignKey(
@@ -110,7 +106,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
 	instance.profile.save()
 
-
+post_save.connect(create_user_profile, sender=User)
+post_save.connect(save_user_profile, sender=User)
 
 # blog post model
 class Post(models.Model):
@@ -319,8 +316,7 @@ def comment_saved(sender, instance, created, **kwargs):
             **kwargs
             )
         
-post_save.connect(create_user_profile, sender=User)
-post_save.connect(save_user_profile, sender=User)
+
 
 post_save.connect(
     Likes.user_liked_post, 

@@ -40,7 +40,7 @@ def register(request):
             user = form.save()
             login(request, user)
             # Redirect to a success page.
-            return redirect('marketplace:index') 
+            return redirect('blog:index') 
     else:
         form = UserCreationForm()
     return render(request, 'marketplace/register.html', {'form': form})
