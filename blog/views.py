@@ -256,6 +256,16 @@ def create_comment(request, post_id):
     
     return render(request, 'blog/post_detail.html', {'post': post})
 
+# read comments
+def read_comments(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    comments = Comment.objects.filter(post=post)
+
+    context = {
+        'post': post,
+        'comments': comments,
+    }
+    return render(request, 'blog/post_detail.html', context)
 
 @login_required
 def update_comment(request, post_id, comment_id):

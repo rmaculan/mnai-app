@@ -57,7 +57,7 @@
     </div>
       
       
-    <!-- like model and counter -->
+    <!-- like, dislike, and follow model wuth counters for each -->
       <div class="container flex items-center mt-4">
         <form method="post" action="{% url 'blog:like_post' post.id %}">
           {% csrf_token %}

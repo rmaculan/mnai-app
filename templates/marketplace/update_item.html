@@ -1,4 +1,5 @@
 {% block content %}
+{% include 'marketplace/navbar.html' %}
   <h2>Edit Item</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}

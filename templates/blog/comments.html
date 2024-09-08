@@ -1,20 +1,21 @@
 {% load static %}
 <!-- comment list and template for post_details arranged from latest comment-->
+
 <div class="container">
     <div id="commentsContainer">
         {% for comment in post.comments.all|slice:"5" %}
-    <div class="comment-container">
-        <div class="comment-content">
-            <h5>
-                <a href="">
-                    <strong>{{ comment.author }}</strong>
-                </a>
-                <span class="text-muted">
-                    commented on {{ comment.created_at }}
-                </span>
-            </h5>
-            <p>{{ comment.content }}</p>
-            <!-- Edit and Delete buttons -->
+        <div class="comment-container">
+            <div class="comment-content">
+                <h5>
+                    <a href="">
+                        <strong>{{ comment.author }}</strong>
+                    </a>
+                    <span class="text-muted">
+                        commented on {{ comment.created_at }}
+                    </span>
+                </h5>
+                <p>{{ comment.content }}</p>
+                <!-- Edit and Delete buttons -->
             {% if user.is_authenticated and user == comment.author %}
                 <div class="edit-delete-buttons">
                 <a 
@@ -61,5 +62,7 @@
     <p>No comments yet</p>
     {% endfor %}
 
+  </div>
 </div>
+
        
