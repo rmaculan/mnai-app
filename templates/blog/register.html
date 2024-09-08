@@ -21,7 +21,11 @@
   </head>
   <body>  
     <div class="container mx-auto">
-      <form
+      <h1 class="text-3xl font-bold mb-4">
+        Register
+      </h1>
+      <div class="card">
+        <form
         action="{% url 'blog:register' %}"
         method="POST"
         class="space-y-4"
@@ -74,7 +78,7 @@
         <button
           type="submit"
           class="
-          w-full 
+          w-1/2
           bg-primary 
           text-black 
           rounded-md 
@@ -86,6 +90,7 @@
           Register
         </button>
       </form>
+      </div
     </div>
     <script 
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 

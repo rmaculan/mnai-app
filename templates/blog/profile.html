@@ -39,11 +39,10 @@
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
 
-    <main class="container mx-auto py-4">
+    <main class="mx-auto">
       <section class="mb-4">
-          
-          
-          <div class="banner flex items-center bg-gradient-to-r from-blue-500 to-grey-500 p-4 rounded-lg">
+          <header>
+            <div class="banner flex items-center bg-gradient-to-r from-blue-500 to-grey-500 p-4">
             <div class="mr-4 w-32 h-32 rounded-full overflow-hidden">
               {% if user.profile.image %}
                 <img src="{{ user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
@@ -55,12 +54,22 @@
               <p class="text-sm text-white">{{ user.username }}</p>
             </div>
           </div>
+          </header>
       </section>
 
       
 
-      <div class="flex mt-4">
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-2xl font-bold mb-4">Bio</h2>
+            <!-- bio section -->
+            <div class="mb-6">
+              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
+            </div>
+          <div class="flex mt-4">
+         
         <div class="">
+          
+        <div class="container">
           <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-6">
               <label
@@ -98,31 +107,83 @@
               </label>
               <p class="text-gray-700 text-base">{{ user.profile.location }}</p>
             </div>
-            <div class="container mx-auto px-2 py-4">
-        <!-- edit and delte profile link -->
-      {% if is_current_user %}
-        <div class="flex justify-end mb-4">
-          <a href="{% url 'blog:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-        </div>
-        <div class="flex justify-end mb-4">
-          <a href="{% url 'blog:delete_profile' profile.user.username %}" class="btn btn-danger">Delete Profile</a>
-        </div>
-      {% endif %}
-      </div>
             
-        </div>  
-        </div>
-         <!-- user posts -->
-        <div class="container">
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-2xl font-bold mb-4">Bio</h2>
-            <!-- bio section -->
-            <div class="mb-6">
-              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
-            </div>
+           </div>
+           
+      </div>
+      
+    </div>
+    <div class="container mx-auto px-2 py-4">
+            <div class="container">
+              {% if is_current_user %}
+              <div class="flex justify-end mb-4">
+                <a href="{% url 'blog:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+              </div>
+              <div class="flex justify-end mb-4">
+                <a href="{% url 'blog:delete_profile' profile.user.username %}" class="btn btn-danger">Delete Profile</a>
+              </div>
+              {% endif %}
           </div>
         </div>
-    </main>
+    <!-- blog posts by user -->
+    
+  </div>
+  {% for post in posts %}
+    <div class="container">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          
+          <img
+            src="{{ post.picture.url }}"
+            alt="{{ post.title }}"
+            width="1000"
+            height="600"
+          />
+          <div class="container">
+            <div class="container">
+            <div class="mr-4 w-16 h-16 rounded-full overflow-hidden">
+              {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
+              {% else %}
+                <img src="{% static 'media/default.jpg' %}" alt="Default" class="w-full h-full object-cover">
+              {% endif %}
+            </div>
+            <div class="container">
+                <p class="text-gray-500">
+                By {{ post.author }} - {{ post.job_title }}
+                </p>
+              </div>
+          </div>
+            
+          
+            
+            <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
+            <p class="text-gray-500">{{ post.subtitle }}</p>
+            
+          </div>
+          <p class="mb-4">
+            {{ post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+          </p>
+          <div class="container">
+            <a 
+              href="{% url 'blog:post_detail' post.id %}" 
+              class="btn btn-primary w-full">
+              Read More
+            </a>
+          </div>
+          </div>
+          
+        </div>
+          
+
+          
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</main>
+    
+
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
