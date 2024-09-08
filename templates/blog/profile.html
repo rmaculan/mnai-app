@@ -59,12 +59,7 @@
 
       
 
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-2xl font-bold mb-4">Bio</h2>
-            <!-- bio section -->
-            <div class="mb-6">
-              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
-            </div>
+        
           <div class="flex mt-4">
          
         <div class="">
@@ -114,6 +109,12 @@
       
     </div>
     <div class="container mx-auto px-2 py-4">
+      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-2xl font-bold mb-4">Bio</h2>
+            <!-- bio section -->
+            <div class="mb-6">
+              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
+            </div>
             <div class="container">
               {% if is_current_user %}
               <div class="flex justify-end mb-4">
@@ -124,6 +125,8 @@
               </div>
               {% endif %}
           </div>
+          </div>
+            
         </div>
     <!-- blog posts by user -->
     
@@ -132,7 +135,6 @@
     <div class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="bg-white p-4 rounded-lg shadow-md">
-          
           <img
             src="{{ post.picture.url }}"
             alt="{{ post.title }}"
@@ -154,9 +156,6 @@
                 </p>
               </div>
           </div>
-            
-          
-            
             <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
             <p class="text-gray-500">{{ post.subtitle }}</p>
             
@@ -171,12 +170,8 @@
               Read More
             </a>
           </div>
-          </div>
-          
-        </div>
-          
-
-          
+          </div>  
+        </div>          
         </div>
       </div>
     </div>
