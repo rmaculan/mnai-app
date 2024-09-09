@@ -35,6 +35,20 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
+  <style>
+    .markdown-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        padding: 1em;
+      }
+      .markdown-content img {
+        max-width: 100%;
+        height: auto;
+      }
+  </style>
   <body>
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
@@ -42,89 +56,109 @@
     <main class="mx-auto">
       <section class="mb-4">
           <header>
-            <div class="banner flex items-center bg-gradient-to-r from-blue-500 to-grey-500 p-4">
-            <div class="mr-4 w-32 h-32 rounded-full overflow-hidden">
-              {% if user.profile.image %}
-                <img src="{{ user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
-              {% else %}
-                <img src="{% static 'media/default.jpg' %}" alt="Default" class="w-full h-full object-cover">
-              {% endif %}
+            <div 
+                class="banner shadow-xl 
+                  flex items-center 
+                  bg-gradient-to-r 
+                  from-blue-500 to-grey-500 p-4"
+                >
+              <div class="mr-4 w-32 h-32 rounded-full overflow-hidden">
+                {% if user.profile.image %}
+                  <img 
+                    src="{{ user.profile.image.url }}" 
+                    alt="Profile Image" 
+                    class="w-full h-full object-cover"
+                    >
+                {% else %}
+                  <img 
+                    src="{% static 'media/default.jpg' %}" 
+                    alt="Default" 
+                    lass="w-full h-full object-cover"
+                    >
+                {% endif %}
+              </div>
+              <div class="flex flex-col justify-center">
+                <p class="text-lg text-white">
+                  <strong>{{ user.username }}</strong>
+                </p>
+              </div>
             </div>
-            <div class="flex flex-col justify-center">
-              <p class="text-sm text-white">{{ user.username }}</p>
-            </div>
-          </div>
           </header>
       </section>
 
       
 
         
-          <div class="flex mt-4">
-         
-        <div class="">
-          
+    <div class="flex mt-4">
+      <div>  
         <div class="container">
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <div class="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-6">
               <label
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-gray-700 text-sm font-bold"
                 for="email"
               >
                 Email
               </label>
-              <p class="text-gray-700 text-base">{{ user.email }}</p>
+              <p class="text-gray-400 text-base">
+                {{ user.email }}
+              </p>
             </div>
             <div class="mb-6">
               <label
-                class="block text-gray-700 text-sm font-bold mb-2"
-                for="first_name"
-              >
-                First Name
-              </label>
-              <p class="text-gray-700 text-base">{{ user.profile.first_name }}</p>
-          </div>
-            <div class="mb-6">
-              <label
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-gray-700 text-sm font-bold"
                 for="last_name"
               >
-                Last Name
+                Name
               </label>
-              <p class="text-gray-700 text-base">{{ user.profile.last_name }}</p>
+              <p class="text-gray-400 text-base">
+                {{ user.profile.first_name }} {{ user.profile.last_name }}
+              </p>
             </div>
             <div class="mb-6">
               <label
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-gray-700 text-sm font-bold"
                 for="location"
               >
                 Location
               </label>
-              <p class="text-gray-700 text-base">{{ user.profile.location }}</p>
-            </div>
-            
-           </div>
-           
-      </div>
-      
-    </div>
-    <div class="container mx-auto px-2 py-4">
-      <div class="bg-white rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-2xl font-bold mb-4">Bio</h2>
-            <!-- bio section -->
-            <div class="mb-6">
-              <p class="text-gray-700 text-base">{{ user.profile.bio }}</p>
+              <p class="text-gray-400 text-base">
+                {{ user.profile.location }}
+              </p>
             </div>
             <div class="container">
               {% if is_current_user %}
-              <div class="flex justify-end mb-4">
-                <a href="{% url 'blog:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+              <div class="flex justify-end">
+                <a 
+                  href="{% url 'blog:edit_profile' %}" 
+                  class="btn btn-primary"
+                >
+                  Edit Profile
+                </a>
               </div>
               <div class="flex justify-end mb-4">
-                <a href="{% url 'blog:delete_profile' profile.user.username %}" class="btn btn-danger">Delete Profile</a>
+                <a 
+                  href="{% url 'blog:delete_profile' profile.user.username %}" 
+                  class="text-red-500"
+                >
+                  Delete Profile
+                </a>
               </div>
               {% endif %}
+            </div>
           </div>
+      </div>
+    </div>
+    <div class="container mx-auto px-2 py-4">
+      <div class="bg-white rounded ">
+            <h2 class="text-2x1 font-bold">Bio</h2>
+            <!-- bio section -->
+            <div class="mb-2">
+              <p class="markdown-content text-gray-700 text-base">
+                {{ user.profile.bio }}
+              </p>
+            </div>
+            
           </div>
             
         </div>
@@ -133,7 +167,7 @@
   </div>
   <div class="container ml-2 mx-auto px-2">
       <h1 class="text-3xl font-bold mb-2">
-          Latest Articles from {{ user.username }}
+          Latest from {{ user.username }}
         </h1>
   </div>
 
@@ -142,8 +176,12 @@
   </div>
   {% for post in posts %}
     <article class="container">
-      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
-        <div class="bg-white p-4 rounded-lg shadow-md">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+        <div class="bg-white p-4 rounded-lg shadow-xl">
+          <a 
+              href="{% url 'blog:post_detail' post.id %}" 
+              class="btn btn-primary w-full"
+              >
           <img
             src="{{ post.picture.url }}"
             alt="{{ post.title }}"
@@ -151,58 +189,47 @@
             height="600"
           />
           <div class="container">
-            <div class="container">
-            
-              
-          </div>
             <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
             <p class="text-gray-500">{{ post.subtitle }}</p>
-            
-            
-            
-           
-            
           </div>
           <p class="mb-4">
             {{ post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
           </p>
           <div class="container">
-            <a 
-              href="{% url 'blog:post_detail' post.id %}" 
-              class="btn btn-primary w-full">
+            
               Read More
             </a>
           </div>
           <div class="container flex items-center mt-4">
-                  <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
-                    {% if post.author.profile.image %}
-                    <img 
+              <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
+                  {% if post.author.profile.image %}
+                  <img 
                       src="{{ post.author.profile.image.url }}" 
                       alt="Profile Image" 
                       class="w-full h-full object-cover"
                       >
-                    {% else %}
-                    <img 
+                  {% else %}
+                  <img 
                       src="{% static 'media/default.jpg' %}" 
                       alt="Default" 
                       class="w-full h-full object-cover"
                       >
-                    {% endif %}
-                  </div>
+                  {% endif %}
+              </div>
                   <div>
                     <p class=" text-sm text-gray-500">
                       By <strong>{{ post.author }}</strong> 
                       <br>{{ post.job_title }}
                     </p>
                   </div>
-                </div>
-          </div>  
-        </div>          
+              </div>
+            </div>  
+          </div>          
         </div>
       </div>
     </div>
     {% endfor %}
-</main>
+  </main>
     
 
     <script

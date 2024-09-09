@@ -13,6 +13,7 @@ from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResp
 from .forms import UserRegisterForm
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.utils.safestring import mark_safe
 
 from django.db.utils import IntegrityError
 import logging
@@ -159,6 +160,7 @@ def create_blog_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            post.content = mark_safe(post.content)
             post.save()
             return redirect('blog:index')
     else:

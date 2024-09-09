@@ -17,51 +17,65 @@
             integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- unused for now-->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#id_content',
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            menubar: false,
+            statusbar: false,
+        });
+    </script>
   </head>
   <body>
+    
   
     {% include 'blog/navbar.html' %}
 
     <div class="container mx-auto py-4">
-      <strong>Create Blog Post</strong>
+        <strong class="text-xl font-bold">Create Blog Post</strong>
     </div>
     <div class="container mx-auto py-4">
-
-    <!-- stylish form with custumizability-->
-      {% block content %}
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-4">
-          <label 
-            for="{{ form.title.id_for_label }}" 
-            class="block text-sm font-medium text-gray-700"
-            >
-            Title
-          </label>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}">
+                  Title
+                </label>
+                <input 
+                  type="text" 
+                  name="title" 
+                  id="{{ form.title.id_for_label }}" 
+                  class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+                    focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="How to create a blog post"
+                  >
+            </div>
+            <div class="mb-4">
+                <label for="{{ form.subtitle.id_for_label }}">
+                  Subtitle
+                </label>
+                <input 
+                  type="text" 
+                  name="subtitle" 
+                  id="{{ form.subtitle.id_for_label }}" 
+                  class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+                    focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="A step by step guide"
+                  >
+            </div>
           <!-- Input Field -->
-          <input 
-            type="text" 
-            name="title" 
-            id="{{ form.title.id_for_label }}" 
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
-              focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="How to create a blog post"
-            >
-          <label 
-            for="{{ form.subtitle.id_for_label }}" 
-            class="block text-sm font-medium text-gray-700"
-            >
-            Subtitle
-          </label>
-          <!-- Input Field -->
-          <input 
-            type="text" 
-            name="subtitle" 
-            id="{{ form.subtitle.id_for_label }}" 
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
-              focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="A step by step guide"
-            >
+          
             <!-- Job title Field -->
         
           <label 
@@ -70,15 +84,44 @@
             >
             Job Title
           </label>
+          
           <!-- Input Field -->
           <input 
             type="text" 
             name="job_title" 
             id="{{ form.job_title.id_for_label }}" 
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+            class="block w-3/4 mt-1 border-gray-300 rounded-md shadow-sm 
               focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Software Developer and Blogger"
+            placeholder="Independent Reporter"
             >
+            <div class="container mt-4">
+
+              <p class="font-bold">
+                Post your article content in the box below. Here are some quick things to consider before publishing:
+                <!-- unordered list of considerations -->
+                <div class="container">
+                  <ul class="list-disc">
+                    <li>Keep it lengthy, informative, and objective</li>
+                    <li>Make sure your content is original</li>
+                    <li>Site material based on licensing and fair use laws.</li>
+                    <li>Make sure all your content is relevant to the article</li>
+                    <li>Include a relevant image to your article.</li>
+                    <li>Include a relevent caption for your image.</li>
+                    <li>Fill out all fields in the form</li>
+                    <li>Proof-read the article before publishing.</br>
+                      Once published, you will not be able to edit it.</br>
+                      The only way to edit it is to delete the article and create a new one.</br>
+                      This is done to ensure article authenticity. Treat this platform as a publisher.
+                    </li>
+                  </ul>
+                </div>
+                <strong>These are guidelines to help you be a successful writer, not rules.</br>
+                Write how your heart desires, but keep in mind the guidelines.</br>
+
+                
+                Happy writing!</strong>
+              </p>
+            </div>
 
         <!-- Content Field -->
         
@@ -89,7 +132,17 @@
             Content
           </label>
           <!-- Content Area -->
-          <p>{{ form.content }}</p>
+
+          
+
+          <textarea 
+            name="content" 
+            id="{{ form.content.id_for_label }}" 
+            class="block w-3/4 h-full mt-1 border-gray-300 rounded-md shadow-sm 
+              focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="How to create a blog post"
+            >
+          </textarea>
         
         
           
@@ -113,7 +166,7 @@
             type="text" 
             name="caption" 
             id="{{ form.caption.id_for_label }}" 
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm 
+            class="block w-3/4 mt-2 border-gray-300 rounded-md shadow-sm 
               focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="image caption"
             >
@@ -126,10 +179,10 @@
           class="px-4 py-2 text-white bg-blue-500 rounded
             hover:bg-blue-600"
             >
-          Submit
+          Publish
         </button>
       </form>
-      {% endblock %}
+      
     </div>
         </div>
         
