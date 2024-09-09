@@ -109,7 +109,7 @@
       
     </div>
     <div class="container mx-auto px-2 py-4">
-      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="bg-white rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-2xl font-bold mb-4">Bio</h2>
             <!-- bio section -->
             <div class="mb-6">
@@ -128,11 +128,20 @@
           </div>
             
         </div>
-    <!-- blog posts by user -->
+      </div>
+    </div>
+  </div>
+  <div class="container ml-2 mx-auto px-2">
+      <h1 class="text-3xl font-bold mb-2">
+          Latest Articles from {{ user.username }}
+        </h1>
+  </div>
+
+  <!-- blog posts by user -->
     
   </div>
   {% for post in posts %}
-    <div class="container">
+    <article class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="bg-white p-4 rounded-lg shadow-md">
           <img
@@ -143,21 +152,15 @@
           />
           <div class="container">
             <div class="container">
-            <div class="mr-4 w-16 h-16 rounded-full overflow-hidden">
-              {% if user.profile.image %}
-                <img src="{{ user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
-              {% else %}
-                <img src="{% static 'media/default.jpg' %}" alt="Default" class="w-full h-full object-cover">
-              {% endif %}
-            </div>
-            <div class="container">
-                <p class="text-gray-500">
-                By {{ post.author }} - {{ post.job_title }}
-                </p>
-              </div>
+            
+              
           </div>
             <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
             <p class="text-gray-500">{{ post.subtitle }}</p>
+            
+            
+            
+           
             
           </div>
           <p class="mb-4">
@@ -170,6 +173,29 @@
               Read More
             </a>
           </div>
+          <div class="container flex items-center mt-4">
+                  <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
+                    {% if post.author.profile.image %}
+                    <img 
+                      src="{{ post.author.profile.image.url }}" 
+                      alt="Profile Image" 
+                      class="w-full h-full object-cover"
+                      >
+                    {% else %}
+                    <img 
+                      src="{% static 'media/default.jpg' %}" 
+                      alt="Default" 
+                      class="w-full h-full object-cover"
+                      >
+                    {% endif %}
+                  </div>
+                  <div>
+                    <p class=" text-sm text-gray-500">
+                      By <strong>{{ post.author }}</strong> 
+                      <br>{{ post.job_title }}
+                    </p>
+                  </div>
+                </div>
           </div>  
         </div>          
         </div>
