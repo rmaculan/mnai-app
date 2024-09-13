@@ -109,6 +109,39 @@ def save_user_profile(sender, instance, **kwargs):
 post_save.connect(create_user_profile, sender=User)
 post_save.connect(save_user_profile, sender=User)
 
+# blog stream model
+class Stream(models.Model):
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE
+        )
+    following = models.ForeignKey(
+        User, 
+        related_name='stream_following', 
+        on_delete=models.CASCADE,
+        null=True
+        )
+    post = models.ForeignKey(
+        'Post', 
+        on_delete=models.CASCADE,
+        related_name='stream_post'
+        )
+    date = models.DateTimeField(auto_now_add=True)
+
+    def add_stream(sender, instance, *args, **kwargs):
+        stream =instance
+        author = stream.post.author
+        followers = Follow.objects.filter(following=author)
+
+        for follower in followers:
+            stream = Stream(
+                user=follower.follower, 
+                post=stream.post, 
+                following=author,
+                date=stream.date
+                )
+            stream.save()
+
 # blog post model
 class Post(models.Model):
     id = models.UUIDField(
@@ -120,6 +153,12 @@ class Post(models.Model):
         ('draft', 'Draft'),
         ('published', 'Published'),
     )
+    stream = models.ForeignKey(
+        Stream, 
+        on_delete=models.CASCADE, 
+        null=True,
+        related_name='stream_post'
+        )
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
     slug = models.SlugField(unique=True)
@@ -133,7 +172,12 @@ class Post(models.Model):
         verbose_name="Picture", 
         default=""
         )
-    video = models.URLField(blank=True, null=True, verbose_name="Video", default="")
+    video = models.URLField(
+        blank=True, 
+        null=True, 
+        verbose_name="Video", 
+        default=""
+        )
     caption = models.CharField(
         max_length=10000, 
         verbose_name="Caption", 
@@ -153,6 +197,12 @@ class Post(models.Model):
         blank=True
         )
     likes_count = models.IntegerField(default=0) 
+    following = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='post_following', 
+        null=True,
+        )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -241,23 +291,30 @@ class Comment(models.Model):
         notify.delete()
     
 class Likes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_likes")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_likes")
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="user_likes"
+        )
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name="post_likes"
+        )
 
     class Meta:
         unique_together = ("user", "post")
 
     @staticmethod
     def user_liked_post(sender, instance, created, **kwargs):
-        like = instance  # This is the Likes instance
-        post = like.post  # Access the Post instance through the Likes instance
-        sender = like.user  # Access the User instance through the Likes instance
-        # Assuming Notification model expects post, sender, and user parameters
+        like = instance  
+        post = like.post  
+        sender = like.user  
         notify = Notification.objects.create(
             post=post,
             sender=sender,
-            user=post.author,  # Access the author of the post
-            notification_types=1  # Assuming 1 is the type for a like notification
+            user=post.author,  
+            notification_types=1  
         )
         notify.save()
 

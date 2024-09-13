@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -23,8 +24,9 @@
     </script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
-  <body>
-    <!-- Navbar -->
+  <body >
+    <main >
+      <!-- Navbar -->
     
     {% include 'blog/navbar.html' %}
 
@@ -118,24 +120,30 @@
                     </p>
                   </a>
                 </div>
+
                  <!-- profile image link to profile -->
-                 
-    
                 <div class="container flex items-center mt-4">
                   <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
                     {% if post.author.profile.image %}
-                    <img 
-                      src="{{ post.author.profile.image.url }}" 
-                      alt="Profile Image" 
-                      class="w-full h-full object-cover"
-                      >
+                   <!-- link to post authors profile -->
+                   <a 
+                    href="{% url 'blog:profile' post.author.username %}"
+                    >
+                    <img
+                      src="{{ post.author.profile.image.url }}"
+                      alt="{{ post.author.username }}"
+                      class="w-16 h-16 object-cover"
+                    />
+                    </a>
                     {% else %}
+                    <!-- Display a default image or nothing -->
                     <img 
                       src="{% static 'media/default.jpg' %}" 
-                      alt="Default" 
-                      class="w-full h-full object-cover"
-                      >
+                      alt="{{ post.author.username }}" 
+                      class="w-16 h-16 object-cover" 
+                      />
                     {% endif %}
+                    </a>
                   </div>
                   <div>
                     <p class=" text-sm text-gray-500">
@@ -143,8 +151,10 @@
                       <br>{{ post.job_title }}
                     </p>
                   </div>
+                </div>    
                 </div>
-               
+                
+                
               </article>
             </div>
             {% endfor %}
@@ -154,6 +164,40 @@
 
       
     </div>
+  </main>
+    <script>
+    
+      function toggleFollow(follow) {
+        fetch(`/blog/follow/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({
+            follow: follow
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+    })
+        .then(data => {
+          if (data.success) {
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+      
+    </script>
     <script 
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
       defer

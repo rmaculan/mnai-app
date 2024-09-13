@@ -53,16 +53,19 @@
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
 
-    <main class="mx-auto">
+    <main class="bg-gradient-to-l 
+                  from-gray-400 to-white-500 
+                  p-4 
+                  mx-auto">
       <section class="mb-4">
           <header>
             <div 
                 class="banner shadow-xl 
                   flex items-center 
                   bg-gradient-to-r 
-                  from-blue-500 to-grey-500 p-4"
+                  from-blue-800 to-gray-400 p-4"
                 >
-              <div class="mr-4 w-32 h-32 rounded-full overflow-hidden">
+              <div class="mr-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white">
                 {% if user.profile.image %}
                   <img 
                     src="{{ user.profile.image.url }}" 
@@ -82,8 +85,60 @@
                   <strong>{{ user.username }}</strong>
                 </p>
               </div>
+              <!-- add follower and following count -->
+              <div class="profile-stats flex-col mx-auto">
+                <ul>
+                  <li><span class="profile-stat-count">{{posts_count}}</span> posts</li>
+                  <li><span class="profile-stat-count">{{followers_count}}</span> followers</li>
+                  <li><span class="profile-stat-count">{{following_count}}</span> following</li>
+                </ul>
+                <br>
+                <!-- follow and unfollow buttons -->  
+                {% if is_current_user %}
+                  <a 
+                    href="{% url 'blog:edit_profile' %}" 
+                    class="btn btn-primary"
+                  >
+                    Edit Profile
+                  </a>
+                {% else %}
+                  {% if is_following %}
+                    <form 
+                      action="{% url 'blog:unfollow' user.username %}" 
+                      method="post"
+                    >
+                      {% csrf_token %}
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary"
+                      >
+                        Unfollow
+                      </button>
+                    </form>
+                  {% else %}
+                    <form 
+                      action="{% url 'blog:follow' user.username %}" 
+                      method="post"
+                    >
+                      {% csrf_token %}
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary"
+                      >
+                        Follow
+                      </button>
+                    </form>
+                  {% endif %}
+                {% endif %} 
+              </div>
+              
             </div>
+            
+            
           </header>
+
+          
+                
       </section>
 
       
@@ -128,14 +183,6 @@
             </div>
             <div class="container">
               {% if is_current_user %}
-              <div class="flex justify-end">
-                <a 
-                  href="{% url 'blog:edit_profile' %}" 
-                  class="btn btn-primary"
-                >
-                  Edit Profile
-                </a>
-              </div>
               <div class="flex justify-end mb-4">
                 <a 
                   href="{% url 'blog:delete_profile' profile.user.username %}" 
@@ -150,11 +197,11 @@
       </div>
     </div>
     <div class="container mx-auto px-2 py-4">
-      <div class="bg-white rounded ">
+      <div class="bg-gray rounded ">
             <h2 class="text-2x1 font-bold">Bio</h2>
             <!-- bio section -->
             <div class="mb-2">
-              <p class="markdown-content text-gray-700 text-base">
+              <p class="markdown-content text-black-800 text-base">
                 {{ user.profile.bio }}
               </p>
             </div>

@@ -5,6 +5,8 @@ app_name = 'blog'
 
 urlpatterns = [
     path('', views.read_blog_posts, name='index'),
+    path('follow/<str:username>', views.follow_user, name='follow'),
+    path('unfollow/<str:username>', views.unfollow_user, name='unfollow'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),

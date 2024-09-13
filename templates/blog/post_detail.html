@@ -34,15 +34,20 @@
       }
     </style>
   </head>
-  <body>
+  <body class="bg-gradient-to-l
+            from-gray-400 to-white-500 "
+            >
     <!-- Navbar -->
-
     {% include 'blog/navbar.html' %}
     
     <!-- Picture, title, subtitle, author, and job_title lines -->
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
-      <p class="text-gray-500">{{ post.subtitle }}</p>
+      <h1 class="text-4xl font-bold mt-2">
+        {{ post.title }}
+      </h1>
+      <p class="text-gray-500">
+        {{ post.subtitle }}
+      </p>
       <p class="text-gray-500">
         By {{ post.author }} - {{ post.job_title }}
       </p>
@@ -52,66 +57,110 @@
         width="1000"
         height="600"
       />
-      <p class="text-gray-500">{{ post.caption }}</p>
-      <p class="markdown-content">{{ post.content|safe }}</p>
-    </div>
-      
-      
-    <!-- like, dislike, and follow model wuth counters for each -->
-      <div class="container flex items-center mt-4">
-        <form method="post" action="{% url 'blog:like_post' post.id %}">
-          {% csrf_token %}
-          <!-- Stylish Like Button and Counter -->
-          <button 
-            type="submit" 
-            class="flex items-center px-4 py-2 text-sm text-gray-700 
-              bg-gray-100 rounded-lg hover:bg-gray-200 
-              focus:outline-none focus:ring-2 focus:ring-gray-200 
-              dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 
-              dark:focus:ring-gray-600"
-            >
-            <i class="far fa-thumbs-up"></i>
-            <div class="ml-2" ><span id="likes-count">{{ post.post_likes.count }}</span></div>
-          </button>
-        </form>
-        <div class="container flex items-center mt-4">
-            <form 
-                id="dislike-form" 
-                action="{% url 'blog:dislike_post' post.id %}" 
-                method="POST"
+      <p class="text-gray-500">
+        {{ post.caption }}
+      </p>
+      <p class="markdown-content">
+        {{ post.content|safe }}
+      </p>
+      <div class="container flex items-center rounded-xl shadow-xl">
+        <div class="container 
+          bg-gradient-to-r 
+            from-gray-600 to-white-500 
+          flex items-center
+          rounded-xl
+          mx-auto 
+          h-full"
+          >
+          <form method="post" action="{% url 'blog:like_post' post.id %}">
+            {% csrf_token %}
+            <button 
+              type="submit" 
+              class="flex items-center
+                mt-4
+                px-4 py-2 
+                text-sm 
+                text-gray-700 
+                bg-gradient-to-l
+                  from-black-800 to-gray-100  
+                rounded-xl
+                shadow-xl 
+                border
+                hover:bg-gray-200 
+                focus:outline-none 
+                focus:ring-2 
+                focus:ring-gray-200 
+                dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 
+                dark:focus:ring-gray-600"
               >
-              {% csrf_token %}
+                <i class="far fa-thumbs-up"></i>
+              <div class="ml-2" >
+                <span id="likes-count">
+                  {{ post.post_likes.count }}
+                </span>
+              </div>
+            </button>
+          </form>
+          <form 
+              id="dislike-form" 
+              action="{% url 'blog:dislike_post' post.id %}" 
+              method="POST"
+            >
+            {% csrf_token %}
           
-              <button 
-                  type="submit" 
-                  class="flex items-center 
-                    px-4 py-2 text-sm text-gray-700 
-                    bg-gray-100 rounded-lg 
-                    hover:bg-gray-200 
-                    focus:outline-none 
-                    focus:ring-2 
-                    focus:ring-gray-200 
-                    dark:bg-gray-700 dark:text-gray-200 
-                    dark:hover:bg-gray-600 
-                    dark:focus:ring-gray-600"
-                >
-                  <i class="far fa-thumbs-down"></i>
-                  <span class="ml-2">{{ post.dislikes_count }}</span>
-              </button>
-            </form>
+            <button 
+                type="submit" 
+                class="
+                  px-4 
+                  py-2 
+                  mt-4
+                  text-sm 
+                  text-gray-700 
+                  bg-gradient-to-l
+                      from-black-800 to-gray-100 
+                  rounded-xl
+                  shadow-xl 
+                  border
+                  hover:bg-gray-200 
+                  focus:outline-none 
+                  focus:ring-2 
+                  focus:ring-gray-200 
+                  dark:bg-gray-700 dark:text-gray-200 
+                  dark:hover:bg-gray-600 
+                  dark:focus:ring-gray-600"
+              >
+                <i class="far fa-thumbs-down"></i>
+                <span class="ml-2">
+                  {{ post.dislikes_count }}
+                </span>
+            </button>
+          </form>
         </div>
+      </div> 
     </div>
-      {% if post.video %}
-      
-      {% endif %}
+    <div class="container">
+        <h2 class="text-2xl font-bold">
+          Latest Comments
+        </h2>
       </div>
-    
-    
+      
+    <!-- Comment, like, dislike, and follow model wuth counters for each -->
+    <div 
+      class="
+        container 
+        bg-gradient-to-r 
+          from-gray-600 to-white-500 
+        flex items-center
+        rounded-xl
+        mx-auto
+        ml-6
+        mr-8
+        "         
+      >
 
       <!-- Comment section with thread-->
       <div class="container">
-        <h2 class="text-2xl font-bold">Comments</h2>
-
+      
         {% include 'blog/comments.html' %}
 
         <div class="container mt-4">
@@ -122,41 +171,63 @@
               id="comment" 
               cols="30" 
               rows="10" 
-              class="w-full p-2 border border-gray-200 rounded"
-              placeholder="Write your comment here"
+              class=" 
+                border 
+                border-gray-200 
+                rounded-xl"
+              placeholder="Write your comment here. Remember to be respectful."
             ></textarea>
             <button 
               type="submit" 
-              class="mt-2 px-4 py-2 bg-blue-700 text-white rounded"
+              class="
+                mt-2 
+                ml-8
+                px-4 
+                py-2 
+                bg-gray-700 
+                text-white 
+                rounded-xl
+                "
             >
               Comment
             </button>
           </form>
-          <div class="flex items-center">
+        </div>
+        <div class="flex items-center text-white">
           <a 
             href="{% url 'blog:index' %}" 
           >
             Home
           </a>
         </div>
-        </div>
-
-        
-        
+      {% if post.video %}
+      
+      {% endif %}
       </div>
+    </div>
+      
+    </div>   
+  </div>
+</div>
+
       <script>
-        document.getElementById('like-form').addEventListener('submit', function(e) {
-          e.preventDefault();
-          fetch(this.action, {
-              method: 'POST',
-              headers: {'X-CSRFToken': '{{ csrf_token }}',
-              body: new FormData(this),
-            })
-            .then(response => response.json())
-            .then(data => document.getElementById('likes-count').innerText = data.likes_count);
+
+        // Like and Dislike Form
+        document.getElementById('like-form').addEventListener(
+          'submit', function(e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token }}',
+                body: new FormData(this),
+              })
+              .then(response => response.json())
+              .then(data => document.getElementById('likes-count')
+                .innerText = data.likes_count);
         });
 
-        document.getElementById('dislike-form').addEventListener('submit', function(e) {
+        document.getElementById('dislike-form').addEventListener(
+          'submit', function(e) {
             e.preventDefault();
             fetch(this.action, {
                 method: 'POST',
@@ -164,12 +235,15 @@
                 body: new FormData(this),
             })
             .then(response => response.json())
-            .then(data => document.getElementById('likes-count').innerText = data.likes_count);
+            .then(data => document.getElementById('likes-count')
+            .innerText = data.likes_count);
         });
-        </script>
+
+      </script>
       <script 
-      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
-      defer>
+        src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
+        defer
+        >
     </script>
   </body>
 </html>

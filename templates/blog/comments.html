@@ -3,7 +3,7 @@
 
 <div class="container">
     <div id="commentsContainer">
-        {% for comment in post.comments.all|slice:"5" %}
+        {% for comment in post.comments.all|slice:"3" %}
         <div class="comment-container">
             <div class="comment-content">
                 <h5>
@@ -18,14 +18,23 @@
                 <!-- Edit and Delete buttons -->
             {% if user.is_authenticated and user == comment.author %}
                 <div class="edit-delete-buttons">
-                <a 
-                    <a href="{% url 'blog:update_comment' post.id comment.id %}" class="btn btn-primary">Edit</a>
+                    <a 
+                        href="{% url 'blog:update_comment' post.id comment.id %}" 
+                        class="btn btn-primary"
                     >
+                        Edit
+                    </a>
                     
-                </a>
-                    <a href="{% url 'blog:delete_comment' post.id comment.id %}" class="btn btn-danger">Delete</a>
-                </a>
-            </div>
+                    
+                    </a>
+                        <a 
+                            href="{% url 'blog:delete_comment' post.id comment.id %}" 
+                            class="btn btn-danger"
+                            >
+                            Delete
+                        </a>
+                    </a>
+                </div>
         {% endif %}
             
         </div>
@@ -34,7 +43,12 @@
             <div class="reply-form">
                 <form method="post" action="{% url 'blog:create_comment' post.id %}">
                     {% csrf_token %}
-                    <textarea name="comment" placeholder="Your reply..."></textarea>
+                    <textarea 
+                        class="rounded-xl" 
+                        name="comment" 
+                        placeholder="Your reply..."
+                        >
+                    </textarea>
                     <!-- Hidden input for parent_id -->
                     <input type="hidden" name="parent_id" value="{{ comment.id }}">
                     <button type="submit" class="btn btn-secondary">Reply</button>
