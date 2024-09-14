@@ -45,7 +45,6 @@ def login_view(request):
 
 def logout_view(request):
     logger.info("Logout view accessed")
-    
     logout(request)
     
     return redirect('blog:index')
@@ -73,7 +72,6 @@ def read_blog_posts(request):
         follower=request.user, 
         following=author
         ).exists()
-
     posts = Stream.objects.filter(
         user=request.user
         ).order_by('-date') if request.user.is_authenticated else []
@@ -85,7 +83,6 @@ def read_blog_posts(request):
     query = request.GET.get('q')
     if query:
         authors = User.objects.filter(Q(username__icontains=query))
-
         paginator = Paginator(authors, 5)
         page_number = request.GET.get('page')
 
@@ -95,14 +92,15 @@ def read_blog_posts(request):
         'profiles': profiles,
         'all_authors': all_authors,
     }
-    
     return render(request, 'blog/index.html', context)
 
 def read_blog_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     profile = Profile.objects.get(user=post.author)
     comments = Comment.objects.filter(post=post)
-    is_liked = Likes.objects.filter(post=post, user=request.user).exists()
+    is_liked = Likes.objects.filter(
+        post=post, 
+        user=request.user).exists()
     is_following = Follow.objects.filter(
         follower=request.user, 
         following=post.author).exists()
@@ -112,7 +110,7 @@ def read_blog_post(request, post_id):
         'profile': profile,
         'comments': comments,
         'is_liked': is_liked,
-        # 'is_following': is_following,
+        'is_following': is_following,
     }
     return render(request, 'blog/post_detail.html', context)
 
@@ -193,7 +191,8 @@ def edit_profile(request):
         form = ProfileForm(
             request.POST, 
             request.FILES, 
-            instance=profile)
+            instance=profile
+            )
         if form.is_valid():
             profile.image = form.cleaned_data['image']
             profile.first_name = form.cleaned_data['first_name']

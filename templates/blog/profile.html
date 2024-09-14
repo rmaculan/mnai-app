@@ -102,9 +102,9 @@
                     Edit Profile
                   </a>
                 {% else %}
-                  {% if is_following %}
+                  {% if follow_status == True %}
                     <form 
-                      action="{% url 'blog:unfollow' user.username %}" 
+                      action="{% url 'blog:unfollow' profile.user %}" 
                       method="post"
                     >
                       {% csrf_token %}
@@ -117,7 +117,7 @@
                     </form>
                   {% else %}
                     <form 
-                      action="{% url 'blog:follow' user.username %}" 
+                      action="{% url 'blog:follow' profile.user %}" 
                       method="post"
                     >
                       {% csrf_token %}
