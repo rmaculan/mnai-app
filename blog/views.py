@@ -409,6 +409,30 @@ def unfollow_user(request, username):
     
     return redirect(reverse('blog:profile', args=[username]))
 
+# view followers
+def view_followers(request):
+    
+    followers = Follow.objects.filter(
+        following=request.user
+        )
+    return render(
+        request, 
+        'blog/followers.html', 
+        {'followers': followers}
+        )
+
+# view following
+def view_following(request):
+    
+    following = Follow.objects.filter(
+        follower=request.user
+        )
+    return render(
+        request, 
+        'blog/following.html', 
+        {'following': following}
+        )
+
 
 
 

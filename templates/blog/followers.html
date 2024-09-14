@@ -1,0 +1,89 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <style>
+    .markdown-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        padding: 1em;
+      }
+      .markdown-content img {
+        max-width: 100%;
+        height: auto;
+        }
+  </style>
+    <body>
+      <!-- Navbar -->
+      {% include 'blog/navbar.html' %}
+      <main class="bg-gradient-to-l 
+                    from-gray-400 to-white-500 
+                    p-4 
+                    mx-auto">
+        <section class="mb-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold">Followers</h1>
+
+          </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for follower in followers %}
+                <div class="card mt-2 mb-4">
+                  <div class="card-body">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                        <!-- image link to profile -->
+                        <a href="{% url 'blog:profile' follower.follower.username %}">
+                            <img
+                                src="{{ follower.follower.profile.image.url }}"
+                                alt="{{ follower.follower.username }}"
+                                class="rounded-full h-12 w-12"
+                            />
+                        </a>
+                        <h2 class="ml-4">{{ follower.follower.username }}</h2>
+                        </div>
+                        
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+      </main>
+    </body>
+</html>

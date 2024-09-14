@@ -88,9 +88,25 @@
               <!-- add follower and following count -->
               <div class="profile-stats flex-col mx-auto">
                 <ul>
-                  <li><span class="profile-stat-count">{{posts_count}}</span> posts</li>
-                  <li><span class="profile-stat-count">{{followers_count}}</span> followers</li>
-                  <li><span class="profile-stat-count">{{following_count}}</span> following</li>
+                  <li><span class="profile-stat-count">
+                    {{posts_count}}
+                    </span> 
+                      posts
+                  </li>
+                  <li><span class="profile-stat-count">
+                    {{followers_count}}
+                    </span> 
+                      <a href="{% url 'blog:followers' %}">
+                        followers
+                      </a>
+                  </li>
+                  <li><span class="profile-stat-count">
+                    {{following_count}}
+                    </span> 
+                      <a href="{% url 'blog:following' %}">
+                        following
+                      </a>
+                  </li>
                 </ul>
                 <br>
                 <!-- follow and unfollow buttons -->  
