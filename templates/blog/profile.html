@@ -50,6 +50,7 @@
       }
   </style>
   <body>
+  {% if user.is_authenticated %}
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
 
@@ -224,9 +225,10 @@
         </h1>
   </div>
 
-  <!-- blog posts by user -->
-    
+
   </div>
+
+    <!-- blog posts by user -->
   {% for post in posts %}
     <article class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
@@ -280,8 +282,70 @@
           </div>          
         </div>
       </div>
-    </div>
+    </article>
     {% endfor %}
+  {% else %}
+  {% for post in posts %}
+    <article class="container">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+        <div class="bg-white p-4 rounded-lg shadow-xl">
+          <a 
+              href="{% url 'blog:login' %}" 
+              class="btn btn-primary w-full"
+              >
+          <img
+            src="{{ post.picture.url }}"
+            alt="{{ post.title }}"
+            width="1000"
+            height="600"
+          />
+          <div class="container">
+            <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
+            <p class="text-gray-500">{{ post.subtitle }}</p>
+          </div>
+          <p class="mb-4">
+            {{ post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+          </p>
+          <div class="container">
+            
+              Login to Read More
+            </a>
+          </div>
+          <div class="container flex items-center mt-4">
+              <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
+                  {% if post.author.profile.image %}
+                  <img 
+                      src="{{ post.author.profile.image.url }}" 
+                      alt="Profile Image" 
+                      class="w-full h-full object-cover"
+                      >
+                  {% else %}
+                  <img 
+                      src="{% static 'media/default.jpg' %}" 
+                      alt="Default" 
+                      class="w-full h-full object-cover"
+                      >
+                  {% endif %}
+              </div>
+                  <div>
+                    <p class=" text-sm text-gray-500">
+                      By <strong>{{ post.author }}</strong> 
+                      <br>{{ post.job_title }}
+                    </p>
+                  </div>
+              </div>
+            </div>  
+          </div>          
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+
+ 
+
+  {% endif %}
+  
+
   </main>
     
 

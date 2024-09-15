@@ -152,36 +152,47 @@ def search_posts_by_author(request):
 
 # view profile
 def profile_view(request, username):
-    user = get_object_or_404(User, username=username)
-    profile = Profile.objects.get(user=user)
-    is_current_user = is_current_user_profile(request, username)
-    
-    posts = Post.objects.filter(author=user).order_by('-publish_date')
-    
-    posts_count = Post.objects.filter(author=user).count()
-    followers_count = Follow.objects.filter(following=user).count()
-    following_count = Follow.objects.filter(follower=user).count()
-
     if request.user.is_authenticated:
+        user = get_object_or_404(
+        User, 
+        username=username
+        )
+        profile = Profile.objects.get(user=user)
+        is_current_user = is_current_user_profile(request, username)
+        # url_name = resolve(request.path).url_name
+        posts = Post.objects.filter(
+            author=user).order_by('-publish_date')
+
+        posts_count = Post.objects.filter(author=user).count()
+        followers_count = Follow.objects.filter(following=user).count()
+        following_count = Follow.objects.filter(follower=user).count()
         follow_status = Follow.objects.filter(
             follower=request.user, 
             following=user
-        ).exists()
+            ).exists()
+
+        context = {
+            'user': user,
+            'profile': profile,
+            'is_current_user': is_current_user,
+            'posts': posts,
+            'posts_count': posts_count,
+            'followers_count': followers_count,
+            'following_count': following_count,
+            'follow_status': follow_status,  
+        }
+
+        return render(request, 'blog/profile.html', context)
     else:
-        follow_status = False
+        # Redirect to login page if user is not logged in
+        return HttpResponseForbidden(
+            "<h1>You must log in to view profiles.</h1>"
+            "<p>Please <a href='/blog/login'>log in</a> or "
+            "<a href='/blog/register'>register</a> to continue.</p>",
+            content_type="text/html")
     
-    context = {
-        'user': user,
-        'profile': profile,
-        'is_current_user': is_current_user,
-        'posts': posts,
-        'posts_count': posts_count,
-        'followers_count': followers_count,
-        'following_count': following_count,
-        'follow_status': follow_status,
-    }
     
-    return render(request, 'blog/profile.html', context)
+        
 
 def is_current_user_profile(request, username):
     return request.user.username == username
