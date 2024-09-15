@@ -175,6 +175,21 @@
             {% for blog_post in blog_posts %}
             <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
+                    <div class="mb-2">
+                       <h3 class="text-xl font-semibold">
+                            {{ blog_post.title }}
+                        </h3>
+                        <p class="text-gray-500">{{ blog_post.subtitle }}</p>
+                       
+                            <strong>
+                                {{ blog_post.author }} - 
+                            </strong>
+                            {{ blog_post.job_title }}
+                        
+                    </div>
+                    <!-- Image with link to profile -->
+                    
+                     
                     <img 
                         src="{{ blog_post.picture.url }}" 
                         alt="{{ blog_post.title }}" 
@@ -182,15 +197,7 @@
                         height="1080"
                         width="1920" 
                         >
-                    <div class="mb-2">
-                       <h3 class="text-xl font-semibold">
-                            {{ blog_post.title }}
-                        </h3>
-                        <p class="text-gray-500">{{ blog_post.subtitle }}</p>
-                    </div>
-                    <strong>
-                        {{ blog_post.author }}
-                    </strong>
+                    
                     <p class="mb-4">
                         {{ blog_post.content|truncatewords:20 }}
                     </p>
