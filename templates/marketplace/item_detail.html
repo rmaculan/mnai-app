@@ -33,12 +33,21 @@
               <p>category: {{ item.category }}</p>
               <p>description: {{ item.description }}</p>
             </div>
+            {% if user.is_authenticated %}
             <a 
               href="{% url 'marketplace:contact_seller_form' item.id %}" 
               class="btn btn-primary"
             >
               Contact Seller
             </a>
+            {% else %}
+            <a 
+              href="{% url 'login' %}" 
+              class="btn btn-primary"
+            >
+              Login to Contact Seller
+            </a>
+            {% endif %}
           </div>
         </div>
       </div>

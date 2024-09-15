@@ -50,7 +50,7 @@
       }
   </style>
   <body>
-  {% if user.is_authenticated %}
+  
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
 
@@ -240,8 +240,8 @@
           <img
             src="{{ post.picture.url }}"
             alt="{{ post.title }}"
-            width="1000"
-            height="600"
+            height="1080"
+            width="1920" 
           />
           <div class="container">
             <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
@@ -296,8 +296,8 @@
           <img
             src="{{ post.picture.url }}"
             alt="{{ post.title }}"
-            width="1000"
-            height="600"
+            height="1080"
+            width="1920" 
           />
           <div class="container">
             <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
@@ -343,7 +343,7 @@
 
  
 
-  {% endif %}
+ 
   
 
   </main>

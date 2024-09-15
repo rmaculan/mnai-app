@@ -27,14 +27,29 @@
     <title>AI Blog & Marketplace</title>
   </head>
 <body class="bg-gray-200">
-    <header class="text-center p-12 bg-blue-500 text-white relative">
+    <header 
+        class="
+            text-center 
+            p-12 
+            bg-blue-500 
+            text-white relative"
+            >
         <h1 class="text-4xl font-bold mb-2">
             Welcome to Our Platform!
         </h1>
         <p class="max-w-xl mx-auto mb-4">
             Discover AI, blogs and explore items for sale.
         </p>
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent to-black opacity-50"></div>
+        <div 
+            class="
+                absolute 
+                inset-0 
+                bg-gradient-to-r 
+                from-transparent 
+                to-black 
+                opacity-50"
+                >
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             
       </div>
@@ -74,7 +89,6 @@
             <h2 class="text-3xl font-semibold mb-2">
                 Explore Our Offerings
             </h2>
-            <!-- Friendly message that summarizes site details -->
             <p class="mb-8">
                 Here to chat with our AI? Or maybe you're looking for the latest news and trends?
                 How about shopping for the perfect item? We've got you covered!
@@ -120,11 +134,13 @@
                         {{ blog_post.author }}
                     </strong>
                     <p class="mb-4">
-                        {{ blog_post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+                        {{ blog_post.content|truncatewords:20 }}
                     </p>
                     <div class="container">
                         {% if blog_post.id %}
-                            <a href="{% url 'blog:post_detail' blog_post.id|stringformat:"s" %}">Read More</a>
+                            <a href="{% url 'blog:post_detail' blog_post.id|stringformat:"s" %}">
+                                Read More
+                            </a>
                         {% else %}
                             <p>No valid post ID</p>
                         {% endif %}
@@ -157,14 +173,14 @@
         </div>
         <div class="container mx-auto px-4">
             {% for blog_post in blog_posts %}
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
                     <img 
                         src="{{ blog_post.picture.url }}" 
                         alt="{{ blog_post.title }}" 
                         class="mb-4"
-                        height="600"
-                        width="400" 
+                        height="1080"
+                        width="1920" 
                         >
                     <div class="mb-2">
                        <h3 class="text-xl font-semibold">
@@ -176,11 +192,13 @@
                         {{ blog_post.author }}
                     </strong>
                     <p class="mb-4">
-                        {{ blog_post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+                        {{ blog_post.content|truncatewords:20 }}
                     </p>
                     <div class="container">
                         {% if blog_post.id %}
-                            <a href="{% url 'blog:login' %}">Login to Read More</a>
+                            <a href="{% url 'blog:login' %}">
+                                Login to Read More
+                            </a>
                         {% else %}
                             <p>No valid post ID</p>
                         {% endif %}
@@ -207,9 +225,12 @@
             <p class="mb-8">
                 Find the perfect item for your wardrobe, home, and everything else.
             </p>
+
               
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+            <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {% for marketplace_item in marketplace_items %}
             <div class="col-span-full md:col-span-1">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
@@ -245,14 +266,14 @@
                 </div>
             </div>
             {% endfor %} 
-            <div class="container">
-                <a 
+                
+            </div>
+            <a 
                     href="{% url 'marketplace:index' %}" 
                     class="btn btn-primary mt-8"
                     >
                     Check out our marketplace!
                 </a>
-            </div>
         </div>
         <div class="text-center">
             {% if user.is_authenticated %}
