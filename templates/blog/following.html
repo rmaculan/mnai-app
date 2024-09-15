@@ -50,8 +50,7 @@
         }
   </style>
     <body>
-      <!-- Navbar -->
-      {% include 'blog/navbar.html' %}
+      
         <main class="bg-gradient-to-l 
                         from-gray-400 to-white-500 
                         p-4 
@@ -60,6 +59,7 @@
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold">Following</h1>
                 <a href="{% url 'blog:followers' %}" class="btn btn-primary">Followers</a>
+                <a href="{% url 'blog:profile' user.username %}" class="btn btn-primary">Back</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for user in following %}
@@ -82,6 +82,7 @@
                     </div>
                 </div>
                 {% endfor %}
+                
               </div>
             </section>
         </main>

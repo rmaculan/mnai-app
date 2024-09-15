@@ -68,24 +68,29 @@ def read_blog_posts(request):
     all_authors = User.objects.all()
     blog_posts = Post.objects.all().order_by('-publish_date')
     profiles = Profile.objects.all()
-    follow_status = Follow.objects.filter(
-        follower=request.user, 
-        following=author
+    
+    if request.user.is_authenticated:
+        follow_status = Follow.objects.filter(
+            follower=request.user, 
+            following=author
         ).exists()
+    else:
+        follow_status = False
+    
     posts = Stream.objects.filter(
         user=request.user
-        ).order_by('-date') if request.user.is_authenticated else []
+    ).order_by('-date') if request.user.is_authenticated else []
+    
     group_ids = []
-
     for post in posts:
         group_ids.append(post.post_id)
-
+    
     query = request.GET.get('q')
     if query:
         authors = User.objects.filter(Q(username__icontains=query))
         paginator = Paginator(authors, 5)
         page_number = request.GET.get('page')
-
+    
     context = {
         'posts': blog_posts,
         'follow_status': follow_status,
@@ -147,24 +152,24 @@ def search_posts_by_author(request):
 
 # view profile
 def profile_view(request, username):
-    user = get_object_or_404(
-        User, 
-        username=username
-        )
+    user = get_object_or_404(User, username=username)
     profile = Profile.objects.get(user=user)
     is_current_user = is_current_user_profile(request, username)
-    # url_name = resolve(request.path).url_name
-    posts = Post.objects.filter(
-        author=user).order_by('-publish_date')
-
+    
+    posts = Post.objects.filter(author=user).order_by('-publish_date')
+    
     posts_count = Post.objects.filter(author=user).count()
     followers_count = Follow.objects.filter(following=user).count()
     following_count = Follow.objects.filter(follower=user).count()
-    follow_status = Follow.objects.filter(
-        follower=request.user, 
-        following=user
-        ).exists()
 
+    if request.user.is_authenticated:
+        follow_status = Follow.objects.filter(
+            follower=request.user, 
+            following=user
+        ).exists()
+    else:
+        follow_status = False
+    
     context = {
         'user': user,
         'profile': profile,
@@ -173,9 +178,9 @@ def profile_view(request, username):
         'posts_count': posts_count,
         'followers_count': followers_count,
         'following_count': following_count,
-        'follow_status': follow_status,  
+        'follow_status': follow_status,
     }
-
+    
     return render(request, 'blog/profile.html', context)
 
 def is_current_user_profile(request, username):
@@ -270,7 +275,9 @@ def create_comment(request, post_id):
                 parent_comment = Comment.objects.get(pk=parent_id)
                 comment.parent = parent_comment
             except Comment.DoesNotExist:
-                print(f"Parent comment with ID {parent_id} does not exist.")
+                print(
+                    f"Parent comment with ID {parent_id} does not exist."
+                    )
                 return redirect('blog:post_detail', post_id=post_id)
         
         if len(content.strip()) > 0:
@@ -290,7 +297,11 @@ def read_comments(request, post_id):
         'post': post,
         'comments': comments,
     }
-    return render(request, 'blog/post_detail.html', context)
+    return render(
+        request, 
+        'blog/post_detail.html', 
+        context
+        )
 
 @login_required
 def update_comment(request, post_id, comment_id):
@@ -315,21 +326,33 @@ def update_comment(request, post_id, comment_id):
             form.save()
             return redirect('blog:post_detail', post_id=post_id)
         else:
-            return render(request, 'blog/update_comment.html', {'form': form})
+            return render(
+                request, 
+                'blog/update_comment.html', 
+                {'form': form}
+                )
     else:
         if comment.author != request.user:
             return redirect('blog:post_detail', post_id=post_id)
         
         form = CommentForm(instance=comment)
-        return render(request, 'blog/update_comment.html', {'form': form})
+        return render(
+            request, 
+            'blog/update_comment.html', 
+            {'form': form}
+            )
 
 @login_required
 def delete_comment(request, post_id, comment_id):
     try:
-        comment = Comment.objects.get(post=post_id, id=comment_id)
+        comment = Comment.objects.get(
+            post=post_id, 
+            id=comment_id
+            )
     except Comment.DoesNotExist:
         return HttpResponseServerError(
-            "Comment does not exist.", content_type='text/plain'
+            "Comment does not exist.", 
+            content_type='text/plain'
             )
     
     if comment.author != request.user:

@@ -11,9 +11,7 @@ from .forms import UserRegisterForm
 logger = logging.getLogger(__name__)
 
 def landing_page(request):
-    blog_posts = Post.objects.all().order_by('-publish_date')[:5]
-    
-    # Fetch the latest 5 marketplace items
+    blog_posts = Post.objects.filter(id__isnull=False).order_by('-publish_date')[:5]
     marketplace_items = Item.objects.all()[:5]
     
     return render(request, 'landing_page.html', {

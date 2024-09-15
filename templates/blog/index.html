@@ -41,38 +41,7 @@
           </h1>
       </div>
 
-        <!-- centered welcome message with redirect to landin page -->
-        <div class="container mx-auto px-2 py-4">
-          <p class="text-center">
-            Here you can find the latest articles and posts from our users.
-            Feel free to access our
-            
-            <!-- button that redirects to the templates/chatbot app -->
-            <a
-              href="{% url 'chatbot:chatbot' %}"
-              class="text-blue-500 hover:underline"
-              >
-              AI Chat,
-            </a>
-            read, post, 
-            
-            <!-- button that redirects to the templates/marketplace app -->
-            <a
-              href="{% url 'marketplace:index' %}"
-              class="text-blue-500 hover:underline"
-              >
-              shop,
-            </a>
-            or go to the
-            <!-- button that returns to main landing page under templates -->
-            <a
-              href="{% url 'landing_page' %}"
-              class="text-blue-500 hover:underline"
-              >
-              main page
-            </a>
-          </p>
-        </div>
+       
 
       <!-- Blog Content -->
       <main class="container mx-auto px-4 py-8">
@@ -80,10 +49,21 @@
           Latest Articles
         </h1>
         <div class="container mx-auto px-4 md-2">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
             {% for post in posts %}
             <div class="col-span-1 md:col-span-1 lg:col-span-1">
-              <article class="blog-content shadow-lg rounded prose prose-lg max-w-none p-4">
+              <article 
+                class="
+                  blog-content 
+                  shadow-lg 
+                  rounded 
+                  prose 
+                  prose-lg 
+                  max-w-none 
+                  p-4
+                  bg-white
+                  "
+                >
                 <h2 class="text-xl font-bold">
                   {{ post.title }}
                 </h2>
@@ -93,6 +73,7 @@
                 </h3>
                 
                 <div class="ml-2">
+                  {% if user.is_authenticated %}
                   <a 
                     href="{% url 'blog:post_detail' post.id|stringformat:"s" %}"
                     class="btn btn-primary mt-4"
@@ -115,10 +96,46 @@
                       />
                     {% endif %}
                     <p class="text-sm">{{ post.content | truncatewords:18 }}</p>
-                    <p class="text-center text-sm font-semibold text-blue">
+                    <p class="
+                      text-center 
+                      text-sm 
+                      font-semibold 
+                      text-blue"
+                      >
                       Read More
                     </p>
-                  </a>
+                  {% else %}
+                  <a 
+                    href="{% url 'login' %}"
+                    class="btn btn-primary mt-4"
+                  >
+                    {% if post.picture %}
+                    <img
+                      src="{{ post.picture.url }}"
+                      alt="{{ post.title }}"
+                      width="1000"
+                      height="600"
+                    />
+                
+                    {% else %}
+                    <!-- Display a default image or nothing -->
+                    <img 
+                      src="{% static 'media/default.jpg' %}" 
+                      alt="{{ post.title }}" 
+                      width="1000" 
+                      height="600" 
+                      />
+                    {% endif %}
+                    <p class="text-sm">{{ post.content | truncatewords:18 }}</p>
+                    <p class="
+                      text-center 
+                      text-sm 
+                      font-semibold 
+                      text-blue"
+                      >
+                      Login to Read More
+                    </p>
+                  {% endif %}
                 </div>
 
                  <!-- profile image link to profile -->
@@ -180,7 +197,8 @@
         })
         .then(response => {
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(
+              `HTTP error! status: ${response.status}`);
           }
           return response.json();
     })

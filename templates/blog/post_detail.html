@@ -41,16 +41,26 @@
     {% include 'blog/navbar.html' %}
     
     <!-- Picture, title, subtitle, author, and job_title lines -->
-    <div class="container mx-auto px-4 py-8">
+    <div class="
+      container
+      bg-white-400 
+      mx-auto 
+      px-4 
+      py-8">
       <h1 class="text-4xl font-bold mt-2">
         {{ post.title }}
       </h1>
       <p class="text-gray-500">
         {{ post.subtitle }}
       </p>
-      <p class="text-gray-500">
-        By {{ post.author }} - {{ post.job_title }}
-      </p>
+      By
+      <strong>
+        <a href="{% url 'blog:profile' post.author.username %}"
+          >
+          {{ post.author }} - 
+        </a>
+      </strong>
+      {{ post.job_title }}
       <img
         src="{{ post.picture.url }}"
         alt="{{ post.title }}"
@@ -151,10 +161,9 @@
         bg-gradient-to-r 
           from-gray-600 to-white-500 
         flex items-center
-        rounded-xl
+        
         mx-auto
-        ml-6
-        mr-8
+        
         "         
       >
 
@@ -176,7 +185,8 @@
                 border-gray-200 
                 rounded-xl"
               placeholder="Write your comment here. Remember to be respectful."
-            ></textarea>
+            >
+            </textarea>
             <button 
               type="submit" 
               class="
@@ -187,6 +197,16 @@
                 bg-gray-700 
                 text-white 
                 rounded-xl
+                shadow-xl
+                hover:bg-gray-600
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-600
+                dark:bg-gray-800 
+                dark:text-gray-200 
+                dark:hover:bg-gray-700 
+                dark:focus:ring-gray-700
+                size-sm
                 "
             >
               Comment
@@ -200,7 +220,17 @@
             Home
           </a>
         </div>
-      {% if post.video %}
+      {% if post.video == True %}
+      <div class="container">
+        <video 
+          controls 
+          width="1000" 
+          height="600"
+          >
+          <source src="{{ post.video.url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
       
       {% endif %}
       </div>
@@ -213,7 +243,8 @@
       <script>
 
         // Like and Dislike Form
-        document.getElementById('like-form').addEventListener(
+        document.getElementById('like-form')
+        .addEventListener(
           'submit', function(e) {
             e.preventDefault();
             fetch(this.action, {
@@ -226,7 +257,8 @@
                 .innerText = data.likes_count);
         });
 
-        document.getElementById('dislike-form').addEventListener(
+        document.getElementById('dislike-form')
+        .addEventListener(
           'submit', function(e) {
             e.preventDefault();
             fetch(this.action, {

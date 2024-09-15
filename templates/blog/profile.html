@@ -53,7 +53,7 @@
     <!-- Navbar -->
     {% include 'blog/navbar.html' %}
 
-    <main class="bg-gradient-to-l 
+    <main class="bg-gradient-to-r 
                   from-gray-400 to-white-500 
                   p-4 
                   mx-auto">
@@ -63,7 +63,7 @@
                 class="banner shadow-xl 
                   flex items-center 
                   bg-gradient-to-r 
-                  from-blue-800 to-gray-400 p-4"
+                  from-blue-800 to-gray-300 p-4"
                 >
               <div class="mr-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white">
                 {% if user.profile.image %}
@@ -87,13 +87,14 @@
               </div>
               <!-- add follower and following count -->
               <div class="profile-stats flex-col mx-auto">
-                <ul>
+                <strong>
+                  <ul class="text-white">
                   <li><span class="profile-stat-count">
                     {{posts_count}}
                     </span> 
                       posts
                   </li>
-                  <li><span class="profile-stat-count">
+                  <li><span class="profile-stat-">
                     {{followers_count}}
                     </span> 
                       <a href="{% url 'blog:followers' %}">
@@ -108,6 +109,7 @@
                       </a>
                   </li>
                 </ul>
+                </strong>
                 <br>
                 <!-- follow and unfollow buttons -->  
                 {% if is_current_user %}
@@ -196,18 +198,6 @@
               <p class="text-gray-400 text-base">
                 {{ user.profile.location }}
               </p>
-            </div>
-            <div class="container">
-              {% if is_current_user %}
-              <div class="flex justify-end mb-4">
-                <a 
-                  href="{% url 'blog:delete_profile' profile.user.username %}" 
-                  class="text-red-500"
-                >
-                  Delete Profile
-                </a>
-              </div>
-              {% endif %}
             </div>
           </div>
       </div>

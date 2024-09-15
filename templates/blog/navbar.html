@@ -1,25 +1,68 @@
 {% load static %}
 <section>
     <div x-data="{ isOpen: false }">
-        <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900">
-            <div class="container flex flex-wrap items-center justify-between mx-auto">
+        <nav class="
+            bg-white 
+            border-gray-200 
+            px-2 
+            sm:px-4 
+            py-2.5 
+            dark:bg-gray-900
+            "
+            >
+            <div class="
+                container 
+                flex 
+                flex-wrap 
+                items-center 
+                justify-between 
+                mx-auto
+                "
+                >
+            <a href="{% url 'blog:index' %}" class="flex items-center self-start">
+                <span 
+                    class="
+                        self-center 
+                        text-xl 
+                        font-semibold 
+                        whitespace-nowrap 
+                        dark:text-white"
+                >
+                    Blogspace
+                </span>
+            </a>
+            <!-- button that redirects to the templates/marketplace app -->
+            <a
+              href="{% url 'marketplace:index' %}"
+              class="text-blue-500 hover:underline"
+              >
+              shop
+            </a>
+            
+            <!-- button that returns to main landing page under templates -->
+            <a
+              href="{% url 'landing_page' %}"
+              class="text-blue-500 hover:underline"
+              >
+              main page
+            </a>
                 <a href="{% url 'blog:index' %}" class="flex items-center">
                     <li>
-                        <a href="{% url 'blog:index' %}" class="flex items-center self-start">
-                            <span 
-                                class="self-center text-xl font-semibold whitespace-nowrap 
-                                dark:text-white"
-                            >
-                                Blogspace
-                            </span>
-                        </a>
+                        
                         <div class="hidden md:flex space-x-4">
                             {% if user.is_authenticated %}
                             <a 
                                 href="{% url 'blog:my_posts' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
-                                  dark:text-gray-200 dark:hover:bg-gray-700 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
@@ -27,9 +70,16 @@
                             </a>
                             <a 
                                 href="{% url 'blog:create_blog_post' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
-                                  dark:text-gray-200 dark:hover:bg-gray-700 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
@@ -38,9 +88,16 @@
                             <!-- link to user profile -->
                             <a 
                                 href="{% url 'blog:profile' user.username %}"
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
-                                  dark:text-gray-200 dark:hover:bg-gray-700 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
@@ -48,28 +105,70 @@
                             </a>
                             <a 
                                 href="{% url 'blog:logout' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Logout
                             </a>
+                            <!-- Delete Profile Link-->
+                            <a 
+                                href="{% url 'blog:delete_profile' user.username %}" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-red-700 
+                                  hover:bg-gray-100 
+                                  hover:text-brown-900 
+                                  dark:text-brown-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-brown-100" 
+                                role="menuitem"
+                            >
+                                Delete Account
+                            </a>
                             {% else %}
                             <a 
                                 href="{% url 'blog:register' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Register
                             </a>
                             <a 
                                 href="{% url 'blog:login' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Login
@@ -82,15 +181,26 @@
                 <!-- Dropdown Toggle Button -->
                 <button 
                     @click="isOpen = !isOpen" 
-                    class="md:hidden inline-flex 
-                      items-center p-2 ml-3 text-sm text-gray-500 rounded-lg 
+                    class="
+                      md:hidden 
+                      inline-flex 
+                      items-center 
+                      p-2 
+                      ml-3 
+                      text-sm 
+                      text-gray-500 rounded-lg 
                       hover:bg-gray-100 
                       focus:outline-none 
                       focus:ring-2 
                       focus:ring-gray-200 
                       dark:text-gray-400 
                       dark:hover:bg-gray-700 
-                      dark:focus:ring-gray-600"
+                      dark:focus:ring-gray-600
+                      animate-slide-down
+                      transition-transform
+                      duration-800
+                      ease-in-out
+                      "
                     aria-controls="navbar-default" 
                     aria-expanded="false"
                 >
@@ -125,7 +235,11 @@
                         <li>
                             <a 
                                 href="{% url 'blog:index' %}" 
-                                class="block px-2 py-1 text-gray-700 
+                                class="
+                                  block 
+                                  px-2 
+                                  py-1 
+                                  text-gray-700 
                                   hover:bg-gray-100 
                                   hover:text-gray-900 
                                   dark:text-gray-200 
@@ -140,8 +254,14 @@
                         <li>
                             <a 
                                 href="{% url 'blog:profile' user.username %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
                                   dark:text-gray-200 
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
@@ -150,11 +270,19 @@
                                 Profile
                             </a>
                         </li>
+                        
+                        </li>
                         <li>
                             <a 
                                 href="{% url 'blog:my_posts' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
                                   dark:text-gray-200 
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
@@ -166,8 +294,14 @@
                         <li>
                             <a 
                                 href="{% url 'blog:create_blog_post' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
                                   dark:text-gray-200 
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
@@ -179,21 +313,56 @@
                         <li>
                             <a 
                                 href="{% url 'blog:logout' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Logout
                             </a>
                         </li>
+                        <!-- Delete Profile Link-->
+                        <li>
+                            <a 
+                                href="{% url 'blog:delete_profile' user.username %}" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-red-700 
+                                  hover:bg-gray-100 
+                                  hover:text-brown-900 
+                                  dark:text-brown-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-brown-100" 
+                                role="menuitem"
+                            >
+                                Delete Account
+                            </a>
                         {% else %}
                         <li>
                             <a 
                                 href="{% url 'blog:register' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Register
@@ -202,9 +371,17 @@
                         <li>
                             <a 
                                 href="{% url 'blog:login' %}" 
-                                class="block px-4 py-2 text-sm text-gray-700 
-                                  hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 
-                                  dark:hover:bg-gray-700 dark:hover:text-gray-100" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
                                 role="menuitem"
                             >
                                 Login
