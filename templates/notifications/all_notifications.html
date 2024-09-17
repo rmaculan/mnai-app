@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+<body>
+    <div class="container mx-auto mt-4 mb-4">
+        <h1 class="text-xl">Notifications</h1>
+        <div class="notifications">
+            <div class="wrapper">
+                {% for notification in notifications %}
+                    {% if notification.notification_types == 1 %}
+                        <div 
+                            class="
+                                alert-white 
+                                alert-dismissinle 
+                                fade 
+                                show" 
+                            role="alert" 
+                            style="
+                                border: 1px rgba(219, 219, 219, 0.699) 
+                                solid; border-radius: 25px;"
+                                >
+                            <a 
+                                href="{% url 'blog:profile' notification.sender.username %}"
+                                class="side-menu__user-avatar"
+                                >
+                                {% if notification.sender.profile.image %}
+                                    <img 
+                                        src="{{ notification.sender.profile.image.url }}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% else %}
+                                    <img 
+                                        src="{% static 'images/default.jpg' %}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% endif %}
+                            </a>
+                            <div 
+                                class="side-menu__user-idnfo" 
+                                style="text-align: start;"
+                                >
+                                <a 
+                                    href="{% url 'blog:profile' notification.sender.username %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"
+                                    >
+                                        {{ notification.sender.profile.first_name|title }} {{ notification.sender.profile.last_name|title }}
+                                </a> <br>
+                                <a 
+                                    href="{% url 'blog:post_detail' notification.post.id %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"><b><i 
+                                    class="bi bi-hand-thumbs-up-fill" 
+                                    style="color: blue;"></i> 
+                                        Liked your Post
+                                    </b>
+                                </a> <br>
+                                <p
+                                    style="font-size: 10px; color: rgb(75, 75, 75); ">
+                                        {{ notification.date }}
+                                </p>
+                            </div>
+                             <a 
+                                href="{% url 'blog:post_detail' notification.post.id %}" 
+                                class="side-menu__user-avatar" 
+                                style="margin-left: 20px;"
+                                >
+                                <Strong>{{ notification.post.title }}</Strong>
+                                <p class="text-sm">{{ notification.post.subtitle }}</p>
+                                <img
+                                    class=" h-60 w-100" 
+                                    src="{{ notification.post.picture.url }}" 
+                                    alt="User Picture"
+                
+                                >
+                            </a>
+                            <a 
+                                href="" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" 
+                                aria-label="Close"
+                                >
+                            </a>
+                        </div>
+                    {% elif notification.notification_types == 2 %}
+                        <div 
+                            class="
+                                alert-white 
+                                alert-dismissinle 
+                                fade 
+                                show" 
+                            role="alert" 
+                            style="
+                                border: 1px rgba(219, 219, 219, 0.699) 
+                                solid; border-radius: 25px;"
+                                >
+                            <a 
+                                href="{% url 'blog:profile' notification.sender.username %}"
+                                class="side-menu__user-avatar"
+                                >
+                                {% if notification.sender.profile.image %}
+                                    <img 
+                                        src="{{ notification.sender.profile.image.url }}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% else %}
+                                    <img 
+                                        src="{% static 'images/default.jpg' %}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% endif %}
+                            </a>
+                            <div 
+                                class="side-menu__user-idnfo" 
+                                style="text-align: start;"
+                                >
+                                <a 
+                                    href="{% url 'blog:profile' notification.sender.username %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"
+                                    >
+                                        {{ notification.sender.profile.first_name|title }} {{ notification.sender.profile.last_name|title }}
+                                </a> <br>
+                                <a 
+                                    href="{% url 'blog:post_detail' notification.post.id %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"><b><i 
+                                    class="bi bi-chat-left-text-fill" 
+                                    style="color: blue;"></i> 
+                                        Commented on your Post
+                                    </b>
+                                </a> <br>
+                                <p
+                                    style="font-size: 10px; color: rgb(75, 75, 75); ">
+                                        {{ notification.date }}
+                                </p>
+                            </div>
+                             <a 
+                                href="{% url 'blog:post_detail' notification.post.id %}" 
+                                class="side-menu__user-avatar" 
+                                style="margin-left: 20px;"
+                                >
+                                <Strong>{{ notification.post.title }}</Strong>
+                                <p class="text-sm">{{ notification.post.subtitle }}</p>
+                                <img
+                                    class=" h-60 w-100" 
+                                    src="{{ notification.post.picture.url }}" 
+                                    alt="User Picture"
+                                    />
+                            </a>
+                            <a 
+                                href="" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" 
+                                aria-label="Close"
+                                >
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

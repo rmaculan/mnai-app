@@ -66,7 +66,16 @@
                   bg-gradient-to-r 
                   from-blue-800 to-gray-300 p-4"
                 >
-              <div class="mr-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white">
+              <div 
+                class="
+                  mr-4 
+                  w-32 
+                  h-32 
+                  rounded-full 
+                  overflow-hidden 
+                  border-4 
+                  border-white"
+                  >
                 {% if user.profile.image %}
                   <img 
                     src="{{ user.profile.image.url }}" 
@@ -150,26 +159,30 @@
                   {% endif %}
                 {% endif %} 
               </div>
-              
             </div>
-            
-            
-          </header>
-
-          
-                
+          </header>     
       </section>
 
-      
-
-        
     <div class="flex mt-4">
       <div>  
         <div class="container">
-          <div class="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4">
+          <div 
+            class="
+              bg-white 
+              shadow-xl 
+              rounded 
+              px-8 
+              pt-6 
+              pb-8 
+              mb-4"
+              >
             <div class="mb-6">
               <label
-                class="block text-gray-700 text-sm font-bold"
+                class="
+                  block 
+                  text-gray-700 
+                  text-sm font-bold
+                  "
                 for="email"
               >
                 Email
@@ -191,7 +204,12 @@
             </div>
             <div class="mb-6">
               <label
-                class="block text-gray-700 text-sm font-bold"
+                class="
+                  block 
+                  text-gray-700 
+                  text-sm 
+                  font-bold
+                  "
                 for="location"
               >
                 Location
@@ -208,7 +226,13 @@
             <h2 class="text-2x1 font-bold">Bio</h2>
             <!-- bio section -->
             <div class="mb-2">
-              <p class="markdown-content text-black-800 text-base">
+              <p 
+                class="
+                  markdown-content 
+                  text-black-800 
+                  text-base
+                  "
+                  >
                 {{ user.profile.bio }}
               </p>
             </div>
@@ -244,11 +268,15 @@
             width="1920" 
           />
           <div class="container">
-            <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
-            <p class="text-gray-500">{{ post.subtitle }}</p>
+            <h1 class="text-4xl font-bold mt-4">
+              {{ post.title }}
+            </h1>
+            <p class="text-gray-500">
+              {{ post.subtitle }}
+            </p>
           </div>
           <p class="mb-4">
-            {{ post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+            {{ post.content|truncatewords:20 }}
           </p>
           <div class="container">
             
@@ -256,7 +284,14 @@
             </a>
           </div>
           <div class="container flex items-center mt-4">
-              <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
+              <div 
+                class="
+                  mr-2 
+                  w-16 
+                  h-16 
+                  rounded-full 
+                  overflow-hidden"
+                  >
                   {% if post.author.profile.image %}
                   <img 
                       src="{{ post.author.profile.image.url }}" 
@@ -284,7 +319,7 @@
       </div>
     </article>
     {% endfor %}
-  {% else %}
+  
   {% for post in posts %}
     <article class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
@@ -300,19 +335,38 @@
             width="1920" 
           />
           <div class="container">
-            <h1 class="text-4xl font-bold mt-4">{{ post.title }}</h1>
-            <p class="text-gray-500">{{ post.subtitle }}</p>
+            <h1 class="text-4xl font-bold mt-4">
+              {{ post.title }}
+            </h1>
+            <p class="text-gray-500">
+              {{ post.subtitle }}
+            </p>
           </div>
           <p class="mb-4">
-            {{ post.content|truncatewords:20 }} <!-- Truncate to 50 words -->
+            {{ post.content|truncatewords:20 }}
           </p>
           <div class="container">
             
               Login to Read More
             </a>
           </div>
-          <div class="container flex items-center mt-4">
-              <div class="mr-2 w-16 h-16 rounded-full overflow-hidden">
+          <div 
+            class="
+              container 
+              flex 
+              items-center 
+              mt-4
+              "
+              >
+              <div 
+                class="
+                  mr-2 
+                  w-16 
+                  h-16 
+                  rounded-full 
+                  overflow-hidden
+                  "
+                  >
                   {% if post.author.profile.image %}
                   <img 
                       src="{{ post.author.profile.image.url }}" 

@@ -46,7 +46,6 @@ def login_view(request):
 def logout_view(request):
     logger.info("Logout view accessed")
     logout(request)
-    
     return redirect('blog:index')
 
 @login_required
@@ -61,7 +60,9 @@ def create_blog_post(request):
             return redirect('blog:index')
     else:
         form = PostForm()
-    return render(request, 'blog/create_blog_post.html', {'form': form})
+    return render(
+        request, 'blog/create_blog_post.html', {'form': form}
+        )
 
 def read_blog_posts(request):
     author = request.user
@@ -87,7 +88,9 @@ def read_blog_posts(request):
     
     query = request.GET.get('q')
     if query:
-        authors = User.objects.filter(Q(username__icontains=query))
+        authors = User.objects.filter(
+            Q(username__icontains=query)
+            )
         paginator = Paginator(authors, 5)
         page_number = request.GET.get('page')
     
@@ -117,13 +120,17 @@ def read_blog_post(request, post_id):
         'is_liked': is_liked,
         'is_following': is_following,
     }
-    return render(request, 'blog/post_detail.html', context)
+    return render(
+        request, 'blog/post_detail.html', context
+        )
 
 def read_my_posts(request):
     blog_posts = Post.objects.filter(
         author=request.user
         ).order_by('-publish_date')
-    return render(request, 'blog/my_posts.html', {'posts': blog_posts})
+    return render(
+        request, 'blog/my_posts.html', {'posts': blog_posts}
+        )
 
 def delete_blog_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -147,22 +154,25 @@ def search_posts(request):
 def search_posts_by_author(request):
     query = request.GET.get('query')
     blog_posts = Post.objects.filter(
-        author__username__icontains=query)
+        author__username__icontains=query
+        )
     return render(request, 'blog/index.html', {'posts': blog_posts})
 
 # view profile
 def profile_view(request, username):
     if request.user.is_authenticated:
         user = get_object_or_404(
-        User, 
-        username=username
-        )
+            User, 
+            username=username
+            )
         profile = Profile.objects.get(user=user)
-        is_current_user = is_current_user_profile(request, username)
+        is_current_user = is_current_user_profile(
+            request, 
+            username
+            )
         # url_name = resolve(request.path).url_name
         posts = Post.objects.filter(
             author=user).order_by('-publish_date')
-
         posts_count = Post.objects.filter(author=user).count()
         followers_count = Follow.objects.filter(following=user).count()
         following_count = Follow.objects.filter(follower=user).count()
@@ -181,19 +191,15 @@ def profile_view(request, username):
             'following_count': following_count,
             'follow_status': follow_status,  
         }
-
         return render(request, 'blog/profile.html', context)
     else:
-        # Redirect to login page if user is not logged in
         return HttpResponseForbidden(
             "<h1>You must log in to view profiles.</h1>"
             "<p>Please <a href='/blog/login'>log in</a> or "
             "<a href='/blog/register'>register</a> to continue.</p>",
-            content_type="text/html")
+            content_type="text/html"
+            )
     
-    
-        
-
 def is_current_user_profile(request, username):
     return request.user.username == username
 
@@ -293,8 +299,6 @@ def create_comment(request, post_id):
         
         if len(content.strip()) > 0:
             comment.save()
-            return redirect('blog:post_detail', post_id=post_id)
-        else:
             return redirect('blog:post_detail', post_id=post_id)
     
     return render(request, 'blog/post_detail.html', {'post': post})
@@ -426,7 +430,6 @@ def follow_user(request, username):
     
     return redirect(reverse('blog:profile', args=[username]))
     
-
 # Unfollow a user
 @login_required
 def unfollow_user(request, username):
