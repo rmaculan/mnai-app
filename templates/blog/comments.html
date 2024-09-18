@@ -9,10 +9,10 @@
                 <h5 >
                     <strong >
                         <a href="{% url 'blog:profile' comment.author.username %}" >
-                            {{ comment.author }}
+                            <span class="text-gray-300">{{ comment.author }}</span>
                         </a>
                     </strong>
-                    <span class="text-muted text-blue-800">
+                    <span class="text-muted text-gray-200">
                         commented on {{ comment.created_at }}
                     </span>
                 </h5>

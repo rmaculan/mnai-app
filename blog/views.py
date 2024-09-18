@@ -40,7 +40,7 @@ def login_view(request):
         else:
             form = AuthenticationForm()
         return render(
-            request, 'registration/login.html', {'form': form}
+            request, 'blog/login.html', {'form': form}
             )
 
 def logout_view(request):

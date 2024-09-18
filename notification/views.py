@@ -41,4 +41,4 @@ def show_notification(request):
 def delete_notification(request, noti_id):
     user = request.user
     Notification.objects.filter(id=noti_id, user=user).delete()
-    return redirect('show-notification')
+    return redirect('notification:show-all-notifications')

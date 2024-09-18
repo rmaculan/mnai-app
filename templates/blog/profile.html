@@ -55,16 +55,22 @@
     {% include 'blog/navbar.html' %}
 
     <main class="bg-gradient-to-r 
-                  from-gray-400 to-white-500 
+                  from-gray-400 
+                  to-white-700 
                   p-4 
                   mx-auto">
       <section class="mb-4">
           <header>
             <div 
-                class="banner shadow-xl 
+                class="banner 
+                  shadow-xl 
                   flex items-center 
                   bg-gradient-to-r 
-                  from-blue-800 to-gray-300 p-4"
+                  from-blue-900 
+                  to-gray-300 
+                  p-4
+                  "
+                  
                 >
               <div 
                 class="
@@ -127,7 +133,7 @@
                     href="{% url 'blog:edit_profile' %}" 
                     class="btn btn-primary"
                   >
-                    Edit Profile
+                    <span><i class="fas fa-edit"></i></span>
                   </a>
                 {% else %}
                   {% if follow_status == True %}
@@ -253,6 +259,7 @@
   </div>
 
     <!-- blog posts by user -->
+{% if user.is_authenticated %}
   {% for post in posts %}
     <article class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
@@ -320,6 +327,8 @@
     </article>
     {% endfor %}
   
+  
+{% else %}
   {% for post in posts %}
     <article class="container">
       <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
@@ -394,6 +403,7 @@
       </div>
     </article>
     {% endfor %}
+{% endif %}
 
  
 

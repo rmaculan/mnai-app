@@ -26,13 +26,20 @@
     </style>
     <title>AI Blog & Marketplace</title>
   </head>
-<body class="bg-gray-200">
+<body 
+    class="
+        bg-gradient-to-r
+        from-transparent
+        to-gray
+        ">
     <header 
         class="
             text-center 
             p-12 
-            bg-blue-500 
-            text-white relative"
+            bg-gray-600 
+            text-white 
+            relative
+            "
             >
         <h1 class="text-4xl font-bold mb-2">
             Welcome to Our Platform!
@@ -49,11 +56,21 @@
                 to-black 
                 opacity-50"
                 >
+            <img 
+                src="{% static 'media/default.jpg' %}" 
+                alt="Hero Image" 
+                class="w-full h-full object-cover"
+                >
+
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+        
       </div>
+      
+      
     </header>
+
+    
 
     <!-- Welcome Greeting with auth -->
     <div class="container mx-auto px-4 py-8">
@@ -69,7 +86,7 @@
         </a>
         {% else %}
             <!-- include login page -->
-            {% include 'registration/login.html' %}
+            {% include 'blog/login.html' %}
         {% endif %}
     </div>
  
@@ -103,8 +120,8 @@
                         src="{{ blog_post.picture.url }}" 
                         alt="{{ blog_post.title }}" 
                         class="mb-4"
-                        height="600"
-                        width="400" 
+                        height="1080"
+                        width="1920" 
                         >
                     <div class="mb-2">
                        <h3 class="text-xl font-semibold">
@@ -155,7 +172,7 @@
         </div>
         <div class="container mx-auto px-4">
             {% for blog_post in blog_posts %}
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
                     <div class="mb-2">
                        <h3 class="text-xl font-semibold">
@@ -275,10 +292,10 @@
                     AI Chat
                 </a>
             {% else %}
-                <h1>
+                <h1 class="text-4xl ">
                     Login to chat with our AI!
                 </h1>
-                <h1 class="text-sm">
+                <h1 class="text-md p-2">
                     Don't have an account yet?
                 </h3>
                 <a 

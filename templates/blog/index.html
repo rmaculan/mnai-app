@@ -24,7 +24,8 @@
     </script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
-  <body >
+  <body class="bg-gradient-to-l
+            from-gray-200 to-white-500" >
     <main >
       <!-- Navbar -->
     
@@ -106,7 +107,7 @@
                     </p>
                   {% else %}
                   <a 
-                    href="{% url 'login' %}"
+                    href="{% url 'blog:login' %}"
                     class="btn btn-primary mt-4"
                   >
                     {% if post.picture %}

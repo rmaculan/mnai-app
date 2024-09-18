@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
   <body>  
-    <div class="container mx-auto">
+    <div class="container mx-auto w-1/2">
       <h1 class="text-3xl font-bold mb-4">
         Register
       </h1>
@@ -39,7 +39,14 @@
             type="text"
             name="username"
             id="username"
-            class="w-full border border-gray-300 rounded-md px-4 py-2"
+            class="
+              w-full 
+              border 
+              border-gray-300 
+              rounded-md 
+              px-4 
+              py-2
+              "
           />
         </div>
         <div class="space-y-2">
@@ -81,7 +88,12 @@
           w-1/2
           bg-primary 
           text-black 
-          rounded-md 
+          rounded-md
+          bg-gradient-to-r
+          from-gray-200 
+          to-white-500
+          border
+          shadow-xl 
           px-4 
           py-2 
           hover:bg-accent

@@ -21,15 +21,19 @@
   </head>
   <body>
     <!-- Navbar -->
-    {% include 'blog/navbar.html' %}
+    
 
     <div class="container mx-auto">
-      <h1>Login</h1>
+      
     </div>
 
-    <!-- Django login forn with editable fields -->
-    <div class="container mx-auto">
-      <form 
+    <div class="wrapper mx-auto px-4 py-8">
+      <h1 class="card-title text-2xl"><strong>Login</strong></h1>
+      <div class="card w-1/2">
+
+        <div class="card-body">
+          
+          <form 
         method="POST" 
         action="{% url 'blog:login' %}" 
         class="space-y-4"
@@ -46,7 +50,14 @@
             type="text" 
             name="username" 
             id="username" 
-            class="w-full border border-gray-300 rounded-md px-4 py-2"
+            class="
+              w-full 
+              border 
+              border-gray-300 
+              rounded-md 
+              px-4 
+              py-2
+              "
           >
         </div>
         <div class="space-y-2">
@@ -65,12 +76,21 @@
         </div>
         <button 
           type="submit" 
-          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          class="
+            px-4 
+            py-2 
+            text-white 
+            bg-gray-600 
+            shadow-xl
+            rounded 
+            hover:bg-gray-700"
           >
-            Login
+            Sign In
         </button>
       </form>
-      <!-- Error message -->
+      </div>
+    </div>
+    <!-- Error message -->
       {% if error %}  
         <p style="color: red">{{ error }}</p>
       {% endif %}
@@ -93,8 +113,13 @@
             Register
         </a>
       </p>
+  </div>
+      
+      
       
     </div>
+
+    
     <script 
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
       defer>

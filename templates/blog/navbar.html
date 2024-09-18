@@ -31,21 +31,27 @@
                     Blogspace
                 </span>
             </a>
-            <!-- button that redirects to the templates/marketplace app -->
-            <a
-              href="{% url 'marketplace:index' %}"
-              class="text-blue-500 hover:underline"
-              >
-              shop
-            </a>
+            <a 
+                            href="{% url 'notification:show-all-notifications' %}" 
+                            class="text-blue-500 hover:underline"
+                            >
+                                <span><i class="fas fa-bell"></i></span>
+                            <!-- button that redirects to the templates/marketplace app -->
+                        <a
+                            href="{% url 'marketplace:index' %}"
+                            class="text-blue-500 hover:underline"
+                        >
+                                <span><i class="fas fa-store"></i></span>
+                        </a>
             
-            <!-- button that returns to main landing page under templates -->
-            <a
-              href="{% url 'landing_page' %}"
-              class="text-blue-500 hover:underline"
-              >
-              main page
-            </a>
+                        <!-- button that returns to main landing page under templates -->
+                        <a
+                            href="{% url 'landing_page' %}"
+                            class="text-blue-500 hover:underline"
+                            >
+                            <span><i class="fas fa-home"></i></span>
+                        </a>
+            
                 <a href="{% url 'blog:index' %}" class="flex items-center">
                     <li>
                         
@@ -411,3 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+
+                        

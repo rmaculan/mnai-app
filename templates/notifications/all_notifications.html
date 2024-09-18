@@ -38,7 +38,7 @@
   </head>
 <body>
     <div class="container mx-auto mt-4 mb-4">
-        <h1 class="text-xl">Notifications</h1>
+        <h1 class="text-3xl mb-4">Notifications</h1>
         <div class="notifications">
             <div class="wrapper">
                 {% for notification in notifications %}
@@ -80,13 +80,20 @@
                                     href="{% url 'blog:profile' notification.sender.username %}" 
                                     style="font-size: 15px; color: black; text-align: center;"
                                     >
-                                        {{ notification.sender.profile.first_name|title }} {{ notification.sender.profile.last_name|title }}
+                                        {{ notification.sender.profile.user.username }}
                                 </a> <br>
                                 <a 
                                     href="{% url 'blog:post_detail' notification.post.id %}" 
-                                    style="font-size: 15px; color: black; text-align: center;"><b><i 
-                                    class="bi bi-hand-thumbs-up-fill" 
-                                    style="color: blue;"></i> 
+                                    style="
+                                        font-size: 15px; 
+                                        color: black; 
+                                        text-align: center;"
+                                        >
+                                    <b>
+                                    <i 
+                                        class="bi bi-hand-thumbs-up-fill" 
+                                        style="color: blue;">
+                                    </i> 
                                         Liked your Post
                                     </b>
                                 </a> <br>
@@ -100,10 +107,10 @@
                                 class="side-menu__user-avatar" 
                                 style="margin-left: 20px;"
                                 >
-                                <Strong>{{ notification.post.title }}</Strong>
-                                <p class="text-sm">{{ notification.post.subtitle }}</p>
+                                <h1><Strong>{{ notification.post.title }}</Strong></h1>
+                                <p class="text-sm">{{ notification.post.subtitle|truncatewords:3 }}</p>
                                 <img
-                                    class=" h-60 w-100" 
+                                    class=" h-15 w-25" 
                                     src="{{ notification.post.picture.url }}" 
                                     alt="User Picture"
                 
@@ -116,6 +123,23 @@
                                 data-bs-dismiss="alert" 
                                 aria-label="Close"
                                 >
+                            </a>
+                            <a 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" a
+                                ria-label="Close"
+                                >
+                            </a>
+                            <a 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" a
+                                ria-label="Close"
+                                >
+                                delete
                             </a>
                         </div>
                     {% elif notification.notification_types == 2 %}
@@ -179,7 +203,7 @@
                                 <Strong>{{ notification.post.title }}</Strong>
                                 <p class="text-sm">{{ notification.post.subtitle }}</p>
                                 <img
-                                    class=" h-60 w-100" 
+                                    class=" h-15 w-25" 
                                     src="{{ notification.post.picture.url }}" 
                                     alt="User Picture"
                                     />
@@ -192,8 +216,19 @@
                                 aria-label="Close"
                                 >
                             </a>
+                            <a 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" a
+                                ria-label="Close"
+                                >
+                                delete
+                            </a>
                         </div>
+                    
                     {% endif %}
+                    
                     
                 {% endfor %}
             </div>
