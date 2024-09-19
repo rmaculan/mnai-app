@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, CommentForm, ProfileForm
-from .models import Stream, Post, Comment, Likes, Follow, Profile
+from .models import Stream, Post, Comment, Likes, Follow, Profile, Tag
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.utils.safestring import mark_safe
@@ -144,6 +144,18 @@ def delete_blog_post(request, post_id):
         'post': post,
         'post_id': post_id
     })
+
+# tags
+def tags(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags=tag).order_by('-publish_date')
+
+    context = {
+        'tag': tag,
+        'posts': posts,
+    }
+
+    return render(request, 'tag.html', context)
 
 # comming soon
 def search_posts(request):
@@ -448,7 +460,6 @@ def unfollow_user(request, username):
 
 # view followers
 def view_followers(request):
-    
     followers = Follow.objects.filter(
         following=request.user
         )
@@ -460,7 +471,6 @@ def view_followers(request):
 
 # view following
 def view_following(request):
-    
     following = Follow.objects.filter(
         follower=request.user
         )

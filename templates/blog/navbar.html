@@ -28,7 +28,7 @@
                         whitespace-nowrap 
                         dark:text-white"
                 >
-                    Blogspace
+                    MedianAISpace
                 </span>
             </a>
             <a 
@@ -57,41 +57,7 @@
                         
                         <div class="hidden md:flex space-x-4">
                             {% if user.is_authenticated %}
-                            <a 
-                                href="{% url 'blog:my_posts' %}" 
-                                class="
-                                  block 
-                                  px-4 
-                                  py-2 
-                                  text-sm 
-                                  text-gray-700 
-                                  hover:bg-gray-100 
-                                  hover:text-gray-900 
-                                  dark:text-gray-200 
-                                  dark:hover:bg-gray-700 
-                                  dark:hover:text-gray-100" 
-                                role="menuitem"
-                            >
-                                My Blogs
-                            </a>
-                            <a 
-                                href="{% url 'blog:create_blog_post' %}" 
-                                class="
-                                  block 
-                                  px-4 
-                                  py-2 
-                                  text-sm 
-                                  text-gray-700 
-                                  hover:bg-gray-100 
-                                  hover:text-gray-900 
-                                  dark:text-gray-200 
-                                  dark:hover:bg-gray-700 
-                                  dark:hover:text-gray-100" 
-                                role="menuitem"
-                            >
-                                Post Blog
-                            </a>
-                            <!-- link to user profile -->
+                             <!-- link to user profile -->
                             <a 
                                 href="{% url 'blog:profile' user.username %}"
                                 class="
@@ -109,6 +75,42 @@
                             >
                                 Profile
                             </a>
+                            <a 
+                                href="{% url 'blog:create_blog_post' %}" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
+                                role="menuitem"
+                            >
+                                Post
+                            </a>
+                            <a 
+                                href="{% url 'blog:my_posts' %}" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
+                                role="menuitem"
+                            >
+                                My Blogs
+                            </a>
+                            
+                           
                             <a 
                                 href="{% url 'blog:logout' %}" 
                                 class="
@@ -276,6 +278,25 @@
                                 Profile
                             </a>
                         </li>
+                         <li>
+                            <a 
+                                href="{% url 'blog:create_blog_post' %}" 
+                                class="
+                                  block 
+                                  px-4 
+                                  py-2 
+                                  text-sm 
+                                  text-gray-700 
+                                  hover:bg-gray-100 
+                                  hover:text-gray-900 
+                                  dark:text-gray-200 
+                                  dark:hover:bg-gray-700 
+                                  dark:hover:text-gray-100" 
+                                role="menuitem"
+                            >
+                                Post
+                            </a>
+                        </li>
                         
                         </li>
                         <li>
@@ -297,25 +318,7 @@
                                 My Blogs
                             </a>
                         </li>
-                        <li>
-                            <a 
-                                href="{% url 'blog:create_blog_post' %}" 
-                                class="
-                                  block 
-                                  px-4 
-                                  py-2 
-                                  text-sm 
-                                  text-gray-700 
-                                  hover:bg-gray-100 
-                                  hover:text-gray-900 
-                                  dark:text-gray-200 
-                                  dark:hover:bg-gray-700 
-                                  dark:hover:text-gray-100" 
-                                role="menuitem"
-                            >
-                                Post Blog
-                            </a>
-                        </li>
+                       
                         <li>
                             <a 
                                 href="{% url 'blog:logout' %}" 

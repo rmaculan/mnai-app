@@ -69,8 +69,6 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} - Profile'
 
-    
-        
         img = Image.open(self.image.path)
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
@@ -142,6 +140,33 @@ class Stream(models.Model):
                 )
             stream.save()
 
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=100, 
+        verbose_name='Tag'
+        )
+    slug = models.SlugField(
+            max_length=100, 
+            unique=True,
+            null=False,
+            default=uuid.uuid1
+            )
+
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+    def get_absolute_url(self):
+        return reverse('tags', args=[self.slug])
+
+    def __str__(self):
+        return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
 # blog post model
 class Post(models.Model):
     id = models.UUIDField(
@@ -202,6 +227,10 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='post_following', 
         null=True,
+        )
+    tags = models.ManyToManyField(
+        Tag, 
+        related_name="tags"
         )
 
     def save(self, *args, **kwargs):
@@ -373,6 +402,26 @@ def comment_saved(sender, instance, created, **kwargs):
             **kwargs
             )
         
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Likes)
+def user_liked_post(sender, instance, created, **kwargs):
+    if created:
+        # Your notification logic here
+        # Assuming 'instance' is a Likes instance
+        post = instance.post  # The post that was liked
+        sender = instance.user  # The user who liked the post
+        # Create a notification for the post's author
+        Notification.objects.create(
+            post=post,
+            sender=sender,
+            user=post.author,  # The author of the post
+            notification_types=1  # Assuming 1 indicates a like notification
+        )
+
+
+        
 
 
 post_save.connect(
@@ -407,20 +456,3 @@ post_delete.connect(
 
 
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-@receiver(post_save, sender=Likes)
-def user_liked_post(sender, instance, created, **kwargs):
-    if created:
-        # Your notification logic here
-        # Assuming 'instance' is a Likes instance
-        post = instance.post  # The post that was liked
-        sender = instance.user  # The user who liked the post
-        # Create a notification for the post's author
-        Notification.objects.create(
-            post=post,
-            sender=sender,
-            user=post.author,  # The author of the post
-            notification_types=1  # Assuming 1 indicates a like notification
-        )

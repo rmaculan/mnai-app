@@ -38,7 +38,7 @@
   </head>
 <body>
     <div class="container mx-auto mt-4 mb-4">
-        <h1 class="text-3xl mb-4">Notifications</h1>
+        <h1 class="text-3xl mb-4"><strong>Notifications</strong></h1>
         <div class="notifications">
             <div class="wrapper">
                 {% for notification in notifications %}
@@ -132,15 +132,17 @@
                                 ria-label="Close"
                                 >
                             </a>
-                            <a 
-                                href="{% url 'notification:delete-notification' notification.id %}" 
-                                type="button" 
-                                class="btn-close" 
-                                data-bs-dismiss="alert" a
-                                ria-label="Close"
-                                >
-                                delete
-                            </a>
+                            
+                                <a 
+                                    href="{% url 'notification:delete-notification' notification.id %}" 
+                                    type="button" 
+                                    class="btn-close" 
+                                    data-bs-dismiss="alert" a
+                                    ria-label="Close"
+                                    >
+                                    delete
+                                </a>
+                            
                         </div>
                     {% elif notification.notification_types == 2 %}
                         <div 
@@ -180,7 +182,7 @@
                                     href="{% url 'blog:profile' notification.sender.username %}" 
                                     style="font-size: 15px; color: black; text-align: center;"
                                     >
-                                        {{ notification.sender.profile.first_name|title }} {{ notification.sender.profile.last_name|title }}
+                                        {{ notification.sender.profile.user.username }}
                                 </a> <br>
                                 <a 
                                     href="{% url 'blog:post_detail' notification.post.id %}" 
@@ -200,13 +202,13 @@
                                 class="side-menu__user-avatar" 
                                 style="margin-left: 20px;"
                                 >
-                                <Strong>{{ notification.post.title }}</Strong>
-                                <p class="text-sm">{{ notification.post.subtitle }}</p>
+                                <h1><Strong>{{ notification.post.title }}</Strong></h1>
+                                <p class="text-sm">{{ notification.post.subtitle|truncatewords:3 }}</p>
                                 <img
-                                    class=" h-15 w-25" 
+                                    class="h-15 w-25" 
                                     src="{{ notification.post.picture.url }}" 
                                     alt="User Picture"
-                                    />
+                                />
                             </a>
                             <a 
                                 href="" 
@@ -217,15 +219,16 @@
                                 >
                             </a>
                             <a 
-                                href="{% url 'notification:delete-notification' notification.id %}" 
-                                type="button" 
-                                class="btn-close" 
-                                data-bs-dismiss="alert" a
-                                ria-label="Close"
-                                >
-                                delete
-                            </a>
+                                    href="{% url 'notification:delete-notification' notification.id %}" 
+                                    type="button" 
+                                    class="btn-close" 
+                                    data-bs-dismiss="alert" a
+                                    ria-label="Close"
+                                    >
+                                    delete
+                                </a>
                         </div>
+                        
                     
                     {% endif %}
                     
