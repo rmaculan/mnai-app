@@ -155,7 +155,7 @@ def tags(request, tag_slug):
         'posts': posts,
     }
 
-    return render(request, 'tag.html', context)
+    return render(request, 'blog/tag.html', context)
 
 # comming soon
 def search_posts(request):

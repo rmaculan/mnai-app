@@ -34,12 +34,10 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 INSTALLED_APPS = [
     "django.contrib.humanize",
 
-    # # add later
-    # 'daphne',
-    # 'chat',
-
-    # # my apps
+    # my apps
+    'daphne',
     'notification',
+    'chat',
     'chatbot',
     'polls',
     'blog',
@@ -55,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 ASGI_APPLICATION = 'backend.asgi.application'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

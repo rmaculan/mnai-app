@@ -7,6 +7,7 @@ from .views import landing_page
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", landing_page, name="landing_page"),
+    path('chat/', include('chat.urls', namespace='chat')),
     path('chatbot/', include('chatbot.urls', namespace='chatbot')),
     path('polls/', include('polls.urls', namespace='polls')),
     path('notifications/', include('notification.urls')),
@@ -16,7 +17,6 @@ urlpatterns = [
 
     # # add later
     # path("comments/", include("comments.urls")),
-    # path("chat/", include("chat.urls")),
 ]
 
 if settings.DEBUG:
