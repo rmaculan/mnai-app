@@ -1,24 +1,24 @@
-from .models import Chat
-from django.contrib.auth.models import User
+from .models import Chat, ItemMessage
 from blog.models import Profile
 from django.db.models import Q
-from datetime import datetime
-import asyncio
 from django.contrib.auth.decorators import login_required
 from typing import AsyncGenerator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, StreamingHttpResponse, HttpResponse
 import random
-
-from .models import Chat, ItemMessage
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 import json
 
 @login_required
 def combined_chats(request):
-    chats = Chat.objects.all().select_related('chat_user', 'sender', 'receiver')
-    item_messages = ItemMessage.objects.all().select_related('sender', 'receiver')
+    chats = Chat.objects.all().select_related(
+        'chat_user', 
+        'sender', 
+        'receiver'
+        )
+    item_messages = ItemMessage.objects.all().select_related(
+        'sender', 
+        'receiver'
+        )
 
     combined_data = []
 
@@ -41,7 +41,7 @@ def combined_chats(request):
             'sender': item_message.sender.username,
             'receiver': item_message.receiver.username,
             'content': item_message.message,
-            'is_read': False,  # Assuming all item messages are unread
+            'is_read': False,
             'timestamp': item_message.timestamp.isoformat(),
             'related_item': item_message.item.name if item_message.item else None
         })
@@ -57,7 +57,8 @@ def inbox(request):
         chat = chats[0]
         active_chat = chat['chat_user']
         instant_messages = Chat.objects.filter(
-            Q(chat_user=request.user) | Q(receiver__pk=chat['receiver']),
+            Q(chat_user=request.user) | 
+            Q(receiver__pk=chat['receiver']),
             is_read=False
         ).order_by('-created_at')
         
