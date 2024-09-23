@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 
-class UserProfile(models.Model):
+class MarketplaceProfile(models.Model):
     user = models.OneToOneField(
         User, 
         on_delete=models.CASCADE
@@ -42,8 +42,17 @@ class Item(models.Model):
     date_listed = models.DateTimeField(default=datetime.datetime.now)
     is_sold = models.BooleanField(default=False)
     if is_sold:
-        date_sold = models.DateTimeField(default=datetime.datetime.now)
-    condition = models.CharField(max_length=20, choices=[('N', 'New'), ('U', 'Used')], default='U')
+        date_sold = models.DateTimeField(
+            default=datetime.datetime.now
+            )
+    condition = models.CharField(
+        max_length=20, 
+        choices=[
+            ('N', 'New'), 
+            ('U', 'Used')
+            ],
+        default='U'
+                                  )
     category = models.ForeignKey(
         CategoryModel, 
         on_delete=models.SET_NULL, 
