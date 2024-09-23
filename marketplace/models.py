@@ -54,7 +54,7 @@ class Item(models.Model):
     def __str__(self):
         return self.name
     
-class UserMessage(models.Model):
+class ItemMessage(models.Model):
     item = models.ForeignKey(
         Item, 
         on_delete=models.CASCADE, 
@@ -82,7 +82,7 @@ class Conversation(models.Model):
         related_name='conversations'
         )
     messages = models.ManyToManyField(
-        UserMessage,
+        ItemMessage,
         related_name='conversation'
         )
     start_time = models.DateTimeField(auto_now_add=True)

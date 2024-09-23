@@ -1,7 +1,8 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models import Max
 from django.contrib.auth.models import User
-from marketplace.models import UserMessage
+from marketplace.models import ItemMessage
 
 class Chat(models.Model):
     chat_user = models.ForeignKey(
@@ -23,6 +24,13 @@ class Chat(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
+    item_message = models.ForeignKey(
+        ItemMessage, 
+        on_delete=models.CASCADE, 
+        null=True,
+        related_name="item_message"
+        )
+
     def sender_chat(from_user, to_user, content):
         sender_chat = Chat(
             user=from_user,
@@ -43,21 +51,26 @@ class Chat(models.Model):
         recipient_chat.save()
         return sender_chat
 
-    def get_chat(user):
+    @classmethod
+    def get_chat(cls, user):
         users = []
-        chats = Chat.objects.filter(
-            chat_user=user).values('receiver').annotate(
-                last=Max('created_at')).order_by('-last')
+        chats = cls.objects.filter(
+            Q(chat_user=user) | Q(receiver=user)
+        ).values('receiver').annotate(
+            last=Max('created_at')
+        ).order_by('-last')
         for chat in chats:
+            receiver_id = chat['receiver']
+            receiver = User.objects.get(pk=receiver_id)
             users.append({
-                'chat_user': User.objects.get(
-                    pk=chat['receiver']),
+                'chat_user': receiver.username,
                 'last': chat['last'],
-                'unread': Chat.objects.filter(
-                    chat_user=user, 
-                    receiver__pk=chat['receiver'], 
+                'unread': cls.objects.filter(
+                    chat_user=user,
+                    receiver__pk=receiver_id,
                     is_read=False
-                    ).count()
+                ).count(),
+                'receiver': receiver_id
             })
         return users
 
