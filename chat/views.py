@@ -111,7 +111,7 @@ def inbox(request):
         'active_chat': active_chat,
         'profile': profile
     }
-    return render(request, 'chat/inbox.html', context)
+    return render(request, 'chat/lobby.html', context)
 
 def get_instant_messages(request, username):
     user = request.user

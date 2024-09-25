@@ -91,18 +91,17 @@
                         </p>
                         <p>{{ message.content }}</p>
                         <span class="timestamp">
-                            {{ message.created_at }}
+                            {{ message.timestamp }}
                         </span>
                     </div>
                 {% else %}
                     <div class="message sent">
                         <p class="message-header">
                             {{ message.sender }} 
-                            {{ message.sender.last_name }}
                         </p>
                         <p>{{ message.content }}</p>
                         <span class="timestamp">
-                            {{ message.created_at }}
+                            {{ message.timestamp }}
                         </span>
                     </div>
                 {% endif %}
