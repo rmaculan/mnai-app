@@ -57,7 +57,7 @@ def combined_chats(request):
     return combined_data
 
 @login_required
-def inbox(request):
+def lobby(request):
     chats = Chat.get_chat(user=request.user)
     profile = get_object_or_404(Profile, user=request.user)
 
