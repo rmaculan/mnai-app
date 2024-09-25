@@ -31,7 +31,11 @@ def combined_chats(request):
             'content': chat.content,
             'is_read': chat.is_read,
             'timestamp': chat.created_at.isoformat(),
-            'related_item': chat.item_message.item.name if chat.item_message else None
+            'related_item': chat.item_message.item.name 
+            
+            if chat.item_message 
+                
+            else None
         })
 
     for item_message in item_messages:
@@ -43,7 +47,11 @@ def combined_chats(request):
             'content': item_message.message,
             'is_read': False,
             'timestamp': item_message.timestamp.isoformat(),
-            'related_item': item_message.item.name if item_message.item else None
+            'related_item': item_message.item.name 
+            
+            if item_message.item 
+            
+            else None
         })
 
     return combined_data
@@ -86,7 +94,11 @@ def inbox(request):
                 'content': message.content,
                 'is_read': message.is_read,
                 'timestamp': message.created_at,
-                'related_item': None
+                'related_item': False
+
+                if 'related_item' == message.item_message
+
+                else None
             })
         
         all_messages.extend(processed_combined_chats)
@@ -99,7 +111,6 @@ def inbox(request):
         'active_chat': active_chat,
         'profile': profile
     }
-    print(context)
     return render(request, 'chat/inbox.html', context)
 
 def get_instant_messages(request, username):

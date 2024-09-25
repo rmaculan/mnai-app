@@ -1,15 +1,113 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
 
-<div class="container">
-    <h1>Inbox</h1>
-    {% for message in instant_messages %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ message.sender }}</h5>
-            <p class="card-text">{{ message.message }}</p>
+        #messages-container {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .sent {
+            background-color: #e6f3ff;
+            align-self: flex-start;
+        }
+
+        .received {
+            background-color: #f0f0f0;
+            align-self: flex-end;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .timestamp {
+            font-size: smaller;
+            color: #666;
+        }
+
+        .chat-input-container {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 20px;
+        }
+
+        .chat-input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send-button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <h1>Instant Messages</h1>
+
+    {% if instant_messages %}
+        <div id="messages-container">
+            {% for message in instant_messages %}
+                {% if message.sender.username == active_chat %}
+                    <div class="message received">
+                        <p class="message-header">
+                            {{ message.receiver.first_name }} 
+                            {{ message.receiver.last_name }}
+                        </p>
+                        <p>{{ message.content }}</p>
+                        <span class="timestamp">
+                            {{ message.created_at }}
+                        </span>
+                    </div>
+                {% else %}
+                    <div class="message sent">
+                        <p class="message-header">
+                            {{ message.sender }} 
+                            {{ message.sender.last_name }}
+                        </p>
+                        <p>{{ message.content }}</p>
+                        <span class="timestamp">
+                            {{ message.created_at }}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
-    </div>
-    {% endfor %}
+    {% endif %}
 
     
-</div>
