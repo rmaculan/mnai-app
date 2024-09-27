@@ -11,7 +11,7 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    
+    <title>{% block title %} Free Marketplace {% endblock %}</title>
     <style>
       .hero-banner {
         background-color: #007bff; /* Example vibrant blue */
@@ -60,15 +60,35 @@
     </style>
   </head>
   <body>
-  
-    
-    <div class="container mt-5">
-      <h2>Reply to Message</h2>
-      <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="message">Message</label>
-          <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Send</button>
-       </form>
+  <!-- get messages -->
+    <div class="container">
+      <div class="hero-banner">
+        <h1>Free Marketplace</h1>
+        <p>Buy and sell items for free!</p>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div id="messages-container">
+            {% for message in messages %}
+            <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+              <div class="message-header">
+                {{ message.sender }}
+              </div>
+              <div class="message-body">
+                {{ message.body }}
+              </div>
+              <div class="timestamp">
+                {{ message.timestamp }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="chat-input-container">
+            <form action="{% url 'marketplace:send_message' %}" method="post">
+              {% csrf_token %}
+              <input type="text" name="body" class="chat-input" placeholder="Type a message...">
+                <button type="submit" class="send-button">Send</button>
+            </form>
+            </div>
+            </div>
+            

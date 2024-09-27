@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from blog.views import profile_view, edit_profile
+from blog.views import profile_view
+# from chat.views import get_instant_messages
 
 app_name = 'marketplace'
 
@@ -11,9 +12,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('blog/profile/<str:username>', profile_view, name='profile'),
     path('contact_seller_form/<int:item_id>/', views.contact_seller_form, name='contact_seller_form'),
-    path('mesages/', views.user_messages, name='messages'),
+    path('messages/', views.user_messages, name='messages'),
+    path('get_messages/<username>', views.get_item_messages, name='get_messages'),
     path('reply_form/<int:message_id>/', views.reply_form, name='reply_form'),
-    path('view_conversation/<int:message_id>/', views.view_conversation, name='view_conversation'),
     path('seller_items/', views.seller_items, name='seller_items'),
     path('search_results/', views.search_items),
     path('item_form/', views.create_item, name='create_item'),  # Renamed from 'item_name' to 'create_item'

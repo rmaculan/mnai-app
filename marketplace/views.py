@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required 
 from django import forms
-from .models import Item, ItemMessage, Conversation, CategoryModel
+from .models import Item, ItemMessage, CategoryModel
 import logging
 from django.views.generic.edit import CreateView
 from .forms import ItemPostForm
@@ -11,7 +11,6 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from django.http import HttpResponseBadRequest
 from django.db.models import Q
-
 
 logger = logging.getLogger(__name__)
 
@@ -23,14 +22,14 @@ class ItemPostView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         if form.cleaned_data['image']:
-            # Process the image here
             try:
-                with default_storage.open(form.instance.image.name, 'rb+') as img_file:
+                with default_storage.open(
+                    form.instance.image.name, 'rb+') as img_file:
                     img = Image.open(img_file)
                     img = img.resize((300, 300)) 
                     img.save(img_file)
             except IOError:
-                pass  # Handle error
+                pass
         return response
     
 def register(request):
@@ -39,7 +38,6 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            # Redirect to a success page.
             return redirect('blog:index') 
     else:
         form = UserCreationForm()
@@ -76,20 +74,19 @@ def index(request):
 @login_required
 def create_item(request):
     if request.method == 'POST':
-        
         name = request.POST['name']
         description = request.POST['description']
         price = request.POST['price']
-        quantity = request.POST.get('quantity', 1)  # Default to 1 if not provided
+        quantity = request.POST.get('quantity', 1)
         image = request.FILES.get('image')
 
         logger.debug(f'Received files: {request.FILES}')
 
-        # Convert category name to CategoryModel instance
         category_name = request.POST['category']
-        category, created = CategoryModel.objects.get_or_create(name=category_name)
+        category, created = CategoryModel.objects.get_or_create(
+            name=category_name
+            )
 
-        # Use the currently logged-in user as the seller
         seller = request.user
 
         Item.objects.create(
@@ -99,14 +96,35 @@ def create_item(request):
             quantity=quantity, 
             condition=request.POST['condition'],
             image=image,
-            category=category,  # Now correctly assigns the CategoryModel instance
-            seller=seller  # Assign the currently logged-in user as the seller
+            category=category,
+            seller=seller
         )
         return redirect('marketplace:index')
     else:
         form = ItemPostForm()
         categories = CategoryModel.objects.all()  # Fetch all categories for selection
         return render(request, 'marketplace/item_form.html', {'form': form, 'categories': categories})
+    
+# read messages
+def get_item_messages(request, username):
+    user = request.user
+    messages = ItemMessage.get_messages(user=user)
+    active_message = username
+    instant_messages = ItemMessage.objects.filter(
+        Q(item_user=user) |
+        Q(receiver__username=username),
+    )
+
+    for message in messages:
+        if message['item_user'] == username:
+            message['unread'] = 0
+
+    context = {
+        'message': message,
+        'instant_messages': instant_messages,
+        'active_message': active_message,
+    }
+    return render(request, 'marketplace/get_messages.html.html', context)
     
 # Message seller
 def contact_seller_form(request, item_id):
@@ -124,20 +142,14 @@ def contact_seller_form(request, item_id):
     
     # Handle GET request by rendering the form
     return render(request, 'marketplace/contact_seller_form.html', {'item': item})
-    
+
+
+
 # user messages
 def user_messages(request):
     messages = ItemMessage.objects.filter(receiver=request.user)
     return render(request, 'marketplace/messages.html', {'messages': messages})
 
-# view conversation from all parties
-def view_conversation(request, message_id):
-    message = get_object_or_404(ItemMessage, pk=message_id)
-    # Adjusted to use Q objects for more flexible queries
-    conversation = Conversation.objects.filter(
-        Q(participants=message.sender) | Q(participants=message.receiver)
-    )
-    return render(request, 'marketplace/view_conversation.html', {'conversation': conversation, 'message': message})
 
 # Reply to message
 def reply_form(request, message_id):

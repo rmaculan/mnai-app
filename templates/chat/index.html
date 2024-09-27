@@ -78,18 +78,55 @@
     </style>
 </head>
 <body>
-    <h1>Instant Messages</h1>
-
-    {% if instant_messages %}
+    <h1>Inbox</h1>
+    <div class="position-relative">
+      <div class="chat-messages p-4">
+        {% if instant_messages %}
         <div id="messages-container">
             {% for message in instant_messages %}
-                {% if message.sender.username == active_chat %}
+            
+                {% if message.sender == request.user %}
+                <div class="message received">
+                    <p class="message-header">
+                        {{ message.sender }}
+                    </p>
+                    <p>{{ message.content }}</p>
+                    <span class="timestamp">
+                        {{ message.created_at }}
+                    </span>
+                </div>
+                {% else %}
+                <div class="message sent">
+                    <p class="message-header">
+                        {{ message.user.username }}
+                    </p>
+                    <p>{{ message.content }}</p>
+                    <span class="timestamp">
+                        {{ message.created_at }}
+                    </span>
+                </div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    
+    <div class="container">
+    {% if item_messages %}
+        <div id="messages-container">
+            {% for message in item_messages %}
+            
+                <strong class="text-sm">Item Inquiry: {{ message.item.name }}</strong>
+                {% if message.sender == active_chat %}
                     <div class="message received">
                         <p class="message-header">
-                            {{ message.receiver.first_name }} 
-                            {{ message.receiver.last_name }}
+                            {{ message.user.username }} 
                         </p>
-                        <p>{{ message.content }}</p>
+                        
+                        <p>{{ message.message }}</p>
                         <span class="timestamp">
                             {{ message.timestamp }}
                         </span>
@@ -97,16 +134,21 @@
                 {% else %}
                     <div class="message sent">
                         <p class="message-header">
-                            {{ message.sender }} 
+                            {{ message.sender.username }}
                         </p>
-                        <p>{{ message.content }}</p>
+                        
+                        <p>{{ message.message }}</p>
                         <span class="timestamp">
                             {{ message.timestamp }}
                         </span>
                     </div>
                 {% endif %}
+            
             {% endfor %}
         </div>
     {% endif %}
+    </div>
+
+    
 
     
