@@ -5,7 +5,6 @@ import os
 
 load_dotenv()
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -30,9 +29,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.humanize",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+    'api.apps.ApiConfig',
 
     # my apps
     'daphne',
@@ -52,6 +54,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+REST_FRAMEWORK = {
+    
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
 ASGI_APPLICATION = 'backend.asgi.application'
 
 
@@ -61,6 +69,9 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,6 +145,11 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+### change for production ###
+# CORS_ALLOWED_ORIGINS = []: when you want to allow specific origins
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_COOKIE_SECURE = True  # If using HTTPS
 
