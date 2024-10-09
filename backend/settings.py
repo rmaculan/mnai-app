@@ -35,9 +35,11 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     'api.apps.ApiConfig',
+    # 'django.channels',
 
     # my apps
     'daphne',
+    'channels',
     'notification',
     # 'chat',
     'chatbot',
