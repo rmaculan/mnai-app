@@ -1,15 +1,7 @@
 from django.urls import path
-from . import views
-
-app_name = 'chat'
+from .views import HomeView, RoomView
 
 urlpatterns = [
-    
-    # path('', views.index, name='chat'),
-    # path('chats/<username>/', views.get_instant_messages, name='instant_messages'),
-    # path('send/', views.send_message, name='send_message'),
-    # path('search/', views.search_users, name='search'),
-    # path('new/', views.new_conversation, name='new_conversation'),
+    path("", HomeView, name="login"),
+    path("<str:room_name>/<str:username>/", RoomView, name="room"),
 ]
-
-

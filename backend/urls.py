@@ -25,6 +25,7 @@ urlpatterns = [
     
     path("", landing_page, name="landing_page"),
     path("admin/", admin.site.urls),
+    path('chat/', include('chat.urls')),
     path("api/", include("api.urls")),
     path('chatbot/', include('chatbot.urls', namespace='chatbot')),
     path('polls/', include('polls.urls', namespace='polls')),
@@ -36,7 +37,6 @@ urlpatterns = [
     # region: add later
     # path('', include(router.urls)),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # path('chat/', include('chat.urls', namespace='chat')),
     # path("comments/", include("comments.urls")),
     # endregion
 ]

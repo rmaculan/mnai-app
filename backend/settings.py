@@ -1,4 +1,3 @@
-## Custom settings
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -30,18 +29,17 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
 # Application definition
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     "django.contrib.humanize",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
     'api.apps.ApiConfig',
-    # 'django.channels',
 
     # my apps
-    'daphne',
-    'channels',
+    'chat',
     'notification',
-    # 'chat',
     'chatbot',
     'polls',
     'blog',
@@ -61,9 +59,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
-
-ASGI_APPLICATION = 'backend.asgi.application'
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,6 +96,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
@@ -179,3 +175,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
