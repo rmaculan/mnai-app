@@ -11,3 +11,4 @@ http_response_app = get_asgi_application()
 application = ProtocolTypeRouter(
     {"http": http_response_app, "websocket": URLRouter(wsPattern)}
 )
+

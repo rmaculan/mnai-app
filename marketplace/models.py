@@ -47,10 +47,6 @@ class Item(models.Model):
         default=datetime.datetime.now
         )
     is_sold = models.BooleanField(default=False)
-    if is_sold:
-        date_sold = models.DateTimeField(
-            default=datetime.datetime.now
-            )
     condition = models.CharField(
         max_length=20, 
         choices=[
@@ -68,6 +64,10 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_sold(self):
+        return self.is_sold
     
 class ItemMessage(models.Model):
     item_user = models.ForeignKey(
@@ -82,17 +82,17 @@ class ItemMessage(models.Model):
         on_delete=models.CASCADE, 
         null=True
         )
-    sender = models.ForeignKey(
+    sender_name = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
-        related_name='sent_messages'
+        related_name='sent'
         )
-    receiver = models.ForeignKey(
+    receiver_name = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
         related_name='received_messages'
         )
-    message = models.TextField()
+    item_message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     @classmethod
@@ -139,12 +139,14 @@ class Order(models.Model):
     item = models.ForeignKey(
         Item, 
         on_delete=models.CASCADE
-        )
+    )
     quantity = models.PositiveIntegerField() 
-    buyer = models.CharField(max_length=100)
+    buyer = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='bought_orders'
+    )
 
-    def __str__(self):
-        return f"{self.item.name} - {self.buyer}"
 
 class Review(models.Model):
     item = models.ForeignKey(
@@ -168,9 +170,6 @@ class Cart(models.Model):
         on_delete=models.CASCADE
         )
     quantity = models.PositiveIntegerField()  
-
-    def __str__(self):
-        return f"{self.user.username} - {self.item.name}"
 
 class Transaction(models.Model):
     order = models.ForeignKey(
