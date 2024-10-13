@@ -16,7 +16,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('blog:index') 
+            return redirect('chat:index') 
     else:
         form = UserCreationForm()
     return render(
@@ -29,7 +29,7 @@ def login_view(request):
             if form.is_valid():
                 user = form.get_user()
                 login(request, user)
-                return redirect('blog:index')
+                return redirect('chat:index')
         else:
             form = AuthenticationForm()
         return render(
@@ -44,37 +44,37 @@ def logout_view(request):
 @login_required
 def index(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        seller = request.POST["seller"]
         room_name = request.POST["room"]
-        item_room = request.POST["room"]
         
         try:
             existing_room = Room.objects.get(
-                room_name__exact=room_name)
+                room_name__exact=room_name
+                )
         except Room.DoesNotExist:
             existing_room = None
+            # create new room
+            new_room = Room.objects.create(room_name=room_name)
+
         if existing_room:
             return redirect(
                 "room", 
                 room_name=room_name, 
-                username=username
+                username=request.user.username
                 )
-        
-        r = Room.objects.create(room_name=room_name)
 
-        if item_room:
-            item = Item.objects.get(pk=item_room)
-            seller = item.seller.username
-            item_room = ItemRoom.objects.create(
-                item=item, 
-                seller=seller,
-                room_name=room_name
-                )
+        if item_room and request.user.is_authenticated:
+            try:
+                item_room = ItemRoom.objects.get(
+                    item_id=item_id,
+                    room=room
+                    )
+            except ItemRoom.DoesNotExist:
+                item_room = None
+                
 
         return redirect(
             "room", 
-            room_name=r.room_name, 
+            room_name=room_name, 
             item_room=item_room,
             username=username
             )
@@ -82,52 +82,22 @@ def index(request):
     # Handle GET request
     rooms = Room.objects.all()
     item_rooms = ItemRoom.objects.all()
-
-    all_rooms = [rooms, item_rooms]
-    # print([all_rooms])
-
-    context = {
-        "all_rooms": all_rooms,
-        }
     
+    context = {
+        "rooms": rooms,
+        "username": request.user.username,
+        "item_rooms": item_rooms
+    }
+    # print(context)
+
     return render(request, "chat/index.html", context)
-
-@login_required
-def create_item_room(request, item_id, seller):
-    item = Item.objects.get(pk=item_id)
-    seller = item.seller
-    room_name = f"{item.title} - {item.seller}"
-
-    try:
-        existing_room = ItemRoom.objects.get(
-            item=item)
-    except ItemRoom.DoesNotExist:
-        existing_room = None
-    if existing_room:
-        return redirect(
-            "room", 
-            room_name=existing_room.room_name, 
-            username=seller
-            )
-
-    r = ItemRoom.objects.create(
-        item=item,
-        seller=seller, 
-        room_name=room_name
-        )
-
-    return redirect(
-        "room", 
-        room_name=r.room_name, 
-        username=seller
-        )
 
 @login_required
 def room_view(request, room_name, username):
     existing_room = Room.objects.get(
         room_name__exact=room_name)
     messages = Message.objects.filter(
-        room=existing_room).order_by('-date')
+        room=existing_room)
     current_user = request.user
     filtered_messages = messages.filter(
         sender=current_user)

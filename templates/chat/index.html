@@ -69,17 +69,15 @@
     <div class="page-container">
       <div class="content">
         {% if user.is_authenticated %}
-        <!-- enter room_name input -->
-        <h1>Enter Room Name</h1>
-        <form action="/chat/room/" method="POST">
-          <input
-            type="text"
-            name="room_name"
-            placeholder="Room Name"
-            required
-          />
-          <button type="submit">Enter</button>
-        </form>
+        <!-- display chat rooms -->
+         <h1>Select a chat room</h1>
+         <div class="rooms-container">
+            {% for room in rooms %} 
+            <div class="room">
+              {{ room.room_name }}
+            </div>
+         {% endfor %}
+        
         {% else %}
         <h1>Log in to enter chat room</h1>
         {% include 'chat/login.html' %}
