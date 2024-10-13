@@ -8,14 +8,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    
+    GROUP_SUFFIX = "_group"
+
     async def connect(self):
-        self.room_name = f"""
-        room_{
-            self.scope['url_route']['kwargs'].get('room_name', 'item_id')
-            }
-            """
-        self.room_group_name = f"{self.room_name}_group"
+        try:
+            room_name = self.scope['url_route']['kwargs']['room_name']
+            self.room_name = f"room_{room_name}"
+        except KeyError:
+            # Handle the case when the expected keys are not present
+            logger.error("Invalid room name in URL route")
+            # You might want to close the connection or take appropriate action
+
+        self.room_group_name = f"{self.room_name}{self.GROUP_SUFFIX}"
+
+        logger.info(f"Connecting to room: {self.room_name}")
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -25,6 +31,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        logger.info(f"Disconnecting from room: {self.room_name} with code: {close_code}")
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -35,9 +42,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        sender = text_data_json['sender_id']
+        sender = text_data_json['sender']
         room_name = text_data_json['room_name']
-        item_room = text_data_json['item_room_id']
 
         logger.info(
             f"""
@@ -50,21 +56,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'sender_id': sender.id,
+                'sender': sender,
                 'room_name': room_name,
             })
 
     async def chat_message(self, event):
         message = event['message']
-        sender = event['sender_id']
+        sender = event['sender']
         room_name = event['room_name']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
-            'sender_id': sender.id,
+            'sender': sender,
             'room_name': room_name,
-            'item_room_id': item_room
         }))
 
     async def send_message(self, event):
