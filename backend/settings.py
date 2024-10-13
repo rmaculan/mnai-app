@@ -17,11 +17,11 @@ DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT_URL = 'index'
+# LOGIN_REDIRECT_URL = 'index'
 
-LOGOUT_REDIRECT_URL = 'login'
+# LOGOUT_REDIRECT_URL = 'chat-login'
 
-LOGIN_URL = 'login'
+# LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

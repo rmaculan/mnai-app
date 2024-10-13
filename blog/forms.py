@@ -34,7 +34,12 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = [
+            'username', 
+            'email', 
+            'password1', 
+            'password2'
+            ]
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -45,74 +50,101 @@ class UserRegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     image = forms.ImageField(required=False)
     first_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'First Name'
-                                      }
-                               ))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'First Name'
+                }
+            ))
     last_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Last Name'
-                                      }
-                               ))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Last Name'
+                }
+            ))
     bio = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Bio'
-                                      }
-                               ))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Bio'
+                }
+            ))
     url = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'URL'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input',                   
+                'placeholder': 'URL'
+                }), 
         required=False
         )
     location = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Address'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input',              
+                'placeholder': 'Address'
+                }), 
         required=False
         )
 
     class Meta:
         model = Profile
-        fields = ['image', 'first_name', 'last_name', 
-                  'bio', 'url', 'location']
+        fields = [
+            'image', 
+            'first_name', 
+            'last_name', 
+            'bio', 
+            'url', 
+            'location'
+            ]
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Title'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Title'
+                }), 
         required=True
         )
     subtitle = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Subtitle'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Subtitle'
+                }), 
         required=True
         )
     job_title = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Job Title'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Job Title'
+                }), 
         required=True
         )
     content = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'input', 
-                                     'placeholder': 'Content'
-                                     }), 
+        widget=forms.Textarea(attrs={
+            'class': 'input', 
+            'placeholder': 'Content'
+                }), 
         required=True
         )
-    # tags = forms.CharField(
-    #     widget=forms.TextInput(attrs={'class': 'input', 
-    #                                   'placeholder': 'Tags | Seperate with comma' 
-    #                                   }), 
-    #     required=True
-    #     )
+    tags = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Tags | Seperate with comma' 
+                }), 
+        required=True
+        )
     picture = forms.ImageField(required=True)
     caption = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input', 
-                                      'placeholder': 'Caption'
-                                      }), 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input', 
+                'placeholder': 'Caption'
+                }), 
         required=True
         )
     
@@ -122,7 +154,7 @@ class PostForm(forms.ModelForm):
                   'subtitle', 
                   'job_title',
                   'content', 
-                #   'tags', 
+                  'tags', 
                   'picture', 
                   'caption']
         widgets = {

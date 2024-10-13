@@ -1,0 +1,128 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+            integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+            crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+    <!-- Navbar -->
+    
+
+    <div class="container mx-auto">
+      
+    </div>
+
+    <div class="wrapper mx-auto px-4 py-8">
+      <h1 class="card-title text-2xl"><strong>Login</strong></h1>
+      <div class="card w-1/2">
+
+        <div class="card-body">
+          
+          <form 
+        method="POST" 
+        action="{% url 'blog:login' %}" 
+        class="space-y-4"
+        >
+        {% csrf_token %}
+        <div class="space-y-2">
+          <label 
+            for="username" 
+            class="block"
+            >
+            Username
+          </label>
+          <input 
+            type="text" 
+            name="username" 
+            id="username" 
+            class="
+              w-full 
+              border 
+              border-gray-300 
+              rounded-md 
+              px-4 
+              py-2
+              "
+          >
+        </div>
+        <div class="space-y-2">
+          <label 
+            for="password" 
+            class="block"
+            >
+            Password
+          </label>
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            class="w-full border border-gray-300 rounded-md px-4 py-2"
+          >
+        </div>
+        <button 
+          type="submit" 
+          class="
+            px-4 
+            py-2 
+            text-white 
+            bg-gray-600 
+            shadow-xl
+            rounded 
+            hover:bg-gray-700"
+          >
+            Sign In
+        </button>
+      </form>
+      </div>
+    </div>
+    <!-- Error message -->
+      {% if error %}  
+        <p style="color: red">{{ error }}</p>
+      {% endif %}
+
+      <!-- Forgot Passqord Link -->
+      <a 
+        href="{% url 'password_reset' %}" 
+        class="block mt-4 text-blue-500"
+        >
+          Forgot Password?
+      </a>
+      
+      <!-- Register Link -->
+      <p>
+        Don't have an account? 
+        <a 
+          href="{% url 'blog:register' %}" 
+          class="text-blue-500"
+          >
+            Register
+        </a>
+      </p>
+  </div>
+      
+      
+      
+    </div>
+
+    
+    <script 
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 
+      defer>
+    </script>
+  </body>
+</html>

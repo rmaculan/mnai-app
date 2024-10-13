@@ -82,15 +82,16 @@ class ItemMessage(models.Model):
         on_delete=models.CASCADE, 
         null=True
         )
-    sender_name = models.ForeignKey(
+    item_sender= models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
-        related_name='sent'
+        related_name='sender',
+        default=None
         )
-    receiver_name = models.ForeignKey(
+    receiver = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
-        related_name='received_messages'
+        related_name='receiver'
         )
     item_message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)

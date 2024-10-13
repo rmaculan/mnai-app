@@ -171,7 +171,7 @@
     <div class="page-container">
       <div class="content">
         <h1>
-          Welcome to {{ room_name }} - Chatting with: {{ current_username }}
+          Welcome to {{ room_name }} - Chatting with: {{ user }}
         </h1>
         <div class="chats-container" id="chats-container">
         {%for message in messages %} 
@@ -205,6 +205,7 @@
       </div>
     </div>
     <script>
+
       const socketURL = `ws://${window.location.host}/ws/messages/{{room_name}}/`;
       console.log("Establishing Socket Connection");
       const socket = new WebSocket(socketURL);
@@ -268,6 +269,7 @@
       socket.onclose = function(event) {
         console.log('WebSocket closed');
       };
+
     </script>
   </body>
 </html>

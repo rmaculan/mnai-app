@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Chat</title>
     <style>
       * {
         margin: 0;
@@ -68,26 +68,23 @@
   <body>
     <div class="page-container">
       <div class="content">
-        <h1>Login</h1>
-        <form action="" method="post">
-          <!-- For the sake of security, all Django Post forms must have a csfr token tag -->
-          {% csrf_token %}
+        {% if user.is_authenticated %}
+        <!-- enter room_name input -->
+        <h1>Enter Room Name</h1>
+        <form action="/chat/room/" method="POST">
           <input
             type="text"
-            placeholder="Username"
-            name="username"
-            required
-          /><br /><br />
-          <input
-            type="text"
+            name="room_name"
             placeholder="Room Name"
-            name="room"
             required
-          /><br />
-          <center>
-            <button type="submit">Enter Room</button>
-          </center>
+          />
+          <button type="submit">Enter</button>
         </form>
+        {% else %}
+        <h1>Log in to enter chat room</h1>
+        {% include 'chat/login.html' %}
+        {% endif %}
+       
       </div>
     </div>
   </body>
