@@ -133,7 +133,7 @@ def room_view(request, room_name, username):
         sender=current_user)
     
     context = {
-        "messages": filtered_messages,
+        "messages": messages,
         "current_user": current_user,
         "user": username,
         "room_name": existing_room.room_name,
