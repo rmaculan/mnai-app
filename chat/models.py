@@ -6,6 +6,12 @@ import datetime
 
 
 class Room(models.Model):
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='creator_id',
+        default=None,
+        )
     room_name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -15,11 +21,20 @@ class ItemRoom(Room):
     item = models.ForeignKey(
         Item, 
         on_delete=models.CASCADE,
-        related_name='item_id'
+        related_name='item_id',
+        default=False,
+        null=True
+        )
+    seller = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='seller_id',
+        default=False,
+        null=True
         )
 
     def __str__(self):
-        return f"{str(self.item)} - {str(self.room)}"
+        return f"{str(self.item)} - {str(self.room_name)}"
 
 class RegularRoom(Room):
     profile = models.ForeignKey(

@@ -70,19 +70,16 @@
       <div class="content">
         {% if user.is_authenticated %}
         <!-- display chat rooms -->
-         <h1>Select a chat room</h1>
-         <div class="rooms-container">
-            {% for room in rooms %} 
-            <div class="room">
-              {{ room.room_name }}
-            </div>
-         {% endfor %}
-        
+        <h1>Select a chat room</h1>
+        <div class="rooms-container">
+          {% for room in rooms %}
+          <div class="room">{{ room.room_name }}</div>
+          {% endfor %}
+        </div>
+        {% include 'chat/create_room.html' %}
         {% else %}
         <h1>Log in to enter chat room</h1>
-        {% include 'chat/login.html' %}
-        {% endif %}
-       
+        {% include 'chat/login.html' %} {% endif %}
       </div>
     </div>
   </body>

@@ -3,11 +3,12 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Room, Message
 from django.contrib.auth.models import User
+import re
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = f'chat_{self.room_name}'
+        self.room_group_name = f'chat_{re.sub(r"[^\w\-.]", "_", self.room_name)}'
 
         await self.channel_layer.group_add(
             self.room_group_name,
