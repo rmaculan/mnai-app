@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" 
-      content="width=device-width, initial-scale=1.0" />
-    <title>Chat Room</title>
+        content="width=device-width, initial-scale=1.0" />
+    <title>Item Inquiry</title>
     <style>
       * {
         margin: 0;
@@ -172,7 +172,7 @@
     <div class="page-container">
       <div class="content">
         <h1>
-          Welcome to {{ room_name }} - Chatting with: {{ user }}
+          Chatting with: {{ seller }}
         </h1>
         <div class="chats-container" id="chats-container">
         {%for message in messages %} 
@@ -191,7 +191,6 @@
         {%endfor%}
         </div>
         <form action="" id="msg-form" method="post">
-          <!-- For the sake of security, all Django Post forms must have a csfr token tag -->
           {% csrf_token %}
           <textarea
             name="message"

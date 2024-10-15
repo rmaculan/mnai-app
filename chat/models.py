@@ -13,6 +13,7 @@ class Room(models.Model):
         default=None,
         )
     room_name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(default=datetime.datetime.now)
 
     def __str__(self):
         return self.room_name

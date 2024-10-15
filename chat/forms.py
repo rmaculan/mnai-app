@@ -68,6 +68,22 @@ class RoomCreationForm(forms.ModelForm):
             instance.save()
         return instance
 
+class ItemRoomCreationForm(forms.ModelForm):
+    class Meta:
+        model = ItemRoom
+        fields = ['item', 'seller']
+
+    def __init__(self, *args, **kwargs):
+        self.creator = kwargs.pop('creator', None)
+        super(ItemRoomCreationForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super(ItemRoomCreationForm, self).save(commit=False)
+        instance.creator = self.creator
+        instance.room_name = f"{instance.item.name} - {instance.seller.username}"
+        if commit:
+            instance.save()
+        return instance
 
 class LikeForm(forms.ModelForm):
     class Meta:
