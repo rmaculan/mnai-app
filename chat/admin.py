@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import Room, ItemRoom, Message, MarketplaceMessage
+from .models import Room, Message
 
 # Register your models here.
 
 admin.site.register(Room)
 admin.site.register(Message)
-admin.site.register(ItemRoom)
-admin.site.register(MarketplaceMessage)
+

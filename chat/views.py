@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from marketplace.models import Item
-from .models import Room, ItemRoom, Message, MarketplaceMessage
+from .models import Room, Message
 from .consumers import ChatConsumer
-from .forms import RoomCreationForm, ItemRoomCreationForm
+from .forms import RoomCreationForm
 from django.contrib.auth import login, logout, authenticate
 from marketplace.models import Item
 from django.contrib.auth.models import User
@@ -51,7 +51,7 @@ def logout_view(request):
 @login_required
 def index(request):
     rooms = Room.objects.all()
-    item_rooms = ItemRoom.objects.all()
+    item_rooms = ItemRoom.objects.all().order_by("-created_at")
     if request.method == "POST":
         room_name = request.POST["room"]
         
@@ -73,7 +73,7 @@ def index(request):
         if item_room and request.user.is_authenticated:
             try:
                 item_room = ItemRoom.objects.get(
-                    item_id=item_id,
+                    item=item,
                     room=room
                     )
             except ItemRoom.DoesNotExist:
@@ -113,59 +113,32 @@ def create_room(request):
     if request.method == "POST":
         form = RoomCreationForm(request.POST)
         if form.is_valid():
-            room_name = form.cleaned_data["room_name"]
-            creator = request.user
+            item_id = request.POST.get('item_id')
+    
+            if item_id:
+                item = get_object_or_404(Item, id=item_id)
+                room_name = f"{item.name} - {item.seller.username}"
+            else:
+                room_name = request.POST.get('room_name')
+
             room = Room.objects.create(
+                creator=request.user,
                 room_name=room_name,
-                creator=creator
-                )
+                item_id=item if item_id else None
+            )
             room.save()
-            return redirect(
-                "chat:room", 
-                room_name=room_name, 
-                username=creator
-                )
+            return redirect('chat:room', room_name=room_name)
     else:
         form = RoomCreationForm()
-    return render(request, "chat/create_room.html", {"form": form})
 
+    return render(
+        request, 
+        "chat/create_room.html", 
+        {"form": form}
+        )
+ 
 @login_required
-@require_http_methods(["POST"])
-def create_item_room(request):
-    if request.method == "POST":
-        form = ItemRoomCreationForm(request.POST)
-        if form.is_valid():
-            creator = Room.objects.get(
-                creator=creator
-                )
-            print(creator)
-            
-            item_room = ItemRoom.objects.create(
-                creator=creator,
-                item_name=item_name.item_id.name,
-                seller=seller.seller_id.username,
-                )
-            print(item_room)
-
-            item_room.save()
-            return redirect(
-                "chat:item_room",
-                username=creator,
-                item_name=item_name,
-                seller=seller
-                )
-            
-        else:
-            form = ItemRoomCreationForm()
-
-        return render(
-            request, 
-            "chat/create_item_room.html", 
-            {"form": form}
-            )
-
-@login_required
-def room_view(request, room_name, username):
+def room_view(request, room_name):
     existing_room = Room.objects.get(
         room_name__exact=room_name,
         )
@@ -190,34 +163,6 @@ def room_view(request, room_name, username):
     
     return render(request, "chat/room.html", context)
 
-
-
-@login_required
-def item_room_view(request, item_name, seller):
-    seller_user = get_object_or_404(
-        User, 
-        username=seller
-        )
-    item_room = get_object_or_404(
-        ItemRoom, 
-        seller=seller_user, 
-        room_name__icontains=item_name
-        )
-    
-    messages = Message.objects.filter(
-        room=item_room,
-        )
-    # print(messages)
-
-    context = {
-        "item_room": item_room,
-        "messages": messages,
-        "room_name": item_name,
-        "seller": seller,
-    }
-
-    return render(request, "chat/item_room.html", context)
-         
 @login_required
 def manage_room(request, room_name):
     room = Room.objects.get(

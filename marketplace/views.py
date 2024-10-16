@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required 
 from django import forms
 from .models import Item, ItemMessage, CategoryModel
+from chat.models import Message, Room
 import logging
 from django.views.generic.edit import CreateView
 from .forms import ItemPostForm
@@ -104,28 +105,7 @@ def create_item(request):
         form = ItemPostForm()
         categories = CategoryModel.objects.all()  # Fetch all categories for selection
         return render(request, 'marketplace/item_form.html', {'form': form, 'categories': categories})
-    
-# read messages
-def get_item_messages(request, username):
-    user = request.user
-    messages = ItemMessage.get_messages(user=user)
-    active_message = username
-    instant_messages = ItemMessage.objects.filter(
-        Q(item_user=user) |
-        Q(receiver__username=username),
-    )
-
-    for message in messages:
-        if message['item_user'] == username:
-            message['unread'] = 0
-
-    context = {
-        'message': message,
-        'instant_messages': instant_messages,
-        'active_message': active_message,
-    }
-    return render(request, 'marketplace/get_messages.html.html', context)
-    
+        
 # Message seller
 def contact_seller_form(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
@@ -171,8 +151,11 @@ def item_detail(request, item_id):
     return render(request, 'marketplace/item_detail.html', {'item': item})
 
 # view listed items by seller
-def seller_items(request):
-    items = Item.objects.filter(seller=request.user)
+def get_seller_items(request):
+    items = Item.objects.filter(
+        # name=request.name,
+        seller=request.user
+        )
     return render(request, 'marketplace/seller_items.html', {'items': items})
 
 def search_items(request):

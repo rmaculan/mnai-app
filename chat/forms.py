@@ -1,5 +1,5 @@
 from django import forms
-from .models import Room, ItemRoom
+from .models import Room
 from blog.models import Likes
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -64,23 +64,6 @@ class RoomCreationForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super(RoomCreationForm, self).save(commit=False)
         instance.creator = self.creator
-        if commit:
-            instance.save()
-        return instance
-
-class ItemRoomCreationForm(forms.ModelForm):
-    class Meta:
-        model = ItemRoom
-        fields = ['item', 'seller']
-
-    def __init__(self, *args, **kwargs):
-        self.creator = kwargs.pop('creator', None)
-        super(ItemRoomCreationForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        instance = super(ItemRoomCreationForm, self).save(commit=False)
-        instance.creator = self.creator
-        instance.room_name = f"{instance.item.name} - {instance.seller.username}"
         if commit:
             instance.save()
         return instance

@@ -34,12 +34,11 @@
               <p>description: {{ item.description }}</p>
             </div>
             {% if user.is_authenticated %}
-            <a 
-              href="{% url 'marketplace:contact_seller_form' item.id %}" 
-              class="btn btn-primary"
-            >
-              Contact Seller
-            </a>
+            <form action="{% url 'chat:create_room' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit">Contact Seller</button>
+            </form>
             {% else %}
             <a 
               href="{% url 'blog:login' %}" 

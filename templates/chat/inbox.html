@@ -26,23 +26,7 @@
                         <h2 class="text-xl font-semibold mb-2">
                             {{ room.room_name }}
                         </h2>
-                        {% if room.itemroom %}
-                            <a href="{% url 'chat:item_room' room.room_name room.itemroom.seller.username %}"
-                                class="
-                                    mt-2 
-                                    inline-block 
-                                    bg-blue-500 
-                                    text-white 
-                                    px-4 py-2 
-                                    rounded 
-                                    hover:bg-blue-600 
-                                    transition duration-200
-                                    "
-                                    >
-                                Join Room
-                            </a>
-                        {% else %}
-                            <a href="{% url 'chat:room' room.room_name request.user.username %}"
+                            <a href="{% url 'chat:room' room.room_name %}"
                                 class="
                                     mt-2 
                                     inline-block 
@@ -53,9 +37,8 @@
                                     hover:bg-blue-600 
                                     transition duration-200
                                     ">
-                                Join Regular Room
+                                Join Room
                             </a>
-                        {% endif %}
                     </div>
                 {% empty %}
                     <p class="text-gray-500">
