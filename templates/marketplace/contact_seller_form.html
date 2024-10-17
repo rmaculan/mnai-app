@@ -11,7 +11,7 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <title>{% block title %} Free Marketplace {% endblock %}</title>
+    <title>{% block title %} {% endblock %}</title>
     <style>
 
       .hero-banner {
@@ -80,7 +80,7 @@
 
   <body>
   
-    {% include 'marketplace/navbar.html' %}
+    {% extends 'marketplace/base.html' %}
 
     <div class="container">
       <h1>Contact Seller</h1>
