@@ -12,6 +12,7 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from django.http import HttpResponseBadRequest
 from django.db.models import Q
+from chat.models import Room
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ def user_profile(request):
     return render(request, 'marketplace/user_profile.html', {'user': user})
 
 def index(request):
-    newest_items = Item.objects.order_by('-id')[:5]
+    newest_items = Item.objects.order_by('-id')
     context = {
         "newest_items": newest_items,
     }
@@ -112,17 +113,28 @@ def contact_seller_form(request, item_id):
     
     if request.method == 'POST':
         message_text = request.POST['message']
+        room = Room.objects.get(item_id=item, creator=request.user)
         ItemMessage.objects.create(
-            item=item, 
-            sender=request.user, 
-            message=message_text, 
-            receiver=item.seller
+            room=room,
+            sender=request.user,
+            message=message_text,
+            item=item
         )
-        return redirect('marketplace:item_detail', item_id=item.id)
+        return redirect('chat:room', room_id=room.id)
     
-    # Handle GET request by rendering the form
     return render(request, 'marketplace/contact_seller_form.html', {'item': item})
 
+
+
+def create_item_room(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    room_name = f"Item_{item_id}_{request.user.username}_{item.seller.username}"
+    room, created = Room.objects.get_or_create(
+        creator=request.user,
+        room_name=room_name,
+        item_id=item
+    )
+    return redirect('chat:room', room_name=room.room_name)
 
 
 # user messages

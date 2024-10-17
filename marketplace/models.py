@@ -70,8 +70,13 @@ class Item(models.Model):
         return self.is_sold
     
 class ItemMessage(models.Model):
+    room = models.ForeignKey(
+        'chat.Room', 
+        on_delete=models.CASCADE,
+        default=None
+        )
     item_user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         related_name='item_user',
         null=True,
@@ -82,59 +87,25 @@ class ItemMessage(models.Model):
         on_delete=models.CASCADE, 
         null=True
         )
-    item_sender= models.ForeignKey(
-        User, 
+    sender= models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
-        related_name='sender',
+        related_name='item_messages_sent',
         default=None
         )
     receiver = models.ForeignKey(
-        User, 
+        settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
         related_name='receiver'
         )
-    item_message = models.TextField()
+    message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def get_messages(cls, user):
-        item_users = []
-        messages = cls.objects.filter(
-            Q(item_user=user) | Q(receiver=user)
-        ).values('receiver').annotate(
-            last=Max('timestamp')
-        ).order_by('-last')
-        for message in messages:
-            receiver_id = message['receiver']
-            receiver = User.objects.get(pk=receiver_id)
-            item_users.append({
-                'item_user': receiver.username,
-                'last': message['last'],
-                'unread': cls.objects.filter(
-                    item_user=user,
-                    receiver__pk=receiver_id
-                ).count(),
-                'receiver': receiver_id
-            })
-        return item_users
-    
-    def sender_message(from_user, to_user, message):
-        sender_message = ItemMessage(
-            item_user=from_user,
-            sender=from_user,
-            receiver=to_user,
-            message=message
-            )
-        sender_message.save()
-        
-        receiver_message = ItemMessage(
-            item_user=to_user,
-            sender=from_user,
-            receiver=to_user,
-            message=message
-            )
-        receiver_message.save()
-        return sender_message
+    class Meta:
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"{self.sender.username}: {self.message[:50]}"
     
 class Order(models.Model):
     item = models.ForeignKey(

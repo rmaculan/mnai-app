@@ -1,5 +1,4 @@
 from django.db import models
-from marketplace.models import Item, ItemMessage
 from blog.models import Profile
 from django.contrib.auth.models import User
 import datetime
@@ -16,7 +15,7 @@ class Room(models.Model):
     created_at = models.DateTimeField(
         default=datetime.datetime.now)
     item_id = models.ForeignKey(
-        Item, 
+        'marketplace.Item',
         on_delete=models.CASCADE, 
         null=True, 
         blank=True,
