@@ -1,149 +1,322 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous"
-  />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    >
-  <title>{% block title %}Media-N-AI Market{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    #container {
-      display: flex;
-      justify-content: center;
-      padding: 10px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    />
+    <title>{% block title %}Media-N-AI Market{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+      #container {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
 
-    #reply-container {
-      padding: 10px;  
-    }
+      #reply-container {
+        padding: 10px;
+      }
 
-    #reply-container,
-    .comments {
-      background-color: #f6f6ef;  
-    }
+      #reply-container,
+      .comments {
+        background-color: #f6f6ef;
+      }
 
-    .comment-head {
-      display: flex;
-      gap: 8px;
-      font-size: 10px;
-      color: #828282;
-      margin-bottom: 4px;
-    }
+      .comment-head {
+        display: flex;
+        gap: 8px;
+        font-size: 10px;
+        color: #828282;
+        margin-bottom: 4px;
+      }
 
-    .comment {
-      font-family: Verdana, Geneva, sans-serif;
-      font-size: 9pt;
-    }
+      .comment {
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 9pt;
+      }
 
-    .comment-body {
-      margin-bottom: 4px; 
-    }
+      .comment-body {
+        margin-bottom: 4px;
+      }
 
-    .reply-link {
-      display: inline-block;
-      margin-bottom: 8px;
-      color: #000; 
-    }
-  </style>
-</head>
-<body>
-  <nav class="bg-gray-800">
+      .reply-link {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="bg-gray-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between h-16">
-              <div class="flex items-center">
-                  <a href="{% url 'marketplace:index' %}" class="text-white font-bold">Marketspace</a>
-                  <div class="hidden md:block">
-                      <div class="ml-10 flex items-baseline space-x-4">
-                          <a href="{% url 'marketplace:index' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                          {% if user.is_authenticated %}
-                              <a href="{% url 'marketplace:create_item' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sell</a>
-                              <a href="{% url 'chat:inbox' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Messages</a>
-                          {% endif %}
-                      </div>
-                  </div>
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <a href="{% url 'marketplace:index' %}" class="text-white font-bold">
+              Marketspace
+            </a>
+            <div class="flex items-baseline ml-10 space-x-16">
+              <a
+                href="{% url 'notification:show-all-notifications' %}"
+                class="text-blue-500 hover:underline"
+              >
+                <span><i class="fas fa-bell"></i></span>
+                <span class="badge badge-pill badge-danger"
+                  >{{ notifications.count }}</span
+                >
+              </a>
+              <a
+                href="{% url 'marketplace:index' %}"
+                class="text-blue-500 hover:underline"
+              >
+                <span><i class="fas fa-store"></i></span>
+              </a>
+              <a
+                href="{% url 'landing_page' %}"
+                class="text-blue-500 hover:underline"
+              >
+                <span><i class="fas fa-home"></i></span>
+              </a>
+            </div>
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <a
+                  href="{% url 'marketplace:index' %}"
+                  class="
+                    text-gray-300 
+                    hover:bg-gray-700 
+                    hover:text-white 
+                    px-3 
+                    py-2 
+                    rounded-md 
+                    text-sm 
+                    font-medium"
+                    >
+                  Home
+                  </a>
+                {% if user.is_authenticated %}
+                <a
+                  href="{% url 'blog:index' %}"
+                  class="
+                    text-gray-300 
+                    hover:bg-gray-700 
+                    hover:text-white 
+                    block 
+                    px-3 p
+                    y-2 
+                    rounded-md 
+                    text-sm 
+                    font-medium
+                    "
+                    >
+                    Blog
+                </a>
+                <a
+                  href="{% url 'marketplace:create_item' %}"
+                  class="
+                    text-gray-300 
+                    hover:bg-gray-700 
+                    hover:text-white 
+                    px-3 
+                    py-2 
+                    rounded-md 
+                    text-sm 
+                    font-medium
+                    "
+                  >
+                  Sell
+                </a>
+                <a
+                  href="{% url 'chat:inbox' %}"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                  Messages
+                </a>
+                {% endif %}
               </div>
-              <div class="hidden md:block">
-                  <div class="ml-4 flex items-center md:ml-6">
-                      <div class="relative">
-                          <button id="user-menu-button" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                              Account
-                          </button>
-                          <div id="user-menu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                              {% if user.is_authenticated %}
-                                  <a href="{% url 'blog:profile' user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
-                                  <a href="{% url 'marketplace:seller_items' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Items Listed</a>
-                                  <a href="{% url 'marketplace:logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
-                              {% else %}
-                                  <a href="{% url 'blog:register' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Register</a>
-                                  <a href="{% url 'blog:login' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Login</a>
-                              {% endif %}
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="-mr-2 flex md:hidden">
-                  <button type="button" id="mobile-menu-button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
-                      <span class="sr-only">Open main menu</span>
-                      <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                      </svg>
-                  </button>
-              </div>
+            </div>
           </div>
+          <div class="hidden md:block">
+            <div class="ml-4 flex items-center md:ml-6">
+              <div class="relative">
+                <button
+                  id="user-menu-button"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Account
+                </button>
+                <div
+                  id="user-menu"
+                  class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu-button"
+                  tabindex="-1"
+                >
+                  {% if user.is_authenticated %}
+                  <a
+                    href="{% url 'blog:profile' user.username %}"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Profile</a
+                  >
+                  <a
+                    href="{% url 'marketplace:seller_items' %}"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Items Listed</a
+                  >
+                  <a
+                    href="{% url 'marketplace:logout' %}"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Logout</a
+                  >
+                  {% else %}
+                  <a
+                    href="{% url 'blog:register' %}"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Register</a
+                  >
+                  <a
+                    href="{% url 'blog:login' %}"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Login</a
+                  >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="-mr-2 flex md:hidden">
+            <button
+              type="button"
+              id="mobile-menu-button"
+              class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="md:hidden hidden" id="mobile-menu">
-          <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <a href="{% url 'marketplace:index' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-              {% if user.is_authenticated %}
-                  <a href="{% url 'marketplace:create_item' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sell</a>
-                  <a href="{% url 'chat:inbox' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Messages</a>
-              {% endif %}
-              {% if user.is_authenticated %}
-                  <a href="{% url 'blog:profile' user.username %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Profile</a>
-                  <a href="{% url 'marketplace:seller_items' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Items Listed</a>
-                  <a href="{% url 'marketplace:logout' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Logout</a>
-              {% else %}
-                  <a href="{% url 'marketplace:register' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Register</a>
-                  <a href="{% url 'blog:login' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</a>
-              {% endif %}
-          </div>
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a
+            href="{% url 'marketplace:index' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Home</a
+          >
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'blog:index' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Blog</a
+          >
+          <a
+            href="{% url 'marketplace:create_item' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Sell</a
+          >
+          <a
+            href="{% url 'chat:inbox' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Messages</a
+          >
+
+          <!-- link to blog -->
+
+          {% endif %} {% if user.is_authenticated %}
+          <a
+            href="{% url 'blog:profile' user.username %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Profile</a
+          >
+          <a
+            href="{% url 'marketplace:seller_items' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Items Listed</a
+          >
+          <a
+            href="{% url 'marketplace:logout' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Logout</a
+          >
+          {% else %}
+          <a
+            href="{% url 'marketplace:register' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Register</a
+          >
+          <a
+            href="{% url 'blog:login' %}"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Login</a
+          >
+          {% endif %}
+        </div>
       </div>
-  </nav>
+    </nav>
 
-  <div id="container">
-      {% block content %}{% endblock %}
-  </div>
+    <div id="container">{% block content %}{% endblock %}</div>
 
-  <script>
+    <script>
       // Toggle user menu
-      const userMenuButton = document.getElementById('user-menu-button');
-      const userMenu = document.getElementById('user-menu');
-      userMenuButton.addEventListener('click', () => {
-          userMenu.classList.toggle('hidden');
+      const userMenuButton = document.getElementById("user-menu-button");
+      const userMenu = document.getElementById("user-menu");
+      userMenuButton.addEventListener("click", () => {
+        userMenu.classList.toggle("hidden");
       });
 
       // Toggle mobile menu
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
-      mobileMenuButton.addEventListener('click', () => {
-          mobileMenu.classList.toggle('hidden');
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
       });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

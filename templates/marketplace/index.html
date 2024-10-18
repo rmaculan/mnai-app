@@ -12,23 +12,7 @@
           Hello, Guest!
           {% endif %}
         </h1>
-        <div container="mb-4 flex">
-          <a
-            href="{% url 'blog:index' %}"
-            class="btn btn-primary"
-            >
-              Explore Blogs
-          </a>
-        </div>
-            or
-        <div>
-          <a
-            href="{% url 'landing_page' %}"
-            class="btn btn-primary"
-            >
-              Return to Home
-        </a>
-        </div>
+        
         {% if newest_items %}
     <div class="container">
       <h1>Newest Items</h1>

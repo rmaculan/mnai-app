@@ -51,7 +51,7 @@ def logout_view(request):
 @login_required
 def index(request):
     rooms = Room.objects.all()
-    item_rooms = ItemRoom.objects.all().order_by("-created_at")
+    # item_rooms = ItemRoom.objects.all().order_by("-created_at")
     if request.method == "POST":
         room_name = request.POST["room"]
         
@@ -70,28 +70,28 @@ def index(request):
                 username=request.user.username
                 )
 
-        if item_room and request.user.is_authenticated:
-            try:
-                item_room = ItemRoom.objects.get(
-                    item=item,
-                    room=room
-                    )
-            except ItemRoom.DoesNotExist:
-                item_room = None
-                print(item_room)
+        # if item_room and request.user.is_authenticated:
+        #     try:
+        #         item_room = ItemRoom.objects.get(
+        #             item=item,
+        #             room=room
+        #             )
+        #     except ItemRoom.DoesNotExist:
+        #         item_room = None
+        #         print(item_room)
                 
 
         return redirect(
             "room", 
             room_name=room_name, 
-            item_room=item_room,
+            # item_room=item_room,
             username=username
             )
     
     context = {
         "rooms": rooms,
         "username": request.user.username,
-        "item_rooms": item_rooms
+        # "item_rooms": item_rooms
     }
     # print(context)
 

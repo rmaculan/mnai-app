@@ -23,34 +23,40 @@
                 <span 
                     class="
                         self-center 
-                        text-xl 
+                        text-sm 
                         font-semibold 
                         whitespace-nowrap 
                         dark:text-white"
                 >
-                    MedianAISpace
+                    Media-n-AI News
                 </span>
             </a>
-            <a 
-                            href="{% url 'notification:show-all-notifications' %}" 
-                            class="text-blue-500 hover:underline"
-                            >
-                                <span><i class="fas fa-bell"></i></span>
-                            <!-- button that redirects to the templates/marketplace app -->
-                        <a
-                            href="{% url 'marketplace:index' %}"
-                            class="text-blue-500 hover:underline"
-                        >
-                                <span><i class="fas fa-store"></i></span>
-                        </a>
-            
-                        <!-- button that returns to main landing page under templates -->
-                        <a
-                            href="{% url 'landing_page' %}"
-                            class="text-blue-500 hover:underline"
-                            >
-                            <span><i class="fas fa-home"></i></span>
-                        </a>
+            <div class="flex items-baseline ml-10 space-x-16">
+                <a
+                  href="{% url 'notification:show-all-notifications' %}"
+                  class="text-blue-500 hover:underline"
+                >
+                  <span><i class="fas fa-bell"></i></span>
+                  <span class="badge badge-pill badge-danger"
+                    >{{ notifications.count }}</span
+                  >
+                </a>
+                <!-- button that redirects to the templates/marketplace app -->
+                <a
+                  href="{% url 'marketplace:index' %}"
+                  class="text-blue-500 hover:underline"
+                >
+                  <span><i class="fas fa-store"></i></span>
+                </a>
+  
+                <!-- button that returns to main landing page under templates -->
+                <a
+                  href="{% url 'landing_page' %}"
+                  class="text-blue-500 hover:underline"
+                >
+                  <span><i class="fas fa-home"></i></span>
+                </a>
+              </div>
             
                 <a href="{% url 'blog:index' %}" class="flex items-center">
                     <li>
@@ -89,8 +95,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Post
+                                >
+                                    Post
                             </a>
                             <a 
                                 href="{% url 'blog:my_posts' %}" 
@@ -106,8 +112,25 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                My Blogs
+                                >
+                                    My Blogs
+                            </a>
+                             <a
+                                href="{% url 'chat:inbox' %}"
+                                class="
+                                 block
+                                 px-4
+                                 py-2
+                                 text-sm
+                                 text-gray-700
+                                 hover:bg-gray-100
+                                 hover:text-gray-900
+                                 dark:text-gray-200
+                                 dark:hover:bg-gray-700
+                                 dark:hover:text-gray-100"
+                                role="menuitem"
+                                >
+                                    Inbox
                             </a>
                             
                            
@@ -125,8 +148,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Logout
+                                >
+                                    Logout
                             </a>
                             <!-- Delete Profile Link-->
                             <a 
@@ -143,8 +166,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-brown-100" 
                                 role="menuitem"
-                            >
-                                Delete Account
+                                >
+                                    Delete Account
                             </a>
                             {% else %}
                             <a 
@@ -161,8 +184,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Register
+                                >
+                                    Register
                             </a>
                             <a 
                                 href="{% url 'blog:login' %}" 
@@ -178,8 +201,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Login
+                                >
+                                    Login
                             </a>
                             {% endif %}
                         </div>
@@ -212,7 +235,9 @@
                     aria-controls="navbar-default" 
                     aria-expanded="false"
                 >
-                    <span class="sr-only">Open main menu</span>
+                    <span class="sr-only">
+                        Open main menu
+                    </span>
                     <!-- SVG icon for the button -->
                     <svg 
                         class="w-6 h-6" 
@@ -274,8 +299,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Profile
+                                >
+                                    Profile
                             </a>
                         </li>
                          <li>
@@ -293,8 +318,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Post
+                                >
+                                    Post
                             </a>
                         </li>
                         
@@ -314,8 +339,27 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                My Blogs
+                                >
+                                    My Blogs
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'chat:inbox' %}"
+                                class="
+                                 block
+                                 px-4
+                                 py-2
+                                 text-sm
+                                 text-gray-700
+                                 hover:bg-gray-100
+                                 hover:text-gray-900
+                                 dark:text-gray-200
+                                 dark:hover:bg-gray-700
+                                 dark:hover:text-gray-100"
+                                role="menuitem"
+                                >
+                                    Inbox
                             </a>
                         </li>
                        
@@ -334,8 +378,8 @@
                                   dark:hover:bg-gray-700 
                                   dark:hover:text-gray-100" 
                                 role="menuitem"
-                            >
-                                Logout
+                                >
+                                    Logout
                             </a>
                         </li>
                         <!-- Delete Profile Link-->

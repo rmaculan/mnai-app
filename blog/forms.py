@@ -99,64 +99,57 @@ class ProfileForm(forms.ModelForm):
             ]
 
 class PostForm(forms.ModelForm):
-    title = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input', 
-                'placeholder': 'Title'
-                }), 
-        required=True
-        )
-    subtitle = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input', 
-                'placeholder': 'Subtitle'
-                }), 
-        required=True
-        )
-    job_title = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input', 
-                'placeholder': 'Job Title'
-                }), 
-        required=True
-        )
-    content = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'input', 
-            'placeholder': 'Content'
-                }), 
-        required=True
-        )
-    tags = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input', 
-                'placeholder': 'Tags | Seperate with comma' 
-                }), 
-        required=True
-        )
-    picture = forms.ImageField(required=True)
-    caption = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input', 
-                'placeholder': 'Caption'
-                }), 
-        required=True
-        )
+    # title = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             'class': 'input', 
+    #             'placeholder': 'Title'
+    #             }), 
+    #     required=True
+    #     )
+    # subtitle = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             'class': 'input', 
+    #             'placeholder': 'Subtitle'
+    #             }), 
+    #     required=True
+    #     )
+    # job_title = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             'class': 'input', 
+    #             'placeholder': 'Job Title'
+    #             }), 
+    #     required=True
+    #     )
+    # content = forms.CharField(
+    #     widget=forms.Textarea(attrs={
+    #         'class': 'input', 
+    #         'placeholder': 'Content'
+    #             }), 
+    #     required=True
+    #     )
+    # picture = forms.ImageField(required=True)
+    # caption = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             'class': 'input', 
+    #             'placeholder': 'Caption'
+    #             }), 
+    #     required=True
+    #     )
     
     class Meta:
         model = Post
-        fields = ['title', 
-                  'subtitle', 
-                  'job_title',
-                  'content', 
-                  'tags', 
-                  'picture', 
-                  'caption']
+        fields = [
+            'title', 
+            'subtitle', 
+            'job_title',
+            'content', 
+            'picture', 
+            'caption'
+            ]
         widgets = {
             'content': forms.Textarea(attrs={'rows': 20}),
         }
