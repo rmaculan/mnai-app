@@ -1,86 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+{% extends 'chat/base.html' %}
 
-      .page-container {
-        background-color: #b1b1b1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-      }
-
-      .content {
-        width: 80%;
-        max-width: 400px;
-        padding: 2rem;
-        height: fit-content;
-        max-height: 80vh;
-        background-color: #eef0f2;
-        border-radius: 1rem;
-        box-shadow: 0px 0px 1rem 0px rgba(0, 0, 0, 0.2);
-      }
-
-      h1 {
-        text-align: center;
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      input[type="text"] {
-        outline: none;
-        border: none;
-        padding: 0.5rem 1rem;
-        background-color: #dadee1;
-        border-radius: 2rem;
-        width: 100%;
-        text-align: center;
-      }
-
-      button {
-        margin-top: 1rem;
-        border: 0;
-        outline: 0;
-        padding: 0.5rem 2rem;
-        background-color: #1b1f24;
-        border-radius: 2rem;
-        color: #ffffff;
-        font-size: 1.25rem;
-        font-weight: bold;
-        transition: 0.25s ease;
-      }
-
-      button:hover {
-        background-color: #353a41;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page-container">
+{% block content %}
+    <div class="page-container px-4">
       <div class="content">
+        
+        <form method="get" action="{% url 'chat:search_users' %}">
+          <input type="text" name="query" placeholder="Search users...">
+          <button type="submit">Search</button>
+        </form>
+      
+        
+        
         {% if user.is_authenticated %}
-        <!-- display chat rooms -->
-        <h1>Select a chat room</h1>
-        <div class="rooms-container">
+        <!-- display chat rooms in rows-->
+        
+        {% include 'chat/create_room.html' %}
+        
+        <div class="rooms-container rounded-lg shadow-lg p-4 mt-4 mb-4">
+          <h1 class="text-2xl font-bold mb-4 mt-2">
+            Select a chat room
+          </h1>
           {% for room in rooms %}
-          <div class="room">{{ room.room_name }}</div>
+          <div class="room">
+            <a href="{% url 'chat:room' room.room_name %}" class="room-link">
+              {{ room.room_name }}
+            </a>
+          </div>
           {% endfor %}
         </div>
-        {% include 'chat/create_room.html' %}
         {% else %}
         <h1>Log in to enter chat room</h1>
-        {% include 'chat/login.html' %} {% endif %}
+        {% include 'chat/login.html' %} 
+        {% endif %}
       </div>
     </div>
-  </body>
-</html>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Search Users</h1>
+<form method="get" action="{% url 'chat:search_users' %}">
+    <input type="text" name="query" value="{{ query }}" placeholder="Search users...">
+    <button type="submit" class="bg-gray-500 text-white px-4 py-2 mt-4 mb-2 rounded hover:bg-gray-600 transition duration-200">
+        Search
+    </button>
+</form>
+{% if users %}
+<div class="container">
+    <h2>Search Results</h2>
+    <ul>
+        {% for user in users %}
+        <li>
+            {{ user.username }}
+            <a href="{% url 'chat:create_room' %}?user_id={{ user.id }}" class="text-blue-500 hover:underline">Start Chat</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% elif query %}
+<p>No users found matching your search.</p>
+{% endif %}
+{% endblock %}

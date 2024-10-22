@@ -1,20 +1,7 @@
 
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" 
-        content="width=device-width, initial-scale=1.0">
-    <title>Inbox</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        .room-container:last-child {
-            border-bottom: none;
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
+{% extends 'chat/base.html' %}
+
+{% block content %}
     {% if user.is_authenticated %}
         <div class="container mx-auto px-4 py-8">
             <h1 class="text-3xl font-bold mb-6">
@@ -22,7 +9,11 @@
             </h1>
             <div class="bg-white rounded-lg shadow-md p-4">
                 {% for room in rooms %}
-                    <div class="room-container py-4 {% if not forloop.last %}border-b border-gray-200{% endif %}">
+                    <div class="room-container py-4 
+                    {% if not forloop.last %}
+                        border-b border-gray-200
+                    {% endif %}"
+                    >
                         <h2 class="text-xl font-semibold mb-2">
                             {{ room.room_name }}
                         </h2>
@@ -71,11 +62,14 @@
         </div>
     {% endif %}
     <script>
+
         // Additional custom JavaScript can be added here
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Chat Inbox loaded');
         });
+
     </script>
+    {% endblock %}
 </body>
 </html>
 

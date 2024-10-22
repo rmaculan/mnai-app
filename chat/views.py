@@ -5,6 +5,7 @@ from .consumers import ChatConsumer
 from .forms import RoomCreationForm
 from django.contrib.auth import login, logout, authenticate
 from marketplace.models import Item
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -70,17 +71,6 @@ def index(request):
                 username=request.user.username
                 )
 
-        # if item_room and request.user.is_authenticated:
-        #     try:
-        #         item_room = ItemRoom.objects.get(
-        #             item=item,
-        #             room=room
-        #             )
-        #     except ItemRoom.DoesNotExist:
-        #         item_room = None
-        #         print(item_room)
-                
-
         return redirect(
             "room", 
             room_name=room_name, 
@@ -91,11 +81,23 @@ def index(request):
     context = {
         "rooms": rooms,
         "username": request.user.username,
-        # "item_rooms": item_rooms
     }
     # print(context)
 
     return render(request, "chat/index.html", context)
+
+@login_required
+def search_users(request):
+    query = request.GET.get('query', '')
+    users = User.objects.filter(
+        Q(username__icontains=query) | Q(email__icontains=query)
+    ).exclude(id=request.user.id)
+    
+    context = {
+        'users': users,
+        'query': query,
+    }
+    return render(request, 'chat/search_users.html', context)
 
 login_required
 def inbox(request):
@@ -108,16 +110,21 @@ def inbox(request):
     return render(request, "chat/inbox.html", context)
 
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def create_room(request):
     if request.method == "POST":
         form = RoomCreationForm(request.POST)
         if form.is_valid():
             item_id = request.POST.get('item_id')
+            user_id = request.POST.get('user_id')
     
             if item_id:
                 item = get_object_or_404(Item, id=item_id)
+                # other_user = item.seller
                 room_name = f"{item.name} - {item.seller.username}"
+            elif user_id:
+                other_user = get_object_or_404(User, id=user_id)
+                room_name = f"Chat with {other_user.username}"
             else:
                 room_name = request.POST.get('room_name')
 
@@ -130,12 +137,12 @@ def create_room(request):
             return redirect('chat:room', room_name=room_name)
     else:
         form = RoomCreationForm()
+        user_id = request.GET.get('user_id')
+        if user_id:
+            other_user = get_object_or_404(User, id=user_id)
+            form.fields['room_name'].initial = f"Chat with {other_user.username}"
 
-    return render(
-        request, 
-        "chat/create_room.html", 
-        {"form": form}
-        )
+    return render(request, "chat/create_room.html", {"form": form})
  
 @login_required
 def room_view(request, room_name):
@@ -167,12 +174,10 @@ def room_view(request, room_name):
 def manage_room(request, room_name):
     room = Room.objects.get(
         room_name=room_name,
-        item_room=item_room,
         creator=request.user.username,
         )
     messages = Message.objects.filter(
         room=room,
-        item_room=item_room,
         )
 
     if request.user != room.creator:
@@ -181,7 +186,6 @@ def manage_room(request, room_name):
             )
     context = {
         "room": room,
-        "item_room": item_room,
         "creator": creator,
         "messages": messages,
     }
@@ -205,6 +209,13 @@ def delete_room(request, room_name):
         return redirect("chat:index")
 
     return render(request, "chat/manage_room.html", context)
+
+# search users
+
+
+
+
+
 
 
 

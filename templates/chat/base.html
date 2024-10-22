@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+  <title>{% block title %}Chat{% endblock %}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .page-container {
+      background-color: #b1b1b1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .content {
+      width: 80%;
+      max-width: 400px;
+      padding: 2rem;
+      height: fit-content;
+      max-height: 80vh;
+      background-color: #eef0f2;
+      border-radius: 1rem;
+      box-shadow: 0px 0px 1rem 0px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      outline: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      background-color: #dadee1;
+      border-radius: 2rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 1rem;
+      border: 0;
+      outline: 0;
+      padding: 0.5rem 2rem;
+      background-color: #1b1f24;
+      border-radius: 2rem;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: bold;
+      transition: 0.25s ease;
+    }
+
+    button:hover {
+      background-color: #353a41;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .chat-container {
+      margin-top: 20px;
+    }
+    .chat-message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .chat-message.sent {
+      background-color: #dcf8c6;
+    }
+    .chat-message.received {
+      background-color: #fff;
+    }
+    .chat-input {
+      margin-top: 20px;
+    }
+    .chat-input input[type="text"] {
+      width: 70%;
+      padding: 10px;
+    }
+    .chat-input button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .chat-input button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  {% block content %} {% endblock %}
+</body>
+</html>
