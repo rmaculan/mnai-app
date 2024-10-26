@@ -89,7 +89,6 @@
           <tr>
             <th>Item</th>
             <th>From</th>
-            <th>Message</th>
             <th>Date</th>
             <th>Actions</th>
           </tr>
@@ -99,16 +98,7 @@
           <tr>
             <td>{{ message.item.name }}</td>
             <td>{{ message.sender }}</td>
-            <td>
-                {{ message.message }}
-                
-            </td>
             <td>{{ message.timestamp }}</td>
-            <td>
-                <a href="{% url 'marketplace:reply_form' message.id %}">
-                  Reply
-                </a>
-            </td>
           </tr>
           {% endfor %}
         </tbody>

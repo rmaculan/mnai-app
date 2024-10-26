@@ -5,13 +5,18 @@ import datetime
 
 
 class Room(models.Model):
+    
+    room_name = models.CharField(max_length=50)
     creator = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='creator_id',
         default=None,
         )
-    room_name = models.CharField(max_length=50)
+    participants = models.ManyToManyField(
+        User,
+        related_name='chat_rooms',
+        )
     created_at = models.DateTimeField(
         default=datetime.datetime.now)
     item_id = models.ForeignKey(
@@ -20,12 +25,18 @@ class Room(models.Model):
         null=True, 
         blank=True,
         )
+    is_private = models.BooleanField(default=False)
 
 
     def __str__(self):
         return self.room_name
 
-class RegularRoom(Room):
+class SellerRoom(Room):
+    seller = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='seller_id',
+        )
     profile = models.ForeignKey(
         Profile, 
         on_delete=models.CASCADE,

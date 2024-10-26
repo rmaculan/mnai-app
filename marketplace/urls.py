@@ -12,7 +12,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('blog/profile/<str:username>', profile_view, name='profile'),
     path('contact_seller_form/<int:item_id>/', views.contact_seller_form, name='contact_seller_form'),
-    path('create-room/<int:item_id>/', views.create_item_room, name='create_item_room'),
     path('messages/', views.user_messages, name='messages'),
     path('reply_form/<int:message_id>/', views.reply_form, name='reply_form'),
     path('seller_items/', views.get_seller_items, name='seller_items'),

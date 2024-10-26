@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models import Max, Q
+# from chat.models import Message
 
 
 class MarketplaceProfile(models.Model):
@@ -98,7 +99,11 @@ class ItemMessage(models.Model):
         on_delete=models.CASCADE, 
         related_name='receiver'
         )
-    message = models.TextField()
+    message = models.ForeignKey(
+        'chat.Message',
+        on_delete=models.CASCADE,
+        null=True,
+        )
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

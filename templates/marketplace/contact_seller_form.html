@@ -80,15 +80,17 @@
 
   <body>
   
-    {% extends 'marketplace/base.html' %}
+    
 
-    <div class="container">
+    <div class="chats-container">
       <h1>Contact Seller</h1>
-      <form method="POST">
+      <form class="msg-form" method="POST">
         {% csrf_token %}
         
         <div class="mb-3">
-          <label for="message" class="form-label">Message</label>
+          <label for="message" class="form-label">
+            Message
+          </label>
           <textarea
             class="form-control"
             id="message"
@@ -96,7 +98,9 @@
             required
           ></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="submit" class="btn btn-primary">
+          Send
+        </button>
       </form>
     </div>
     <footer>
@@ -104,10 +108,79 @@
         <p>&copy; 2022 Marketspace</p>
       </div>
     </footer>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-      integrity="sha384-+0Z9j6U5v3Z8"
-    >
+    <script>
+
+      const socketURL = `ws://${window.location.host}/ws/messages/{{room_name}}/`;
+      console.log("Establishing Socket Connection");
+      const socket = new WebSocket(socketURL);
+
+      // Send Message to the backend
+      const message_form = document.getElementById("msg-form");
+      message_form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        // console.log("Sending Message")
+        let message_sent = document.getElementById("message").value;
+        // console.log("Sending... ", message_sent);
+        socket.send(
+          JSON.stringify({
+            message: message_sent,
+            room_name: "{{room_name}}",
+            sender: "{{user}}",
+          })
+        );
+      });
+
+      const chats_div = document.getElementById("chats-container");
+
+      // Scroll to bottom
+      const scrollToBottom = () => {
+        chats_div.scrollTop = chats_div.scrollHeight;
+      };
+
+      // Recieve Message from the backend
+      socket.addEventListener("message", (e) => {
+        const data = JSON.parse(e.data);
+        console.log("Received message:", data);
+
+        console.log(data);
+
+        let sender = data["sender"];
+        let content = data["message"];
+
+        if (sender === "{{user}}") {
+          document.getElementById("message").value = "";
+        }
+
+        if (sender === "{{user}}") {
+          chats_div.innerHTML += `
+          <div class="single-message sent">
+              <div class="msg-body">
+                ${content}
+              </div>
+              <p class="sender">Me</p>
+          </div>`;
+        } else {
+          chats_div.innerHTML += `
+          <div class="single-message">
+              <div class="msg-body">
+                ${content}
+              </div>
+              <p class="sender">
+                ${sender}
+              </p>
+          </div>`;
+        }
+
+        scrollToBottom();
+      });
+
+      socket.onerror = function(error) {
+        console.error('WebSocket Error:', error);
+      };
+
+      socket.onclose = function(event) {
+        console.log('WebSocket closed');
+      };
+
     </script>
   </body>

@@ -12,7 +12,7 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from django.http import HttpResponseBadRequest
 from django.db.models import Q
-from chat.models import Room
+from chat.models import SellerRoom, Message
 
 logger = logging.getLogger(__name__)
 
@@ -112,30 +112,32 @@ def contact_seller_form(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     
     if request.method == 'POST':
-        message_text = request.POST['message']
-        room = Room.objects.get(item_id=item, creator=request.user)
-        ItemMessage.objects.create(
-            room=room,
-            sender=request.user,
-            message=message_text,
-            item=item
-        )
-        return redirect('chat:room', room_id=room.id)
+        message_text = request.POST.get('message', '')
+        if message_text:
+            room = Room.objects.get_or_create(
+                creator=request.user,
+                room_name=f"Item_{item_id}_{request.user.username}_{item.seller.username}",
+                item_id=item
+            )[0]
+            
+            # Create Message with the correct field names
+            message = Message.objects.create(
+                room=room,
+                sender=request.user,  # Assuming 'sender' is the field name instead of 'user'
+                message=message_text    # Assuming 'text' is the field name instead of 'content'
+            )
+            
+            ItemMessage.objects.create(
+                room=room,
+                sender=request.user,
+                message=message,
+                item=item,
+                receiver=item.seller
+            )
+            
+            return redirect('chat:room', room_name=room.room_name)
     
     return render(request, 'marketplace/contact_seller_form.html', {'item': item})
-
-
-
-def create_item_room(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-    room_name = f"Item_{item_id}_{request.user.username}_{item.seller.username}"
-    room, created = Room.objects.get_or_create(
-        creator=request.user,
-        room_name=room_name,
-        item_id=item
-    )
-    return redirect('chat:room', room_name=room.room_name)
-
 
 # user messages
 def user_messages(request):

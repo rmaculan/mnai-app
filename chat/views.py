@@ -143,6 +143,18 @@ def create_room(request):
             form.fields['room_name'].initial = f"Chat with {other_user.username}"
 
     return render(request, "chat/create_room.html", {"form": form})
+
+# create user to user chat
+@login_required
+def create_user_room(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+    room_name = f"Chat with {other_user.username}"
+    room = Room.objects.create(
+        creator=request.user,
+        room_name=room_name,
+        )
+    room.save()
+    return redirect('chat:room', room_name=room_name)
  
 @login_required
 def room_view(request, room_name):

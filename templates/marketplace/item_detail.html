@@ -21,7 +21,7 @@
               <p>description: {{ item.description }}</p>
             </div>
             {% if user.is_authenticated %}
-            <form action="{% url 'marketplace:create_item_room' item.id %}" method="post">
+            <form action="{% url 'marketplace:contact_seller_form' item.id %}" method="post">
               {% csrf_token %}
               <button type="submit">Contact Seller</button>
             </form>
