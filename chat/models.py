@@ -18,12 +18,7 @@ class Room(models.Model):
         related_name='chat_rooms',
         )
     created_at = models.DateTimeField(
-        default=datetime.datetime.now)
-    item_id = models.ForeignKey(
-        'marketplace.Item',
-        on_delete=models.CASCADE, 
-        null=True, 
-        blank=True,
+        default=datetime.datetime.now
         )
     is_private = models.BooleanField(default=False)
 
@@ -31,17 +26,17 @@ class Room(models.Model):
     def __str__(self):
         return self.room_name
 
-class SellerRoom(Room):
-    seller = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='seller_id',
-        )
-    profile = models.ForeignKey(
-        Profile, 
-        on_delete=models.CASCADE,
-        related_name='profile_id'
-        )
+# class SellerRoom(Room):
+#     seller = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='seller_id',
+#         )
+#     profile = models.ForeignKey(
+#         Profile, 
+#         on_delete=models.CASCADE,
+#         related_name='profile_id'
+#         )
 
 class Message(models.Model):
     room = models.ForeignKey(
@@ -50,8 +45,15 @@ class Message(models.Model):
         )
     sender = models.ForeignKey(
         User, 
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='sender_id',
+        null=True,
+        )
+    receiver = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='receiver_id',
+        default=None,
         )
     message = models.TextField()
     date = models.DateTimeField(

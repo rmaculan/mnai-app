@@ -99,11 +99,7 @@ class ItemMessage(models.Model):
         on_delete=models.CASCADE, 
         related_name='receiver'
         )
-    message = models.ForeignKey(
-        'chat.Message',
-        on_delete=models.CASCADE,
-        null=True,
-        )
+    message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -12,7 +12,7 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from django.http import HttpResponseBadRequest
 from django.db.models import Q
-from chat.models import SellerRoom, Message
+from chat.models import Message
 
 logger = logging.getLogger(__name__)
 
@@ -141,8 +141,19 @@ def contact_seller_form(request, item_id):
 
 # user messages
 def user_messages(request):
-    messages = ItemMessage.objects.filter(receiver=request.user)
-    return render(request, 'marketplace/messages.html', {'messages': messages})
+    messages = ItemMessage.objects.filter(
+        receiver=request.user,
+        ).order_by('-id')
+    rooms = Room.objects.filter(
+        Q(creator=request.user) 
+    )
+
+    context = {
+        'messages': messages,
+        'rooms': rooms,
+    }
+
+    return render(request, 'marketplace/messages.html', context)
 
 
 # Reply to message
