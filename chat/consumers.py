@@ -27,22 +27,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         sender = text_data_json['sender']
-
-        # Save the message to the database
+        
         await self.save_message(sender, message)
-
+        
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': message,
-                'sender': sender
+                'sender': sender,
+                'receiver': None  # Add this line
             }
         )
 
     async def chat_message(self, event):
         message = event['message']
         sender = event['sender']
+        receiver = event['receiver']
 
         await self.send(text_data=json.dumps({
             'message': message,
@@ -53,4 +54,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, sender_username, message):
         room = Room.objects.get(room_name=self.room_name)
         sender = User.objects.get(username=sender_username)
-        Message.objects.create(room=room, sender=sender, message=message)
+        # Get the first participant that isn't the sender as the receiver
+        receiver = room.participants.exclude(username=sender_username).first()
+        if not receiver:
+            receiver = room.creator if room.creator.username != sender_username else None
+        
+        Message.objects.create(
+            room=room, 
+            sender=sender, 
+            receiver=receiver,
+            message=message
+        )

@@ -6,7 +6,6 @@ from django.conf import settings
 from django.db.models import Max, Q
 # from chat.models import Message
 
-
 class MarketplaceProfile(models.Model):
     user = models.OneToOneField(
         User, 
@@ -55,7 +54,7 @@ class Item(models.Model):
             ('U', 'Used')
             ],
         default='U'
-                                  )
+        )
     category = models.ForeignKey(
         CategoryModel, 
         on_delete=models.SET_NULL, 

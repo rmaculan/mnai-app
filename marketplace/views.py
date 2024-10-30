@@ -32,6 +32,7 @@ class ItemPostView(CreateView):
                     img.save(img_file)
             except IOError:
                 pass
+
         return response
     
 def register(request):
@@ -40,9 +41,11 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+
             return redirect('blog:index') 
     else:
         form = UserCreationForm()
+
     return render(request, 'marketplace/register.html', {'form': form})
 
 def login_view(request):
@@ -51,18 +54,22 @@ def login_view(request):
             if form.is_valid():
                 user = form.get_user()
                 login(request, user)
+
                 return redirect('marketplace:index')
         else:
             form = AuthenticationForm()
+
         return render(request, 'marketplace/login.html', {'form': form})
 
 def logout_view(request):
     logger.info("Logout view accessed")
     logout(request)
+
     return redirect('marketplace:index')
         
 def user_profile(request):
     user = request.user
+
     return render(request, 'marketplace/user_profile.html', {'user': user})
 
 def index(request):
@@ -70,6 +77,7 @@ def index(request):
     context = {
         "newest_items": newest_items,
     }
+
     return render(request, "marketplace/index.html", context)
 
 # Create
@@ -101,11 +109,18 @@ def create_item(request):
             category=category,
             seller=seller
         )
+        
         return redirect('marketplace:index')
     else:
         form = ItemPostForm()
-        categories = CategoryModel.objects.all()  # Fetch all categories for selection
-        return render(request, 'marketplace/item_form.html', {'form': form, 'categories': categories})
+        categories = CategoryModel.objects.all()
+
+        context  = {
+            'form': form,
+            'categories': categories,
+        }
+
+        return render(request, 'marketplace/item_form.html', context)
         
 # Message seller
 def contact_seller_form(request, item_id):
@@ -120,11 +135,10 @@ def contact_seller_form(request, item_id):
                 item_id=item
             )[0]
             
-            # Create Message with the correct field names
             message = Message.objects.create(
                 room=room,
-                sender=request.user,  # Assuming 'sender' is the field name instead of 'user'
-                message=message_text    # Assuming 'text' is the field name instead of 'content'
+                sender=request.user, 
+                message=message_text
             )
             
             ItemMessage.objects.create(
@@ -158,21 +172,28 @@ def user_messages(request):
 
 # Reply to message
 def reply_form(request, message_id):
-    message = get_object_or_404(ItemMessage, pk=message_id)
+    message = get_object_or_404(
+        ItemMessage, 
+        pk=message_id
+        )
     if request.method == 'POST':
         message.message = request.POST['message']
         message.save()
+
         return redirect('marketplace:messages')
     else:
+        
         return render(request, 'marketplace/reply_form.html', {'message': message})
 
 # Read
 def item_list(request):
     items = Item.objects.all().order_by('-id')
+    
     return render(request, 'marketplace/index.html', {'items': items})
 
 def item_detail(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
+
     return render(request, 'marketplace/item_detail.html', {'item': item})
 
 # view listed items by seller
@@ -181,11 +202,13 @@ def get_seller_items(request):
         # name=request.name,
         seller=request.user
         )
+
     return render(request, 'marketplace/seller_items.html', {'items': items})
 
 def search_items(request):
     query = request.GET.get('query')
     items = Item.objects.filter(title__icontains=query)
+
     return render(request, 'marketplace/search_results.html', {'items': items})
 
 @login_required
@@ -195,9 +218,11 @@ def update_item(request, item_id):
         form = ItemPostForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
             form.save()
-            return redirect('marketplace:item_detail', item_id=item.id)  # Redirect to detail view or another appropriate view
+
+            return redirect('marketplace:item_detail', item_id=item.id)
     else:
         form = ItemPostForm(instance=item)
+
     return render(request, 'marketplace/update_item.html', {'form': form})
 
 # Delete
@@ -206,8 +231,10 @@ def delete_item(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     if request.method == 'POST':
         item.delete()
+
         return redirect('marketplace:index')
     else:
+
         return render(request, 'marketplace/item_confirm_delete.html', {'item': item})
 
 

@@ -3,9 +3,7 @@ from blog.models import Profile
 from django.contrib.auth.models import User
 import datetime
 
-
 class Room(models.Model):
-    
     room_name = models.CharField(max_length=50)
     creator = models.ForeignKey(
         User,
@@ -22,21 +20,8 @@ class Room(models.Model):
         )
     is_private = models.BooleanField(default=False)
 
-
     def __str__(self):
         return self.room_name
-
-# class SellerRoom(Room):
-#     seller = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         related_name='seller_id',
-#         )
-#     profile = models.ForeignKey(
-#         Profile, 
-#         on_delete=models.CASCADE,
-#         related_name='profile_id'
-#         )
 
 class Message(models.Model):
     room = models.ForeignKey(
@@ -51,9 +36,12 @@ class Message(models.Model):
         )
     receiver = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='receiver_id',
         default=None,
+        null=True,
+        blank=True,
+
         )
     message = models.TextField()
     date = models.DateTimeField(

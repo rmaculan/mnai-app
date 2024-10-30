@@ -73,8 +73,7 @@ def index(request):
 
         return redirect(
             "room", 
-            room_name=room_name, 
-            # item_room=item_room,
+            room_name=room_name,
             username=username
             )
     
@@ -90,23 +89,35 @@ def index(request):
 def search_users(request):
     query = request.GET.get('query', '')
     users = User.objects.filter(
-        Q(username__icontains=query) | Q(email__icontains=query)
+        Q(username__icontains=query) | 
+        Q(email__icontains=query)
     ).exclude(id=request.user.id)
-    
+
     context = {
         'users': users,
         'query': query,
     }
+
     return render(request, 'chat/search_users.html', context)
 
-login_required
+@login_required
 def inbox(request):
     user = request.user
-    rooms = Room.objects.filter(creator=user).order_by("-created_at")
+    receivers = User.objects.filter(
+        Q(sender_id__sender=user) | 
+        Q(receiver_id__receiver=user)
+    ).distinct()
+    rooms = Room.objects.filter(
+        creator=user,
+        participants__in=receivers
+        ).order_by("-created_at")
+
     context = {
-        "rooms": rooms,
         "user": request.user,
+        "receivers": receivers,
+        "rooms": rooms,  
     }
+
     return render(request, "chat/inbox.html", context)
 
 @login_required
@@ -120,18 +131,17 @@ def create_room(request):
     
             if item_id:
                 item = get_object_or_404(Item, id=item_id)
-                # other_user = item.seller
+                seller = item.seller
                 room_name = f"{item.name} - {item.seller.username}"
             elif user_id:
-                other_user = get_object_or_404(User, id=user_id)
-                room_name = f"Chat with {other_user.username}"
+                receiver = get_object_or_404(User, id=user_id)
+                room_name = f"Chat with {receiver.username}"
             else:
                 room_name = request.POST.get('room_name')
 
             room = Room.objects.create(
                 creator=request.user,
                 room_name=room_name,
-                item_id=item if item_id else None
             )
             room.save()
             return redirect('chat:room', room_name=room_name)
@@ -139,22 +149,10 @@ def create_room(request):
         form = RoomCreationForm()
         user_id = request.GET.get('user_id')
         if user_id:
-            other_user = get_object_or_404(User, id=user_id)
-            form.fields['room_name'].initial = f"Chat with {other_user.username}"
+            receiver = get_object_or_404(User, id=user_id)
+            form.fields['room_name'].initial = f"Chat with {receiver.username}"
 
     return render(request, "chat/create_room.html", {"form": form})
-
-# create user to user chat
-@login_required
-def create_user_room(request, user_id):
-    other_user = get_object_or_404(User, id=user_id)
-    room_name = f"Chat with {other_user.username}"
-    room = Room.objects.create(
-        creator=request.user,
-        room_name=room_name,
-        )
-    room.save()
-    return redirect('chat:room', room_name=room_name)
  
 @login_required
 def room_view(request, room_name):

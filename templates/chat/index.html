@@ -9,25 +9,10 @@
           <button type="submit">Search</button>
         </form>
       
-        
-        
         {% if user.is_authenticated %}
-        <!-- display chat rooms in rows-->
         
         {% include 'chat/create_room.html' %}
         
-        <div class="rooms-container rounded-lg shadow-lg p-4 mt-4 mb-4">
-          <h1 class="text-2xl font-bold mb-4 mt-2">
-            Select a chat room
-          </h1>
-          {% for room in rooms %}
-          <div class="room">
-            <a href="{% url 'chat:room' room.room_name %}" class="room-link">
-              {{ room.room_name }}
-            </a>
-          </div>
-          {% endfor %}
-        </div>
         {% else %}
         <h1>Log in to enter chat room</h1>
         {% include 'chat/login.html' %} 
