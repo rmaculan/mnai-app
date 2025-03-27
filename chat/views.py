@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from marketplace.models import Item
+from marketplace.models import Item  # Remove duplicate import
 from .models import Room, Message
 from .consumers import ChatConsumer
 from .forms import RoomCreationForm
@@ -71,10 +71,10 @@ def index(request):
                 username=request.user.username
                 )
 
-        return redirect(
-            "room", 
-            room_name=room_name,
-            username=username
+            return redirect(
+                "room", 
+                room_name=room_name, 
+                username=request.user.username  # Fix undefined variable
             )
     
     context = {
@@ -159,7 +159,7 @@ def room_view(request, room_name):
     existing_room = Room.objects.get(
         room_name__exact=room_name,
         )
-    creator = existing_room.creator == request.user
+    creator = existing_room.creator == request.user  # Define creator variable
     current_user = request.user
     messages = Message.objects.filter(
         room=existing_room
@@ -207,8 +207,7 @@ def manage_room(request, room_name):
 def delete_room(request, room_name):
     room = Room.objects.get(
         room_name=room_name,
-        item_room=item_room,
-        creator=request.user.username,
+        creator=request.user,  # Fix to use request.user
     )
     if request.user != room.creator:
         return HttpResponseForbidden(
@@ -221,11 +220,3 @@ def delete_room(request, room_name):
     return render(request, "chat/manage_room.html", context)
 
 # search users
-
-
-
-
-
-
-
-

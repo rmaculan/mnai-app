@@ -176,7 +176,7 @@
         </h1>
         <div class="chats-container" id="chats-container">
         {%for message in messages %} 
-          {% if message.sender.lower == user.lower%}
+          {% if message.sender.lower() == user.lower %}  # Fix sender comparison
           <div class="single-message sent">
             <div class="msg-body">{{message.message}}</div>
             <p class="sender">Me</p>

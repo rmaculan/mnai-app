@@ -1,0 +1,23 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<div class="page-container">
+  <div class="content">
+    <h1>Manage Room: {{ room.room_name }}</h1>
+    <div class="messages-container">
+      <h2>Messages</h2>
+      <ul>
+        {% for message in messages %}
+          <li>
+            <strong>{{ message.sender }}</strong>: {{ message.message }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <form method="POST" action="{% url 'chat:delete_room' room.room_name %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete Room</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -9,10 +9,9 @@ from notification.models import Notification
 from django.dispatch import receiver
 import uuid
 from PIL import Image
-
 from notification.models import Notification
 
-def user_directory_path(instance, filename):
+def user_directory_path(instance, filename):   
     if hasattr(instance, 'author'):
         return f'post_{instance.author.id}/{filename}'
     elif hasattr(instance, 'user'): 
@@ -143,7 +142,8 @@ class Stream(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         max_length=100, 
-        verbose_name='Tag'
+        verbose_name='Tag',
+        null=True
         )
     slug = models.SlugField(
             max_length=100, 
@@ -230,7 +230,8 @@ class Post(models.Model):
         )
     tags = models.ManyToManyField(
         Tag, 
-        related_name="tags"
+        related_name="tags",
+        null=True,
         )
 
     def save(self, *args, **kwargs):

@@ -275,50 +275,7 @@
                     Check out our marketplace!
                 </a>
         </div>
-        <div class="text-center">
-            {% if user.is_authenticated %}
-                <!-- hero banner for chatbot -->
-                <h2 class="text-3xl font-semibold mb-2">
-                    Chat with our Chatbot
-                </h2>
-                <p>
-                    Ask questions and get answers in real-time.
-                </p>
-                 <a
-                    href="{% url 'chatbot:chatbot' %}"
-                    class="btn btn-primary mt-8 mb-8"
-                >
-                    AI Chat
-                </a>
-            {% else %}
-                <h1 class="text-4xl ">
-                    Login to chat with our AI!
-                </h1>
-                <h1 class="text-md p-2">
-                    Don't have an account yet?
-                </h3>
-                <a 
-                    href="{% url 'blog:register' %}" 
-                    class="btn btn-primary"
-                >
-                    Register
-                </a>
-                or just...
-                <a 
-                    href="{% url 'blog:login' %}" 
-                    class="btn btn-primary"
-                >
-                    Sign In
-                </a>
-            {% endif %}
-                
-               
-            </div>
-        </div>
-    </section>
-
-    
-     <!-- Shop our latest items -->
+        
     <section class="container mx-auto px-4 py-8">
         
     </section>

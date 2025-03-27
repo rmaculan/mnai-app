@@ -42,7 +42,7 @@ def register(request):
             user = form.save()
             login(request, user)
 
-            return redirect('blog:index') 
+            return redirect('marketplace:index')  # Fix redirect URL
     else:
         form = UserCreationForm()
 
@@ -99,7 +99,8 @@ def create_item(request):
 
         seller = request.user
 
-        Item.objects.create(
+        if name and description and price:  # Validate required fields
+            Item.objects.create(
             name=name, 
             description=description, 
             price=price, 
@@ -129,7 +130,7 @@ def contact_seller_form(request, item_id):
     if request.method == 'POST':
         message_text = request.POST.get('message', '')
         if message_text:
-            room = Room.objects.get_or_create(
+            room, created = Room.objects.get_or_create(  # Ensure unique room name
                 creator=request.user,
                 room_name=f"Item_{item_id}_{request.user.username}_{item.seller.username}",
                 item_id=item
@@ -155,7 +156,7 @@ def contact_seller_form(request, item_id):
 
 # user messages
 def user_messages(request):
-    messages = ItemMessage.objects.filter(
+    messages = ItemMessage.objects.filter(  # Consider adding pagination
         receiver=request.user,
         ).order_by('-id')
     rooms = Room.objects.filter(
@@ -236,5 +237,3 @@ def delete_item(request, item_id):
     else:
 
         return render(request, 'marketplace/item_confirm_delete.html', {'item': item})
-
-

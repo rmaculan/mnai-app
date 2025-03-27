@@ -27,7 +27,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('chat/', include('chat.urls'), name='chat'),
     path("api/", include("api.urls")),
-    path('chatbot/', include('chatbot.urls', namespace='chatbot')),
+    # path('chatbot/', include('chatbot.urls', namespace='chatbot')),
     path('polls/', include('polls.urls', namespace='polls')),
     path('notifications/', include('notification.urls')),
     path('blog/', include('blog.urls', namespace='blog')),

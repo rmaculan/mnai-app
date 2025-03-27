@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from openai import OpenAI
 import os
-
 from django.contrib import auth
 from django.contrib.auth.models import User
 from .models import Chat
@@ -10,10 +9,12 @@ from .models import Chat
 from django.utils import timezone
 
 
+from django.conf import settings
+
 client = OpenAI(
-    # This is the default and can be omitted
-    api_key=os.environ.get("OPENAI_API_KEY"),
+    api_key=settings.OPENAI_API_KEY
 )
+
 
 def ask_openai(message):
     response = client.chat.completions.create(

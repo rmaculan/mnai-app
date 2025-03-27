@@ -1,76 +1,22 @@
-
 {% extends 'chat/base.html' %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold mb-6">
-                Inbox
-            </h1>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                {% for room in rooms %}
-                    <div class="room-container py-4 
-                    {% if not forloop.last %}
-                        border-b border-gray-200
-                    {% endif %}"
-                    >
-                        <h2 class="text-xl font-semibold mb-2">
-                            {{ room.room_name }}
-                        </h2>
-                            <a href="{% url 'chat:room' room.room_name %}"
-                                class="
-                                    mt-2 
-                                    inline-block 
-                                    bg-blue-500 
-                                    text-white 
-                                    px-4 py-2 
-                                    rounded 
-                                    hover:bg-blue-600 
-                                    transition duration-200
-                                    ">
-                                Join Room
-                            </a>
-                    </div>
-                {% empty %}
-                    <p class="text-gray-500">
-                        You haven't created any chat rooms yet.
-                    </p>
-                {% endfor %}
-            </div>
-        </div>
+<div class="page-container">
+  <div class="content">
+    <h1>Your Inbox</h1>
+    <a href="{% url 'chat:create_room' %}" class="btn btn-success mb-3">Start New Conversation</a>
+    {% if rooms %}
+    <ul class="list-group">
+      {% for room in rooms %}
+      <li class="list-group-item">
+        <strong>{{ room.room_name }}</strong>
+        <a href="{% url 'chat:room' room.room_name %}" class="btn btn-primary float-right">View</a>
+      </li>
+      {% endfor %}
+    </ul>
     {% else %}
-        <div class="container mx-auto px-4 py-8 text-center">
-            <h1 class="text-3xl font-bold mb-6">
-                Please Log In
-            </h1>
-            <p class="text-gray-600 mb-4">
-                You need to be logged in to view your chat rooms.
-            </p>
-            <a href="{% url 'chat:login' %}" 
-                class="
-                    bg-blue-500 
-                    text-white p
-                    x-6 p
-                    y-3 
-                    rounded 
-                    hover:bg-blue-600 
-                    transition duration-200
-                    "
-                    >
-                    Log In
-                </a>
-        </div>
+    <p>No conversations found. Start a conversation!</p>
     {% endif %}
-    <script>
-
-        // Additional custom JavaScript can be added here
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Chat Inbox loaded');
-        });
-
-    </script>
-    {% endblock %}
-</body>
-</html>
-
-
+  </div>
+</div>
+{% endblock %}
