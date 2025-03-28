@@ -176,7 +176,7 @@
         </h1>
         <div class="chats-container" id="chats-container">
         {%for message in messages %} 
-          {% if message.sender.lower == user.lower%}
+          {% if message.sender == request.user %}
           <div class="single-message sent">
             <div class="msg-body">{{message.message}}</div>
             <p class="sender">Me</p>
@@ -222,7 +222,7 @@
           JSON.stringify({
             message: message_sent,
             room_name: "{{room_name}}",
-            sender: "{{user}}",
+            sender: "{{request.user.username}}",
           })
         );
       });
@@ -244,11 +244,11 @@
         let sender = data["sender"];
         let content = data["message"];
 
-        if (sender === "{{user}}") {
+        if (sender === "{{request.user.username}}") {
           document.getElementById("message").value = "";
         }
 
-        if (sender === "{{user}}") {
+        if (sender === "{{request.user.username}}") {
           chats_div.innerHTML += `
           <div class="single-message sent">
               <div class="msg-body">

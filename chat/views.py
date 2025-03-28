@@ -174,7 +174,8 @@ def room_view(request, room_name):
     context = {
         "creator": creator,
         "messages": messages,
-        "room_name": existing_room,
+        "room_name": existing_room.room_name,
+        "room": existing_room,
     }
     logger.debug(f"Room context: {context}")
     

@@ -132,9 +132,11 @@ def contact_seller_form(request, item_id):
         if message_text:
             room, created = Room.objects.get_or_create(  # Ensure unique room name
                 creator=request.user,
-                room_name=f"Item_{item_id}_{request.user.username}_{item.seller.username}",
-                item_id=item
-            )[0]
+                room_name=f"Item_{item_id}_{request.user.username}_{item.seller.username}"
+            )
+            
+            # We'll skip adding participants for now since there's a database issue
+            # and rely on the creator field which is properly set up
             
             message = Message.objects.create(
                 room=room,

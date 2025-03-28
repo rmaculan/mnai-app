@@ -52,12 +52,30 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, sender_username, message):
+        from marketplace.models import ItemMessage
+        
         room = Room.objects.get(room_name=self.room_name)
         sender = User.objects.get(username=sender_username)
-        # Get the first participant that isn't the sender as the receiver
-        receiver = room.participants.exclude(username=sender_username).first()
-        if not receiver:
+        
+        # Try to determine receiver from previous messages in this room
+        previous_message = Message.objects.filter(room=room).exclude(sender=sender).order_by('-date').first()
+        if previous_message and previous_message.sender:
+            receiver = previous_message.sender
+        else:
+            # If no previous messages from other users, try using room creator
             receiver = room.creator if room.creator.username != sender_username else None
+            
+            # For item messages, try to find the item seller/buyer relationship
+            if 'Item_' in self.room_name:
+                try:
+                    item_message = ItemMessage.objects.filter(room=room).first()
+                    if item_message:
+                        if sender == item_message.sender:
+                            receiver = item_message.receiver
+                        else:
+                            receiver = item_message.sender
+                except:
+                    pass
         
         Message.objects.create(
             room=room, 
