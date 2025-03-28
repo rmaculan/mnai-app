@@ -73,7 +73,10 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
-            <a href="{% url 'marketplace:index' %}" class="text-white font-bold">
+            <a 
+              href="{% url 'marketplace:index' %}" 
+              class="text-white font-bold"
+              >
               Marketspace
             </a>
             <div class="flex items-baseline ml-10 space-x-16">
@@ -373,6 +376,21 @@
             >Sell</a
           >
           <a
+            href="{% url 'marketplace:seller_items' %}"
+            class="
+              text-gray-300 
+              hover:bg-gray-700 
+              hover:text-white 
+              block 
+              px-3 
+              py-2 
+              rounded-md 
+              text-base 
+              font-medium
+              "
+            >Items Listed</a
+          >
+          <a
             href="{% url 'marketplace:messages' %}"
             class="
               text-gray-300 
@@ -385,12 +403,8 @@
               text-base 
               font-medium
               "
-            >Messages</a
+            >Item Inquiries</a
           >
-
-          <!-- link to blog -->
-
-          {% endif %} {% if user.is_authenticated %}
           <a
             href="{% url 'blog:profile' user.username %}"
             class="
@@ -405,21 +419,6 @@
               font-medium
               "
             >Profile</a
-          >
-          <a
-            href="{% url 'marketplace:seller_items' %}"
-            class="
-              text-gray-300 
-              hover:bg-gray-700 
-              hover:text-white 
-              block 
-              px-3 
-              py-2 
-              rounded-md 
-              text-base 
-              font-medium
-              "
-            >Items Listed</a
           >
           <a
             href="{% url 'marketplace:logout' %}"
