@@ -11,7 +11,7 @@ class Room(models.Model):
         related_name='creator_id',
         default=None,
         )
-    participants = models.ManyToManyField(
+    participant = models.ManyToManyField(
         User,
         related_name='chat_rooms',
         )
