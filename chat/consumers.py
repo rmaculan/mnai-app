@@ -14,7 +14,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -58,7 +57,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender = User.objects.get(username=sender_username)
         
         # Try to determine receiver from previous messages in this room
-        previous_message = Message.objects.filter(room=room).exclude(sender=sender).order_by('-date').first()
+        previous_message = Message.objects.filter(
+            room=room
+            ).exclude(
+                sender=sender
+                ).order_by('-date').first()
         if previous_message and previous_message.sender:
             receiver = previous_message.sender
         else:
