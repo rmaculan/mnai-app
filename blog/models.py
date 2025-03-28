@@ -9,7 +9,8 @@ from notification.models import Notification
 from django.dispatch import receiver
 import uuid
 from PIL import Image
-from notification.models import Notification
+from django.apps import apps
+from .fields import SVGAndImageField
 
 def user_directory_path(instance, filename):   
     if hasattr(instance, 'author'):
@@ -192,7 +193,7 @@ class Post(models.Model):
         on_delete=models.CASCADE, 
         )
     job_title = models.CharField(max_length=200, blank=True)
-    picture = models.ImageField(
+    picture = SVGAndImageField(  # Changed to SVGAndImageField to support SVG uploads
         upload_to=user_directory_path, 
         verbose_name="Picture", 
         default=""
@@ -215,7 +216,6 @@ class Post(models.Model):
         choices=STATUS_CHOICES, 
         default='draft'
         )
-    on_delete=models.CASCADE
     likes = models.ManyToManyField(
         User, 
         related_name='liked_posts', 
@@ -255,7 +255,7 @@ class Post(models.Model):
                             break
             else:
                 self.slug = base_slug
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("post-details", args=[str(self.id)])
@@ -403,9 +403,6 @@ def comment_saved(sender, instance, created, **kwargs):
             **kwargs
             )
         
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 @receiver(post_save, sender=Likes)
 def user_liked_post(sender, instance, created, **kwargs):
     if created:
@@ -420,10 +417,6 @@ def user_liked_post(sender, instance, created, **kwargs):
             user=post.author,  # The author of the post
             notification_types=1  # Assuming 1 indicates a like notification
         )
-
-
-        
-
 
 post_save.connect(
     Likes.user_liked_post, 
@@ -451,9 +444,42 @@ post_save.connect(
 post_delete.connect(
     Comment.user_del_comment_post, 
     sender=Comment
-    )    
+    )
     
-   
-
-
-
+class BlogMessage(models.Model):
+    """
+    Model for storing blog post messages and inquiries between users
+    """
+    # Use string references to avoid circular imports
+    room = models.ForeignKey(
+        'chat.Room',
+        on_delete=models.CASCADE,
+        related_name='blog_messages'
+    )
+    post = models.ForeignKey(
+        'blog.Post',
+        on_delete=models.CASCADE,
+        related_name='blog_messages'
+    )
+    message = models.ForeignKey(
+        'chat.Message',
+        on_delete=models.CASCADE,
+        related_name='blog_message'
+    )
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='blog_sent_messages'
+    )
+    receiver = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='blog_received_messages'
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        
+    def __str__(self):
+        return f"Message about {self.post.title} from {self.sender.username} to {self.receiver.username}"

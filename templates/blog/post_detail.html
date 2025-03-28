@@ -145,6 +145,14 @@
                 </span>
             </button>
           </form>
+          
+          {% if user.is_authenticated and user != post.author %}
+          <a href="{% url 'blog:contact_author_form' post.id %}" 
+             class="px-4 py-2 mt-4 ml-4 text-sm text-white bg-blue-600 rounded-xl shadow-xl border hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="far fa-envelope"></i>
+            <span class="ml-2">Contact Author</span>
+          </a>
+          {% endif %}
         </div>
       </div> 
     </div>

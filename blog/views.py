@@ -12,6 +12,9 @@ import logging
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from .models import BlogMessage
+from django.http import HttpResponseBadRequest
+from chat.models import Message, Room
 
 logger = logging.getLogger(__name__)
     
@@ -54,6 +57,7 @@ def create_blog_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.content = mark_safe(post.content)
+            post.status = 'published'  # Set status to published
             post.save()
             return redirect('blog:index')
     else:
@@ -65,7 +69,7 @@ def create_blog_post(request):
 def read_blog_posts(request):
     author = request.user
     all_authors = User.objects.all()
-    blog_posts = Post.objects.all().order_by('-publish_date')
+    blog_posts = Post.objects.filter(status='published').order_by('-publish_date')
     profiles = Profile.objects.all()
     
     if request.user.is_authenticated:
@@ -126,9 +130,18 @@ def read_my_posts(request):
     blog_posts = Post.objects.filter(
         author=request.user
         ).order_by('-publish_date')
-    return render(
-        request, 'blog/my_posts.html', {'posts': blog_posts}
-        )
+    
+    # Group posts by status
+    published_posts = [post for post in blog_posts if post.status == 'published']
+    draft_posts = [post for post in blog_posts if post.status == 'draft']
+    
+    context = {
+        'posts': blog_posts,
+        'published_posts': published_posts,
+        'draft_posts': draft_posts
+    }
+    
+    return render(request, 'blog/my_posts.html', context)
 
 def delete_blog_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -478,6 +491,86 @@ def view_following(request):
         {'following': following}
         )
 
+# Blog Messages
+@login_required
+def contact_author_form(request, post_id):
+    """Allow users to message a blog post author"""
+    post = get_object_or_404(Post, pk=post_id)
+    
+    if request.method == 'POST':
+        message_text = request.POST.get('message', '')
+        if message_text:
+            # Create unique room for this conversation
+            room, created = Room.objects.get_or_create(
+                creator=request.user,
+                room_name=f"Blog_{post_id}_{request.user.username}_{post.author.username}"
+            )
+            
+            # Create the message
+            message = Message.objects.create(
+                room=room,
+                sender=request.user, 
+                message=message_text
+            )
+            
+            # Create blog message
+            BlogMessage.objects.create(
+                room=room,
+                post=post,
+                message=message,
+                sender=request.user,
+                receiver=post.author
+            )
+            
+            return redirect('chat:room', room_name=room.room_name)
+    
+    return render(request, 'blog/contact_author_form.html', {'post': post})
 
+@login_required
+def blog_messages(request):
+    """View all blog-related conversations"""
+    # Get all conversations where the user is either sender or receiver
+    messages = BlogMessage.objects.filter(
+        Q(receiver=request.user) | Q(sender=request.user)
+    ).select_related('post', 'sender', 'receiver', 'room').order_by('-timestamp')
+    
+    # Group by room to show only the latest message from each conversation
+    latest_messages = {}
+    for message in messages:
+        room_id = message.room.id
+        if room_id not in latest_messages:
+            latest_messages[room_id] = message
+    
+    # Convert dictionary values back to a list
+    grouped_messages = list(latest_messages.values())
+    
+    context = {
+        'messages': grouped_messages
+    }
+    
+    return render(request, 'blog/messages.html', context)
 
-
+@login_required
+def delete_blog_conversation(request, message_id):
+    """Delete a blog conversation"""
+    message = get_object_or_404(BlogMessage, pk=message_id)
+    
+    # Security check: only allow users to delete conversations they're part of
+    if request.user != message.sender and request.user != message.receiver:
+        return HttpResponseBadRequest("You don't have permission to delete this conversation.")
+    
+    if request.method == 'POST':
+        # Store the room reference before deleting the message
+        room = message.room
+        
+        # Delete the BlogMessage
+        message.delete()
+        
+        # Check if there are no more BlogMessages for this room
+        if not BlogMessage.objects.filter(room=room).exists():
+            # Optionally delete the room and all its messages if needed
+            pass
+            
+        return redirect('blog:messages')
+        
+    return HttpResponseBadRequest("Invalid request method.")

@@ -158,16 +158,23 @@ def contact_seller_form(request, item_id):
 
 # user messages
 def user_messages(request):
-    messages = ItemMessage.objects.filter(  # Consider adding pagination
-        receiver=request.user,
-        ).order_by('-id')
-    rooms = Room.objects.filter(
-        Q(creator=request.user) 
-    )
-
+    # Get all conversations where the user is either sender or receiver
+    messages = ItemMessage.objects.filter(
+        Q(receiver=request.user) | Q(sender=request.user)
+    ).select_related('item', 'sender', 'receiver', 'room').order_by('-id')
+    
+    # Group by room to show only the latest message from each conversation
+    latest_messages = {}
+    for message in messages:
+        room_id = message.room.id
+        if room_id not in latest_messages:
+            latest_messages[room_id] = message
+    
+    # Convert dictionary values back to a list
+    grouped_messages = list(latest_messages.values())
+    
     context = {
-        'messages': messages,
-        'rooms': rooms,
+        'messages': grouped_messages
     }
 
     return render(request, 'marketplace/messages.html', context)
@@ -239,3 +246,31 @@ def delete_item(request, item_id):
     else:
 
         return render(request, 'marketplace/item_confirm_delete.html', {'item': item})
+
+# Delete a conversation
+@login_required
+def delete_conversation(request, message_id):
+    message = get_object_or_404(ItemMessage, pk=message_id)
+    
+    # Security check: only allow users to delete conversations they're part of
+    if request.user != message.sender and request.user != message.receiver:
+        return HttpResponseBadRequest("You don't have permission to delete this conversation.")
+    
+    if request.method == 'POST':
+        # Store the room reference before deleting the message
+        room = message.room
+        
+        # Delete the ItemMessage
+        message.delete()
+        
+        # Check if there are no more ItemMessages for this room
+        if not ItemMessage.objects.filter(room=room).exists():
+            # Optionally delete the room and all its messages
+            # Uncomment if you want to delete the entire room when conversation is deleted
+            # Message.objects.filter(room=room).delete()
+            # room.delete()
+            pass
+            
+        return redirect('marketplace:messages')
+        
+    return HttpResponseBadRequest("Invalid request method.")

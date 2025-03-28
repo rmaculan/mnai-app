@@ -115,8 +115,8 @@
                                 >
                                     My Blogs
                             </a>
-                             <!-- <a
-                                href="{% url 'chat:inbox' %}"
+                             <a
+                                href="{% url 'blog:messages' %}"
                                 class="
                                  block
                                  px-4
@@ -130,8 +130,8 @@
                                  dark:hover:text-gray-100"
                                 role="menuitem"
                                 >
-                                    Inbox
-                            </a> -->
+                                    Messages
+                            </a>
                             
                            
                             <a 
@@ -345,7 +345,7 @@
                         </li>
                         <li>
                             <a
-                                href="#"
+                                href="{% url 'blog:messages' %}"
                                 class="
                                  block
                                  px-4
@@ -359,7 +359,7 @@
                                  dark:hover:text-gray-100"
                                 role="menuitem"
                                 >
-                                    Inbox
+                                    Messages
                             </a>
                         </li>
                        
@@ -464,6 +464,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-
-                        

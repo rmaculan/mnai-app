@@ -27,5 +27,8 @@ urlpatterns = [
     path('<uuid:post_id>/<int:comment_id>/edit/', views.update_comment, name='update_comment'),
     path('<uuid:post_id>/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     
-    
+    # Blog Messages
+    path('messages/', views.blog_messages, name='messages'),
+    path('contact_author/<uuid:post_id>/', views.contact_author_form, name='contact_author_form'),
+    path('delete_conversation/<int:message_id>/', views.delete_blog_conversation, name='delete_conversation'),
 ]

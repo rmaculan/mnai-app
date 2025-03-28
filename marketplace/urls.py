@@ -21,4 +21,5 @@ urlpatterns = [
     path('update_item/<int:item_id>/', views.update_item, name='update_item'),
     path('item_detail/<int:item_id>/', views.item_detail, name='item_detail'),
     path('item_confirm_delete/<int:item_id>/', views.delete_item, name='delete_item'),
+    path('delete_conversation/<int:message_id>/', views.delete_conversation, name='delete_conversation'),
 ]

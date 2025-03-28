@@ -1,7 +1,8 @@
 from django.db import models
-from blog.models import Profile
 from django.contrib.auth.models import User
 import datetime
+# Use string literal to avoid circular imports
+# from blog.models import Profile
 
 class Room(models.Model):
     room_name = models.CharField(max_length=50)
@@ -49,4 +50,3 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{str(self.room)} - {self.sender}"
-
