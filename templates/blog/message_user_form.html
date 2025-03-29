@@ -1,7 +1,7 @@
 {% extends 'blog/base.html' %}
 {% load static %}
 
-{% block title %}Contact Author{% endblock %}
+{% block title %}Message User{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -9,12 +9,11 @@
     <div class="col-md-8">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Contact Post Author</h5>
+          <h5 class="mb-0">Message {{ receiver.username }}</h5>
         </div>
         <div class="card-body">
           <div class="mb-4">
-            <h4>Re: {{ post.title }}</h4>
-            <p class="text-muted">Send a message to {{ post.author.username }}</p>
+            <p class="text-muted">Send a direct message to {{ receiver.username }}</p>
           </div>
           
           <form method="post">
@@ -24,7 +23,7 @@
               <textarea class="form-control" id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <a href="{% url 'blog:post_detail' post_id=post.id %}" class="btn btn-outline-secondary">Cancel</a>
+              <a href="{% url 'blog:profile' username=receiver.username %}" class="btn btn-outline-secondary">Cancel</a>
               <button type="submit" class="btn btn-primary">Send Message</button>
             </div>
           </form>

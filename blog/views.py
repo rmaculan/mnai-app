@@ -15,6 +15,7 @@ from django.db.models import Q
 from .models import BlogMessage
 from django.http import HttpResponseBadRequest
 from chat.models import Message, Room
+from notification.models import Notification
 
 logger = logging.getLogger(__name__)
     
@@ -514,7 +515,7 @@ def contact_author_form(request, post_id):
             )
             
             # Create blog message
-            BlogMessage.objects.create(
+            blog_message = BlogMessage.objects.create(
                 room=room,
                 post=post,
                 message=message,
@@ -522,9 +523,70 @@ def contact_author_form(request, post_id):
                 receiver=post.author
             )
             
+            # Create notification for post author
+            notification = Notification.objects.create(
+                post=post,
+                sender=request.user,
+                user=post.author,
+                notification_types=4,  # Message notification type
+                text_preview=message_text[:90]  # Preview of the message
+            )
+            
             return redirect('chat:room', room_name=room.room_name)
     
     return render(request, 'blog/contact_author_form.html', {'post': post})
+
+@login_required
+def message_user(request, username):
+    """Allow users to send direct messages to other users"""
+    receiver = get_object_or_404(User, username=username)
+    
+    # Prevent messaging yourself
+    if request.user == receiver:
+        return redirect('blog:profile', username=username)
+    
+    if request.method == 'POST':
+        message_text = request.POST.get('message', '')
+        if message_text:
+            # Create unique room for this direct message conversation
+            room, created = Room.objects.get_or_create(
+                creator=request.user,
+                room_name=f"Direct_{request.user.username}_{receiver.username}"
+            )
+            
+            # Add both users to the room participants
+            room.participant.add(request.user)
+            room.participant.add(receiver)
+            
+            # Create the message
+            message = Message.objects.create(
+                room=room,
+                sender=request.user, 
+                receiver=receiver,
+                message=message_text
+            )
+            
+            # Create blog message (without post reference)
+            blog_message = BlogMessage.objects.create(
+                room=room,
+                post=None,  # No associated post for direct messages
+                message=message,
+                sender=request.user,
+                receiver=receiver
+            )
+            
+            # Create notification for the receiver
+            notification = Notification.objects.create(
+                post=None,  # No post for direct messages
+                sender=request.user,
+                user=receiver,
+                notification_types=4,  # Message notification type
+                text_preview=message_text[:90]  # Preview of the message
+            )
+            
+            return redirect('chat:room', room_name=room.room_name)
+    
+    return render(request, 'blog/message_user_form.html', {'receiver': receiver})
 
 @login_required
 def blog_messages(request):

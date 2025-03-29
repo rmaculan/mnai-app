@@ -121,33 +121,44 @@
                     <span><i class="fas fa-edit"></i></span>
                   </a>
                 {% else %}
-                  {% if follow_status == True %}
-                    <form 
-                      action="{% url 'blog:unfollow' profile.user %}" 
-                      method="post"
-                    >
-                      {% csrf_token %}
-                      <button 
-                        type="submit" 
-                        class="btn btn-primary"
+                  <div class="flex space-x-2">
+                    {% if follow_status == True %}
+                      <form 
+                        action="{% url 'blog:unfollow' profile.user %}" 
+                        method="post"
                       >
-                        Unfollow
-                      </button>
-                    </form>
-                  {% else %}
-                    <form 
-                      action="{% url 'blog:follow' profile.user %}" 
-                      method="post"
-                    >
-                      {% csrf_token %}
-                      <button 
-                        type="submit" 
-                        class="btn btn-primary"
+                        {% csrf_token %}
+                        <button 
+                          type="submit" 
+                          class="btn btn-primary"
+                        >
+                          Unfollow
+                        </button>
+                      </form>
+                    {% else %}
+                      <form 
+                        action="{% url 'blog:follow' profile.user %}" 
+                        method="post"
                       >
-                        Follow
-                      </button>
-                    </form>
-                  {% endif %}
+                        {% csrf_token %}
+                        <button 
+                          type="submit" 
+                          class="btn btn-primary"
+                        >
+                          Follow
+                        </button>
+                      </form>
+                    {% endif %}
+                    
+                    <!-- Message User Button -->
+                    {% if user.is_authenticated and user != profile.user %}
+                      <a href="{% url 'blog:message_user' username=profile.user.username %}" 
+                         class="btn btn-info text-white">
+                        <i class="fas fa-envelope"></i>
+                        Message
+                      </a>
+                    {% endif %}
+                  </div>
                 {% endif %} 
               </div>
             </div>

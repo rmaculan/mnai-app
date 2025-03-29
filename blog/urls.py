@@ -30,5 +30,6 @@ urlpatterns = [
     # Blog Messages
     path('messages/', views.blog_messages, name='messages'),
     path('contact_author/<uuid:post_id>/', views.contact_author_form, name='contact_author_form'),
+    path('message_user/<str:username>/', views.message_user, name='message_user'),
     path('delete_conversation/<int:message_id>/', views.delete_blog_conversation, name='delete_conversation'),
 ]

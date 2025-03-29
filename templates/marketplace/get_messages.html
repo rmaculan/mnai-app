@@ -61,7 +61,7 @@
   </head>
   <body>
     {% extends 'marketplace/base.html' %}
-  <!-- get messages -->
+    <!-- get messages -->
     <div class="container">
       <div class="hero-banner">
         <h1>Free Marketplace</h1>
@@ -71,25 +71,29 @@
         <div class="col-md-8">
           <div id="messages-container">
             {% for message in messages %}
-            <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
-              <div class="message-header">
-                {{ message.sender }}
-              </div>
-              <div class="message-body">
-                {{ message.body }}
-              </div>
-              <div class="timestamp">
-                {{ message.timestamp }}
-              </div>
+            <div
+              class="message {% if message.sender == user %}sent{% else %}received{% endif %}"
+            >
+              <div class="message-header">{{ message.sender }}</div>
+              <div class="message-body">{{ message.body }}</div>
+              <div class="timestamp">{{ message.timestamp }}</div>
             </div>
             {% endfor %}
           </div>
           <div class="chat-input-container">
             <form action="{% url 'marketplace:send_message' %}" method="post">
               {% csrf_token %}
-              <input type="text" name="body" class="chat-input" placeholder="Type a message...">
-                <button type="submit" class="send-button">Send</button>
+              <input
+                type="text"
+                name="body"
+                class="chat-input"
+                placeholder="Type a message..."
+              />
+              <button type="submit" class="send-button">Send</button>
             </form>
-            </div>
-            </div>
-            
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

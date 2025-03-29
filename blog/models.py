@@ -228,8 +228,9 @@ class Post(models.Model):
         related_name='post_following', 
         null=True,
         )
-    tags = models.ManyToManyField(
+    tags = models.OneToOneField(
         Tag, 
+        on_delete=models.CASCADE,
         related_name="tags",
         null=True,
         )
@@ -446,7 +447,7 @@ post_delete.connect(
     
 class BlogMessage(models.Model):
     """
-    Model for storing blog post messages and inquiries between users
+    Model for storing blog post messages and direct messages between users
     """
     # Use string references to avoid circular imports
     room = models.ForeignKey(
@@ -457,7 +458,9 @@ class BlogMessage(models.Model):
     post = models.ForeignKey(
         'blog.Post',
         on_delete=models.CASCADE,
-        related_name='blog_messages'
+        related_name='blog_messages',
+        null=True,
+        blank=True
     )
     message = models.ForeignKey(
         'chat.Message',
@@ -480,4 +483,7 @@ class BlogMessage(models.Model):
         ordering = ['-timestamp']
         
     def __str__(self):
-        return f"Message about {self.post.title} from {self.sender.username} to {self.receiver.username}"
+        if self.post:
+            return f"Message about {self.post.title} from {self.sender.username} to {self.receiver.username}"
+        else:
+            return f"Direct message from {self.sender.username} to {self.receiver.username}"

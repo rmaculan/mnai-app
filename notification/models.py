@@ -6,7 +6,8 @@ class Notification(models.Model):
     NOTIFICATION_TYPES = (
         (1, 'Like'), 
         (2, 'Comment'), 
-        (3, 'Follow')
+        (3, 'Follow'),
+        (4, 'Message')
         )
 
     post = models.ForeignKey(
@@ -41,6 +42,3 @@ class Notification(models.Model):
 
     # def __str__(self):
     #     return self.text_preview
-
-
-

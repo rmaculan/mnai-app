@@ -11,9 +11,11 @@
     <div class="card-header bg-primary text-white">
       <h5 class="mb-0">Your Conversations</h5>
     </div>
+    
     <div class="card-body p-0">
       <div class="list-group list-group-flush" id="inbox-list">
         {% for message in messages %}
+        <a href="{% url 'chat:room' room_name=message.room.room_name %}">
         <div class="list-group-item list-group-item-action p-3 message-item">
           <div class="row g-3">
             <!-- Item & Icon -->
@@ -26,7 +28,7 @@
                   <i class="fas fa-shopping-bag text-white"></i>
                 </div>
                 {% endif %}
-                <div class="small text-center text-md-start">{{ message.item.name|truncatechars:20 }}</div>
+                <div class="small text-center text-sm-start">{{ message.item.name|truncatechars:5 }}</div>
               </div>
             </div>
             
@@ -53,10 +55,9 @@
             <!-- Actions -->
             <div class="col-6 col-md-3">
               <div class="d-flex justify-content-center justify-content-md-end gap-2">
-                <a href="{% url 'chat:room' room_name=message.room.room_name %}" class="btn btn-primary btn-sm">View</a>
                 <form action="{% url 'marketplace:delete_conversation' message_id=message.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this conversation?')">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  <button type="submit">Delete</button>
                 </form>
               </div>
             </div>
@@ -69,6 +70,7 @@
             <p>No item inquiries yet.</p>
           </div>
         </div>
+        </a>
         {% endfor %}
       </div>
       </div>
