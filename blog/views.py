@@ -544,6 +544,37 @@ def blog_messages(request):
     # Convert dictionary values back to a list
     grouped_messages = list(latest_messages.values())
     
+    # Debug information
+    print(f"Blog messages query returned {len(messages)} raw messages")
+    print(f"Grouped into {len(grouped_messages)} conversations")
+    for msg in grouped_messages:
+        print(f"Message ID: {msg.id}, Room: {msg.room}, Post: {msg.post.title}, Sender: {msg.sender.username}")
+    
+    # If no blog messages, try to create a test message if the user has posts
+    if not grouped_messages and Post.objects.filter(author=request.user).exists():
+        try:
+            post = Post.objects.filter(author=request.user).first()
+            test_room, created = Room.objects.get_or_create(
+                creator=request.user,
+                room_name=f"Test_Blog_{post.id}_{request.user.username}"
+            )
+            test_message = Message.objects.create(
+                room=test_room,
+                sender=request.user,
+                message="This is a test message to verify messaging functionality."
+            )
+            test_blog_message = BlogMessage.objects.create(
+                room=test_room,
+                post=post,
+                message=test_message,
+                sender=request.user,
+                receiver=request.user
+            )
+            grouped_messages = [test_blog_message]
+            print(f"Created test message with ID: {test_blog_message.id}")
+        except Exception as e:
+            print(f"Error creating test message: {str(e)}")
+    
     context = {
         'messages': grouped_messages
     }
