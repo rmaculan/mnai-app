@@ -2,25 +2,13 @@ import importlib
 from django.shortcuts import render, redirect
 from notification.models import Notification
 
-# SHow all notifications
+# Show all notifications
 def show_all_notifications(request):
-    user = request.user
-    notifications = Notification.objects.filter(
-        user=user
-    ).order_by('-date')
-
-    notification_ids = []
-    for notification in notifications:
-        notification_ids.append(notification.id)
-
-    context = {
-        'user': user,
-        'notifications': notifications
-    }
+    # The notifications are already added to the context by our context processor
+    # So we don't need to retrieve them again here
     return render(
         request, 
-        'notifications/all_notifications.html', 
-        context
+        'notifications/notifications_clean.html'
         )
     
 def show_notification(request):

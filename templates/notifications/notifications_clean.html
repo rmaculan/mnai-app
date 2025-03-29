@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+    <div class="container mx-auto mt-4 mb-4">
+        <h1 class="text-3xl mb-4"><strong>Notifications</strong></h1>
+        <div>
+            <p>Total notifications: {{ notifications|length }}</p>
+            <p class="text-sm text-gray-500">Notification IDs: 
+                {% for notification in notifications %}
+                    {{ notification.id }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+            {% for notification in notifications %}
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm" data-id="{{ notification.id }}">
+                    <div class="flex items-start">
+                        <div class="mr-3">
+                            {% if notification.sender.profile.image %}
+                                <img src="{{ notification.sender.profile.image.url }}" alt="user avatar" class="rounded-full h-10 w-10"/>
+                            {% else %}
+                                <img src="{% static 'images/default.jpg' %}" alt="user avatar" class="rounded-full h-10 w-10"/>
+                            {% endif %}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <a href="{% url 'blog:profile' notification.sender.username %}" class="font-medium text-blue-600 hover:underline">
+                                    {{ notification.sender.username }}
+                                </a>
+                                <span class="text-xs text-gray-500">{{ notification.date|date:"M d, Y H:i" }}</span>
+                            </div>
+                            
+                            {% if notification.notification_types == 1 %}
+                                <p class="mt-1">
+                                    <i class="fas fa-thumbs-up text-blue-500"></i> 
+                                    Liked your post "<a href="{% url 'blog:post_detail' notification.post.id %}" class="hover:underline font-medium">{{ notification.post.title }}</a>"
+                                </p>
+                            {% elif notification.notification_types == 2 %}
+                                <p class="mt-1">
+                                    <i class="fas fa-comment text-blue-500"></i> 
+                                    Commented on your post "<a href="{% url 'blog:post_detail' notification.post.id %}" class="hover:underline font-medium">{{ notification.post.title }}</a>"
+                                </p>
+                            {% elif notification.notification_types == 3 %}
+                                <p class="mt-1">
+                                    <i class="fas fa-user-plus text-blue-500"></i> 
+                                    Started following you
+                                </p>
+                            {% endif %}
+                            
+                            <div class="flex justify-end mt-2">
+                                <a href="{% url 'notification:delete-notification' notification.id %}" class="text-red-500 hover:underline text-sm">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No notifications to display.</p>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-6">
+            <a href="{% url 'blog:index' %}" class="text-blue-500 hover:underline">
+                <i class="fas fa-arrow-left mr-1"></i> Back to Blog
+            </a>
+        </div>
+    </div>
+</body>
+</html>

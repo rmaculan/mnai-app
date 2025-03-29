@@ -117,31 +117,14 @@
                                 >
                             </a>
                             <a 
-                                href="" 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
                                 type="button" 
                                 class="btn-close" 
                                 data-bs-dismiss="alert" 
                                 aria-label="Close"
                                 >
+                                delete
                             </a>
-                            <a 
-                                href="{% url 'notification:delete-notification' notification.id %}" 
-                                type="button" 
-                                class="btn-close" 
-                                data-bs-dismiss="alert" a
-                                ria-label="Close"
-                                >
-                            </a>
-                            
-                                <a 
-                                    href="{% url 'notification:delete-notification' notification.id %}" 
-                                    type="button" 
-                                    class="btn-close" 
-                                    data-bs-dismiss="alert" a
-                                    ria-label="Close"
-                                    >
-                                    delete
-                                </a>
                             
                         </div>
                     {% elif notification.notification_types == 2 %}
@@ -211,22 +194,14 @@
                                 />
                             </a>
                             <a 
-                                href="" 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
                                 type="button" 
                                 class="btn-close" 
                                 data-bs-dismiss="alert" 
                                 aria-label="Close"
                                 >
+                                delete
                             </a>
-                            <a 
-                                    href="{% url 'notification:delete-notification' notification.id %}" 
-                                    type="button" 
-                                    class="btn-close" 
-                                    data-bs-dismiss="alert" a
-                                    ria-label="Close"
-                                    >
-                                    delete
-                                </a>
                         </div>
                         
                     

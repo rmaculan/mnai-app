@@ -92,6 +92,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notification.context_processors.notifications_processor',
             ],
         },
     },
@@ -181,5 +182,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 # from decouple import config
-
-

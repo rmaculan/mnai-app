@@ -286,22 +286,26 @@ class Comment(models.Model):
     def create_notification(self):
         """
         Creates a notification related to this comment instance.
+        Only creates a notification if this is a new comment (not an update).
         """
-        post = self.post
-        sender = self.author
-        text_preview = self.content[:90]  
-        notify = Notification.objects.create(
-            post=post,
-            sender=sender,
-            user=post.author,
-            text_preview=text_preview,
-            notification_types=2
-        )
-        notify.save()
+        if not self.pk:  # Only for new comments
+            post = self.post
+            sender = self.author
+            text_preview = self.content[:90]  
+            notify = Notification.objects.create(
+                post=post,
+                sender=sender,
+                user=post.author,
+                text_preview=text_preview,
+                notification_types=2
+            )
+            notify.save()
 
     def save(self, *args, **kwargs):
+        is_new = not self.pk  # Check if this is a new comment
         super().save(*args, **kwargs) 
-        self.create_notification()
+        if is_new:  # Only create notification for new comments
+            self.create_notification()
 
     @staticmethod
     def user_comment_post(sender, instance, created, **kwargs):
@@ -393,30 +397,23 @@ class Follow(models.Model):
             )
         notify.delete()
 
-@receiver(post_save, sender=Comment)
-def comment_saved(sender, instance, created, **kwargs):
-    if created:
-        instance.user_comment_post(
-            sender, 
-            instance, 
-            created, 
-            **kwargs
-            )
+# Remove duplicated signal handler
+# @receiver(post_save, sender=Comment)
+# def comment_saved(sender, instance, created, **kwargs):
+#     if created:
+#         instance.user_comment_post(
+#             sender, 
+#             instance, 
+#             created, 
+#             **kwargs
+#             )
         
-@receiver(post_save, sender=Likes)
-def user_liked_post(sender, instance, created, **kwargs):
-    if created:
-        # Your notification logic here
-        # Assuming 'instance' is a Likes instance
-        post = instance.post  # The post that was liked
-        sender = instance.user  # The user who liked the post
-        # Create a notification for the post's author
-        Notification.objects.create(
-            post=post,
-            sender=sender,
-            user=post.author,  # The author of the post
-            notification_types=1  # Assuming 1 indicates a like notification
-        )
+# Remove duplicated notification creation
+# @receiver(post_save, sender=Likes)
+# def user_liked_post(sender, instance, created, **kwargs):
+#     if created:
+#         # This is already handled by Likes.user_liked_post
+#         pass
 
 post_save.connect(
     Likes.user_liked_post, 
@@ -437,10 +434,11 @@ post_delete.connect(
     sender=Follow
     )
 
-post_save.connect(
-    Comment.user_comment_post, 
-    sender=Comment
-    )
+# This is causing duplicate notifications
+# post_save.connect(
+#     Comment.user_comment_post, 
+#     sender=Comment
+#     )
 post_delete.connect(
     Comment.user_del_comment_post, 
     sender=Comment
