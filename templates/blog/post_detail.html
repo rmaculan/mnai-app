@@ -128,52 +128,7 @@
         {{ post.content|safe }}
       </p>
 
-      <!-- Author Verification History -->
-      <div class="container mt-8 p-6 bg-gray-100 rounded-xl shadow-md">
-        <h3 class="text-2xl font-bold mb-4">Author Verification History</h3>
-        {% if post.author.profile.verification_history %}
-          <div class="space-y-4">
-            {% for entry in post.author.profile.verification_history|slice:":5" %}
-              <div class="p-4 bg-white rounded-lg shadow">
-                <div class="flex justify-between items-center">
-                  <span class="font-semibold">
-                    {% if entry.post_id == post.id|stringformat:"s" %}
-                      This Post
-                    {% else %}
-                      <a href="{% url 'blog:post-detail' entry.post_id %}" class="text-blue-600 hover:underline">
-                        Post {{ forloop.counter }}
-                      </a>
-                    {% endif %}
-                  </span>
-                  <span class="text-sm text-gray-500">{{ entry.timestamp }}</span>
-                </div>
-                <div class="mt-2">
-                  <div class="flex justify-between">
-                    <span>Overall Score:</span>
-                    <span>{{ entry.verification_score|floatformat:2 }}/1.0</span>
-                  </div>
-                  {% if entry.poll_data %}
-                    <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {% for category, results in entry.poll_data.items %}
-                        <div>
-                          <div class="capitalize font-medium">{{ category|cut:"_" }}</div>
-                          <div class="text-sm text-gray-600">
-                            {% for choice, count in results.items %}
-                              {{ choice }}: {{ count }}<br>
-                            {% endfor %}
-                          </div>
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p class="text-gray-600">No verification history available yet.</p>
-        {% endif %}
-      </div>
+      
 
       <!-- Poll Section -->
       <div class="container mt-8 p-6 bg-gray-100 rounded-xl shadow-md">
@@ -327,7 +282,19 @@
           
           {% if user.is_authenticated and user != post.author %}
           <a href="{% url 'blog:contact_author_form' post.id %}" 
-             class="px-4 py-2 mt-4 ml-4 text-sm text-white bg-blue-600 rounded-xl shadow-xl border hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+             class="
+              px-4 
+              py-2 
+              mt-4 
+              ml-4 
+              text-md 
+              rounded-xl 
+              shadow-xl 
+              hover:bg-blue-100 
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-blue-500"
+              >
             <i class="far fa-envelope"></i>
             <span class="ml-2">Contact Author</span>
           </a>
