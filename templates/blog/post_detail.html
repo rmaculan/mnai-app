@@ -32,6 +32,31 @@
         max-width: 100%;
         height: auto;
       }
+      
+      .progress-bar {
+        width: 100%;
+        height: 0.5rem;
+        background-color: #e5e7eb;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+      }
+      
+      .progress-bar-fill.verified {
+        background-color: #10b981;
+      }
+      
+      .progress-bar-fill.pending {
+        background-color: #f59e0b;
+      }
+      
+      .progress-bar-fill.disputed {
+        background-color: #ef4444;
+      }
     </style>
   </head>
   <body class="bg-gradient-to-l
@@ -53,14 +78,43 @@
       <p class="text-gray-500">
         {{ post.subtitle }}
       </p>
-      By
-      <strong>
-        <a href="{% url 'blog:profile' post.author.username %}"
-          >
-          {{ post.author }} - 
-        </a>
-      </strong>
-      {{ post.job_title }}
+      <div class="flex items-center gap-2">
+        By
+        <strong>
+          <a href="{% url 'blog:profile' post.author.username %}"
+            >
+            {{ post.author }} - 
+          </a>
+        </strong>
+        {{ post.job_title }}
+        {% if post.get_verification_badge %}
+          <div class="relative group">
+            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+              {% if post.verification_status == 'verified' %}bg-green-100 text-green-800
+              {% elif post.verification_status == 'disputed' %}bg-red-100 text-red-800
+              {% elif post.verification_status == 'pending' %}bg-yellow-100 text-yellow-800
+              {% elif post.verification_status == 'warning' %}bg-orange-100 text-orange-800
+              {% elif post.verification_status == 'mixed' %}bg-purple-100 text-purple-800
+              {% endif %} cursor-help">
+              {{ post.get_verification_badge }}
+            </span>
+            <div class="absolute hidden group-hover:block z-10 w-64 p-2 mt-1 text-sm bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div class="font-bold mb-1">Verification Details</div>
+              <div>Score: {{ post.verification_score|floatformat:2 }}/1.0</div>
+              <div class="mt-1">
+                {% if post.verification_details %}
+                  {% for category, data in post.verification_details.items %}
+                    <div class="flex justify-between">
+                      <span class="capitalize">{{ category|cut:"_" }}:</span>
+                      <span>{{ data.score|floatformat:2 }}</span>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
       <img
         src="{{ post.picture.url }}"
         alt="{{ post.title }}"
@@ -73,6 +127,131 @@
       <p class="markdown-content">
         {{ post.content|safe }}
       </p>
+
+      <!-- Author Verification History -->
+      <div class="container mt-8 p-6 bg-gray-100 rounded-xl shadow-md">
+        <h3 class="text-2xl font-bold mb-4">Author Verification History</h3>
+        {% if post.author.profile.verification_history %}
+          <div class="space-y-4">
+            {% for entry in post.author.profile.verification_history|slice:":5" %}
+              <div class="p-4 bg-white rounded-lg shadow">
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold">
+                    {% if entry.post_id == post.id|stringformat:"s" %}
+                      This Post
+                    {% else %}
+                      <a href="{% url 'blog:post-detail' entry.post_id %}" class="text-blue-600 hover:underline">
+                        Post {{ forloop.counter }}
+                      </a>
+                    {% endif %}
+                  </span>
+                  <span class="text-sm text-gray-500">{{ entry.timestamp }}</span>
+                </div>
+                <div class="mt-2">
+                  <div class="flex justify-between">
+                    <span>Overall Score:</span>
+                    <span>{{ entry.verification_score|floatformat:2 }}/1.0</span>
+                  </div>
+                  {% if entry.poll_data %}
+                    <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {% for category, results in entry.poll_data.items %}
+                        <div>
+                          <div class="capitalize font-medium">{{ category|cut:"_" }}</div>
+                          <div class="text-sm text-gray-600">
+                            {% for choice, count in results.items %}
+                              {{ choice }}: {{ count }}<br>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-600">No verification history available yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Poll Section -->
+      <div class="container mt-8 p-6 bg-gray-100 rounded-xl shadow-md">
+        <h3 class="text-2xl font-bold mb-4">{{ poll.question_text }}</h3>
+        
+        {% if not has_voted %}
+          <form method="post" action="{% url 'polls:vote' poll.id %}">
+            {% csrf_token %}
+            <div class="space-y-2">
+              {% for choice in poll.choice_set.all %}
+              <div class="flex items-center">
+                <input type="radio" id="choice_{{ choice.id }}" name="choice" value="{{ choice.id }}" class="mr-2">
+                <label for="choice_{{ choice.id }}">{{ choice.choice_text }}</label>
+              </div>
+              {% endfor %}
+            </div>
+            <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              Submit Vote
+            </button>
+          </form>
+        {% else %}
+          <div class="text-gray-700">
+            <p>You've already voted on this poll.</p>
+            {% if verification_data %}
+              <div class="mt-4 p-4 bg-white rounded-lg shadow">
+                <h4 class="font-bold text-lg mb-2">Community Verification</h4>
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span>Post Verification Status:</span>
+                    <span class="font-semibold">{{ verification_data.status|title }}</span>
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <span>Post Verification Score:</span>
+                    <span class="font-semibold">{{ verification_data.score|floatformat:1 }}/1.0</span>
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <span>Author Credibility Score:</span>
+                    <span class="font-semibold">{{ verification_data.author_credibility|floatformat:1 }}/1.0</span>
+                  </div>
+
+                  <div class="mt-4">
+                    <h5 class="font-semibold mb-2">Poll Results:</h5>
+                    <ul class="space-y-1">
+                      {% for choice, votes in verification_data.results.items %}
+                        <li class="flex justify-between">
+                          <span>{{ choice }}:</span>
+                          <span>{{ votes }} ({% widthratio votes verification_data.total_votes 100 %}%)</span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  {% if verification_data.history %}
+                  <div class="mt-4">
+                    <h5 class="font-semibold mb-2">Author Verification History:</h5>
+                    <div class="space-y-2">
+                      {% for entry in verification_data.history|slice:":3" %}
+                        <div class="p-2 bg-gray-50 rounded">
+                          <div class="flex justify-between">
+                            <span>{{ entry.timestamp|date:"M d, Y" }}</span>
+                            <span>{{ entry.status|title }}</span>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% else %}
+              <p>Community results will be displayed here once available.</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
       <div class="container flex items-center rounded-xl shadow-xl">
         <div class="container 
           bg-gradient-to-r 
@@ -247,6 +426,13 @@
 </div>
 
       <script>
+        // Initialize progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        });
+
 
         // Like and Dislike Form
         document.getElementById('like-form')

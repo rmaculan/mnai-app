@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, CommentForm, ProfileForm
 from .models import Stream, Post, Comment, Likes, Follow, Profile, Tag
+from polls.models import Question, VoteRecord, Choice
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.utils.safestring import mark_safe
@@ -116,12 +118,57 @@ def read_blog_post(request, post_id):
         follower=request.user, 
         following=post.author).exists()
     
+    # Get or create poll for this post
+    poll, created = Question.objects.get_or_create(
+        post=post,
+        defaults={
+            'question_text': 'Is this post credible?',
+            'pub_date': timezone.now(),
+            'question_type': 'verification'
+        }
+    )
+    
+    # Create default choices if poll was just created
+    if created:
+        Choice.objects.create(
+            question=poll,
+            choice_text='Yes',
+            votes=0
+        )
+        Choice.objects.create(
+            question=poll,
+            choice_text='No',
+            votes=0
+        )
+    
+    # Check if user has already voted
+    has_voted = False
+    if request.user.is_authenticated:
+        has_voted = VoteRecord.objects.filter(
+            question=poll,
+            user=request.user
+        ).exists()
+    
+    # Get verification data
+    choices = poll.choice_set.all()
+    verification_data = {
+        'score': post.verification_score,
+        'status': post.verification_status,
+        'author_credibility': profile.credibility_score,
+        'results': {c.choice_text: c.votes for c in choices},
+        'total_votes': sum(c.votes for c in choices),
+        'history': profile.verification_history
+    }
+    
     context = {
         'post': post,
         'profile': profile,
         'comments': comments,
         'is_liked': is_liked,
         'is_following': is_following,
+        'poll': poll,
+        'has_voted': has_voted,
+        'verification_data': verification_data,
     }
     return render(
         request, 'blog/post_detail.html', context

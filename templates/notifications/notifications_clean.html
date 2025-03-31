@@ -33,8 +33,7 @@
         >
           <div class="flex items-start">
             <div class="mr-3">
-              {% if notification.sender.profile.image %} {% if
-              notification.sender.profile.image.url %}
+               {% if notification.sender.profile.image %}
               <img
                 src="{{ notification.sender.profile.image.url }}"
                 alt="user avatar"
@@ -46,13 +45,8 @@
                 alt="user avatar"
                 class="rounded-full h-10 w-10"
               />
-              {% endif %} {% else %}
-              <img
-                src="{% static 'images/default.jpg' %}"
-                alt="user avatar"
-                class="rounded-full h-10 w-10"
-              />
-              {% endif %}
+              {% endif %} 
+             
             </div>
             <div class="flex-1">
               <div class="flex justify-between">

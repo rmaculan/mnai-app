@@ -6,4 +6,24 @@
 {% endfor %}
 </ul>
 
+{% if verification_score %}
+<div class="verification-results">
+    <h2>Verification Analysis</h2>
+    <div class="verification-score">
+        <strong>Post Verification Score:</strong> {{ verification_score|floatformat:1 }}/10
+    </div>
+    <div class="author-credibility">
+        <strong>Author Credibility:</strong> {{ author_credibility|floatformat:1 }}/10
+    </div>
+    <div class="poll-breakdown">
+        <h3>Vote Breakdown</h3>
+        <ul>
+            {% for choice, votes in poll_results.items %}
+            <li>{{ choice }}: {{ votes }} votes ({{ votes|floatformat:1 }}%)</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
 <a href="{% url 'polls:detail' question.id %}">Vote again?</a>
