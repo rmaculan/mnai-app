@@ -13,6 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
+CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY') 
+OLLAMA_BASE_URL = os.environ.get('OLLAMA_BASE_URL', 'http://localhost:11434')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
@@ -42,7 +45,7 @@ INSTALLED_APPS = [
     # my apps
     'chat',
     'notification',
-    # 'chatbot',
+    'chatbot',
     'polls',
     'blog',
     'marketplace',

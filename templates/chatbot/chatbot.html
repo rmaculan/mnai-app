@@ -126,6 +126,11 @@
   <form class="message-form">
     {%csrf_token%}
     <div class="input-group">
+      <select class="form-control" name="provider" style="max-width: 150px;">
+        <option value="openai">OpenAI</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="claude">Claude</option>
+      </select>
       <input type="text" class="form-control message-input" placeholder="Type your message...">
       <div class="input-group-append">
         <button type="submit" class="btn btn-primary btn-send">Send</button>
@@ -167,7 +172,8 @@
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        'message': message
+        'message': message,
+        'provider': document.querySelector('[name=provider]').value
       })
     })
       .then(response => response.json())

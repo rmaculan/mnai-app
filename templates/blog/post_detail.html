@@ -98,7 +98,21 @@
               {% endif %} cursor-help">
               {{ post.get_verification_badge }}
             </span>
-            <div class="absolute hidden group-hover:block z-10 w-64 p-2 mt-1 text-sm bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="
+              absolute 
+              hidden 
+              group-hover:block 
+              z-10 
+              w-64 
+              p-2 
+              mt-1 
+              text-sm 
+              bg-white 
+              border 
+              border-gray-200 
+              rounded-lg 
+              shadow-lg"
+              >
               <div class="font-bold mb-1">Verification Details</div>
               <div>Score: {{ post.verification_score|floatformat:2 }}/1.0</div>
               <div class="mt-1">
