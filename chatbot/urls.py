@@ -1,24 +1,11 @@
 from django.urls import path
 from . import views
 
+app_name = 'chatbot'
+
 urlpatterns = [
-    path('', views.chatbot, name='chatbot'),
-    path('login/', views.login, name='login'),
-    path('register/', views.register, name='register'),
-    path('logout/', views.logout, name='logout'),
-    path('api/conversations/', 
-         views.ConversationListCreate.as_view(),
-         name='conversation-list'),
-    path('api/conversations/<int:pk>/', 
-         views.ConversationRetrieveUpdateDestroy.as_view(), 
-         name='conversation-detail'),
-    path('api/conversations/<int:pk>/archive/', 
-         views.ConversationArchiveView.as_view(), 
-         name='conversation-archive'),
-    path('api/conversations/<int:pk>/pin/', 
-         views.ConversationPinView.as_view(), 
-         name='conversation-pin'),
-    path('api/conversations/<int:pk>/favorite/', 
-         views.ConversationFavoriteView.as_view(), 
-         name='conversation-favorite'),
+    path('sessions/', views.chat_sessions_list, name='chat_sessions_list'),
+    path('sessions/create/', views.chat_session_create, name='chat_session_create'),
+    path('sessions/delete/<int:session_id>/', views.chat_session_delete, name='chat_session_delete'),
+    path('payment_settings/', views.payment_settings, name='payment_settings'),
 ]
