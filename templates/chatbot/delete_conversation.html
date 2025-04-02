@@ -1,0 +1,48 @@
+{% extends 'chatbot/base.html' %}
+
+{% block title %}Delete Conversation{% endblock %}
+
+{% block styles %}
+<style>
+  .delete-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-container">
+  <div class="card">
+    <div class="card-header bg-danger text-white">
+      <h2 class="m-0">Delete Conversation</h2>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-warning mb-4">
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        Are you sure you want to delete the conversation "<strong>{{ conversation.title }}</strong>"?
+        <p class="mt-2 mb-0">This action cannot be undone. All messages in this conversation will be permanently removed.</p>
+      </div>
+      
+      <form method="POST">
+        {% csrf_token %}
+        <div class="d-flex justify-content-between mt-2">
+          <a href="{% url 'chatbot:conversations' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-1"></i> Cancel
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash mr-1"></i> Delete Permanently
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

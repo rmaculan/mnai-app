@@ -1,0 +1,101 @@
+{% extends 'chatbot/base.html' %}
+
+{% block title %}Your Conversations{% endblock %}
+
+{% block styles %}
+<style>
+  .conversations-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .conversation-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .conversation-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #718096;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="conversations-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-2xl font-bold">Your Conversations</h1>
+    
+    <div>
+      {% if user.is_authenticated %}
+      <a href="{% url 'chatbot:create_conversation' %}" class="btn btn-primary">
+        <i class="fas fa-plus-circle mr-1"></i> New Conversation
+      </a>
+      <a href="{% url 'chatbot:logout' %}" class="btn btn-outline-secondary ml-2">
+        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+      </a>
+      {% else %}
+      <a href="{% url 'chatbot:login' %}" class="btn btn-primary">
+        <i class="fas fa-sign-in-alt mr-1"></i> Login
+      </a>
+      <a href="{% url 'chatbot:register' %}" class="btn btn-outline-primary ml-2">
+        <i class="fas fa-user-plus mr-1"></i> Register
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user.is_authenticated %}
+    {% if conversations %}
+      <div class="conversations-list">
+        {% for conversation in conversations %}
+          <div class="conversation-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h2 class="text-lg font-semibold">{{ conversation.title }}</h2>
+                <p class="text-sm text-gray-600">
+                  {{ conversation.get_first_message }}
+                </p>
+                <p class="text-xs text-gray-500 mt-2">
+                  Last updated: {{ conversation.updated_at|date:"F j, Y, g:i a" }}
+                </p>
+              </div>
+              <div class="d-flex">
+                <a href="{% url 'chatbot:conversation_detail' conversation.id %}" class="btn btn-sm btn-info mr-2">
+                  <i class="fas fa-comments"></i> Open
+                </a>
+                <a href="{% url 'chatbot:delete_conversation' conversation.id %}" class="btn btn-sm btn-danger">
+                  <i class="fas fa-trash"></i> Delete
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-comments fa-3x mb-3"></i>
+        <h3>No conversations yet</h3>
+        <p class="mb-4">Start a new conversation and begin chatting!</p>
+        <a href="{% url 'chatbot:create_conversation' %}" class="btn btn-primary">
+          Start Conversation
+        </a>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-info">
+      Please log in to view your conversations.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

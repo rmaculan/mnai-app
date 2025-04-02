@@ -4,8 +4,12 @@ from . import views
 app_name = 'chatbot'
 
 urlpatterns = [
-    path('sessions/', views.chat_sessions_list, name='chat_sessions_list'),
-    path('sessions/create/', views.chat_session_create, name='chat_session_create'),
-    path('sessions/delete/<int:session_id>/', views.chat_session_delete, name='chat_session_delete'),
-    path('payment_settings/', views.payment_settings, name='payment_settings'),
+    path('', views.conversations, name='conversations'),
+    path('chat/', views.chatbot, name='chatbot'),  # Legacy endpoint
+    path('conversation/new/', views.create_conversation, name='create_conversation'),
+    path('conversation/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
+    path('conversation/<int:conversation_id>/delete/', views.delete_conversation, name='delete_conversation'),
+    path('login/', views.login, name='login'),
+    path('register/', views.register, name='register'),
+    path('logout/', views.logout, name='logout'),
 ]

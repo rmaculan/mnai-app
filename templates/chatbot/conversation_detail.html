@@ -1,0 +1,275 @@
+{% extends 'chatbot/base.html' %}
+
+{% block title %}{{ conversation.title }}{% endblock %}
+
+{% block styles %}
+<style>
+    body, html {
+      height: 100%;
+    }
+
+    .messages-box {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 70px; /* Space for the message form */
+    }
+
+    .messages-list {
+      padding-left: 0;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      list-style: none;
+    }
+
+    .message-text {
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .sent {
+      background-color: #dcf8c6;
+      align-self: flex-end;
+    }
+
+    .received {
+      background-color: #f1f0f0;
+      align-self: flex-start;
+    }
+
+    .message-form {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .message-input {
+      flex: 1;
+      border-radius: 0.25rem 0 0 0.25rem;
+      border-right: none;
+    }
+
+    .btn-send {
+      border-radius: 0 0.25rem 0.25rem 0;
+    }
+
+    .chat-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .conversation-title {
+      font-weight: bold;
+      max-width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-actions a {
+      margin-left: 0.5rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+  <div class="card flex-grow-1">
+    <div class="card-header bg-primary text-white chat-header">
+      <div class="conversation-title">{{ conversation.title }}</div>
+      <div class="chat-actions">
+        <a href="{% url 'chatbot:conversations' %}" class="btn btn-sm btn-light">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <a href="{% url 'chatbot:delete_conversation' conversation.id %}" class="btn btn-sm btn-danger">
+          <i class="fas fa-trash"></i> Delete
+        </a>
+      </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span>Logged in as <b>{{ user.username }}</b></span>
+      <a href="{% url 'chatbot:logout' %}" class="text-warning">Logout</a>
+    </div>
+    {% else %}
+    <div class="card-header bg-primary text-white">
+      <a href="{% url 'chatbot:login' %}" class="text-warning">Login</a> |
+      <a href="{% url 'chatbot:register' %}" class="text-warning">Register</a>
+    </div>
+    {% endif %}
+    
+    <div class="card-body messages-box">
+      <ul class="list-unstyled messages-list">
+        {% if not chats %}
+          <li class="message received">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>AI Chatbot</b>
+              </div>
+              <div class="message-content">
+                Hi {{ user.username }}, I am your AI Chatbot. How can I help you today?
+              </div>
+            </div>
+          </li>
+        {% endif %}
+        
+        {% for chat in chats %}
+          <li class="message sent">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>You</b>
+              </div>
+              <div class="message-content">
+                {{ chat.message }}
+              </div>
+            </div>
+          </li>
+
+          <li class="message received">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>AI Chatbot</b>
+              </div>
+              <div class="message-content">
+                {{ chat.response }}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <form class="message-form">
+    {% csrf_token %}
+    <div class="input-group">
+      <input type="text" class="form-control message-input" placeholder="Type your message...">
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary btn-send">Send</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Scroll to the bottom of the messages box
+    const messagesBox = document.querySelector('.messages-box');
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+    
+    const messagesList = document.querySelector('.messages-list');
+    const messageForm = document.querySelector('.message-form');
+    const messageInput = document.querySelector('.message-input');
+
+    messageForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const message = messageInput.value.trim();
+      if (message.length === 0) {
+        return;
+      }
+
+      // Add user message to the chat
+      const messageItem = document.createElement('li');
+      messageItem.classList.add('message', 'sent');
+      messageItem.innerHTML = `
+          <div class="message-text">
+              <div class="message-sender">
+                  <b>You</b>
+              </div>
+              <div class="message-content">
+                  ${message}
+              </div>
+          </div>`;
+      messagesList.appendChild(messageItem);
+      
+      // Clear input and scroll to bottom
+      messageInput.value = '';
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+
+      // Show loading indicator
+      const loadingItem = document.createElement('li');
+      loadingItem.classList.add('message', 'received');
+      loadingItem.innerHTML = `
+        <div class="message-text">
+            <div class="message-sender">
+              <b>AI Chatbot</b>
+            </div>
+            <div class="message-content">
+                <i class="fas fa-spinner fa-spin"></i> Thinking...
+            </div>
+        </div>`;
+      messagesList.appendChild(loadingItem);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+
+      // Send message to server
+      fetch('', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+          'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          'message': message
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Remove loading indicator
+        messagesList.removeChild(loadingItem);
+        
+        // Add AI response
+        const responseItem = document.createElement('li');
+        responseItem.classList.add('message', 'received');
+        responseItem.innerHTML = `
+        <div class="message-text">
+            <div class="message-sender">
+              <b>AI Chatbot</b>
+            </div>
+            <div class="message-content">
+                ${data.response}
+            </div>
+        </div>`;
+        messagesList.appendChild(responseItem);
+        
+        // Scroll to bottom
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Remove loading indicator and show error
+        messagesList.removeChild(loadingItem);
+        
+        const errorItem = document.createElement('li');
+        errorItem.classList.add('message', 'received');
+        errorItem.innerHTML = `
+        <div class="message-text">
+            <div class="message-sender">
+              <b>AI Chatbot</b>
+            </div>
+            <div class="message-content text-danger">
+                Sorry, there was an error processing your request. Please try again.
+            </div>
+        </div>`;
+        messagesList.appendChild(errorItem);
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      });
+    });
+  });
+</script>
+{% endblock %}
