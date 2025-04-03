@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="crypto-payment-container">
+    <h2>Blockchain Payment</h2>
+    <div id="wallet-connect">
+        <button onclick="connectWallet()" class="wallet-btn">Connect Wallet</button>
+    </div>
+    
+    <div id="payment-details" style="display: none;">
+        <p>Amount: <span id="payment-amount">0.1</span> ETH</p>
+        <p>Recipient: <span id="contract-address">{{ CONTRACT_ADDRESS }}</span></p>
+        <button onclick="initiatePayment()" class="payment-btn">Confirm Payment</button>
+    </div>
+</div>
+
+<script>
+async function connectWallet() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            document.getElementById('payment-details').style.display = 'block';
+            document.getElementById('wallet-connect').style.display = 'none';
+        } catch (error) {
+            console.error('Wallet connection failed:', error);
+        }
+    } else {
+        alert('Please install MetaMask!');
+    }
+}
+
+async function initiatePayment() {
+    const web3 = new Web3(ethereum);
+    const amount = web3.utils.toWei(document.getElementById('payment-amount').textContent, 'ether');
+    const contractAddress = document.getElementById('contract-address').textContent;
+    
+    try {
+        const transaction = await web3.eth.sendTransaction({
+            from: ethereum.selectedAddress,
+            to: contractAddress,
+            value: amount
+        });
+        
+        // Handle successful transaction
+        window.location.href = `{% url 'payment_success' %}?tx_hash=${transaction.transactionHash}`;
+    } catch (error) {
+        console.error('Payment failed:', error);
+        alert('Payment failed: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

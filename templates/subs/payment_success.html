@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="payment-success">
+    <h2>Payment Successful</h2>
+    {% if payment_method == 'stripe' %}
+        <p>Stripe Charge ID: {{ charge_id }}</p>
+    {% elif payment_method == 'blockchain' %}
+        <p>Transaction Hash: {{ tx_hash }}</p>
+        <a href="https://etherscan.io/tx/{{ tx_hash }}" target="_blank" class="explorer-link">
+            View on Etherscan
+        </a>
+    {% endif %}
+    <a href="{% url 'chatbot' %}" class="return-btn">Access Chatbot</a>
+</div>
+{% endblock %}
