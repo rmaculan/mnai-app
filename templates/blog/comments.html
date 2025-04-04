@@ -3,109 +3,241 @@
 
 <div class="container">
     <div id="commentsContainer">
-        {% for comment in post.comments.all|slice:"3" %}
-        <div class="comment-container">
-            <div class="comment-content">
-                <h5 >
-                    <strong >
-                        <a href="{% url 'blog:profile' comment.author.username %}" >
-                            <span class="text-gray-300">{{ comment.author }}</span>
-                        </a>
-                    </strong>
-                    <span class="text-muted text-gray-200">
-                        commented on {{ comment.created_at }}
-                    </span>
-                </h5>
-                <p class="text-gray-100">{{ comment.content }}</p>
-                <!-- Edit and Delete buttons -->
-            {% if user.is_authenticated and user == comment.author %}
-                <div class="edit-delete-buttons">
-                    <a 
-                        href="{% url 'blog:update_comment' post.id comment.id %}" 
-                        class="
-                            text-gray-200
-                            text-sm
-                            mr-4
-                            hover:text-gray-400"
-                    >
-                        Edit
-                    </a>
-                    
-                    
-                    </a>
-                    <a 
-                        href="{% url 'blog:delete_comment' post.id comment.id %}" 
-                        class="
-                            text-red-300
-                            text-sm
-                            hover:text-red-600
-                            
-                            "
-                        >
-                        Delete
-                    </a>
-                    </a>
-                </div>
-        {% endif %}
-            
-        </div>
-        <!-- Reply form -->
-        {% if user.is_authenticated %}
-            <div class="reply-form">
-                <form method="post" action="{% url 'blog:create_comment' post.id %}">
-                    {% csrf_token %}
-                    <textarea 
-                        class="rounded-xl" 
-                        name="comment" 
-                        placeholder="Your reply..."
-                        >
-                    </textarea>
-                    <!-- Hidden input for parent_id -->
-                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                    <button 
-                        type="submit" 
-                        class="
-                            text-blue-200
-                            hover:text-green-400
-                            shadow-xl
-                            "
-                        >
-                        Reply
-                    </button>
-                </form>
-            </div>
-        {% endif %}
-        <!-- Recursively display replies -->
-        {% with comment.replies.all as replies %}
-            {% if replies %}
-                {% for reply in replies %}
-                    <div class="reply-container">
-                        <div class="reply-content">
-                            <p>
-                                Reply from: 
-                               <strong>
-                                    <a href="{% url 'blog:profile' comment.author.username %}"
-                                    >
-                                        {{ comment.author }}
-                                    </a>
-                                </strong> 
-                                    - {{ reply.content }}
-                            </p>
-                            <!-- Optionally, allow replying to replies -->
-                        </div>
+        {% with latest_comment=post.comments.all.first %}
+            {% if latest_comment %}
+                <div class="comment-container bg-gray-700 p-4 rounded-lg mb-4">
+                    <div class="comment-content">
+                        <h5>
+                            <strong>
+                                <a href="{% url 'blog:profile' latest_comment.author.username %}">
+                                    <span class="text-gray-300">{{ latest_comment.author }}</span>
+                                </a>
+                            </strong>
+                            <span class="text-muted text-gray-200">
+                                commented on {{ latest_comment.created_at }}
+                            </span>
+                        </h5>
+                        <p class="text-gray-100">{{ latest_comment.content }}</p>
+                        
+                        <!-- Edit and Delete buttons -->
+                        {% if user.is_authenticated and user == latest_comment.author %}
+                            <div class="edit-delete-buttons">
+                                <a 
+                                    href="{% url 'blog:update_comment' post.id latest_comment.id %}" 
+                                    class="text-gray-200 text-sm mr-4 hover:text-gray-400"
+                                >
+                                    Edit
+                                </a>
+                                <a 
+                                    href="{% url 'blog:delete_comment' post.id latest_comment.id %}" 
+                                    class="text-red-300 text-sm hover:text-red-600"
+                                >
+                                    Delete
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Reply count link -->
+                        {% with reply_count=latest_comment.replies.count %}
+                            {% if reply_count > 0 %}
+                                <button 
+                                    class="text-blue-300 text-sm mt-2 hover:text-blue-400"
+                                    onclick="document.getElementById('replyModal-{{ latest_comment.id }}').classList.remove('hidden')"
+                                >
+                                    <i class="fas fa-reply"></i> {{ reply_count }} {% if reply_count == 1 %}Reply{% else %}Replies{% endif %}
+                                </button>
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                {% endfor %}
+                </div>
+                
+                <!-- View all comments link -->
+                <div class="text-center mb-4">
+                    <button 
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg shadow hover:bg-gray-500 transition"
+                        onclick="document.getElementById('allCommentsModal').classList.remove('hidden')"
+                    >
+                        View All Comments ({{ post.comments.count }})
+                    </button>
+                </div>
+            {% else %}
+                <p class="text-gray-300">No comments yet</p>
             {% endif %}
         {% endwith %}
-        </div>
-        
-        </script>
-    
-    {% empty %}
-    <p>No comments yet</p>
-    {% endfor %}
-
-  </div>
+    </div>
 </div>
 
-       
+<!-- All Comments Modal -->
+<div id="allCommentsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-auto">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-white">All Comments</h3>
+            <button 
+                class="text-gray-400 hover:text-white" 
+                onclick="document.getElementById('allCommentsModal').classList.add('hidden')"
+            >
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            {% for comment in post.comments.all %}
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-300 font-semibold">
+                                <a href="{% url 'blog:profile' comment.author.username %}">
+                                    {{ comment.author }}
+                                </a>
+                            </p>
+                            <p class="text-gray-400 text-sm">{{ comment.created_at }}</p>
+                        </div>
+                        {% if user.is_authenticated and user == comment.author %}
+                            <div class="flex gap-2">
+                                <a 
+                                    href="{% url 'blog:update_comment' post.id comment.id %}" 
+                                    class="text-gray-400 hover:text-gray-200"
+                                >
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a 
+                                    href="{% url 'blog:delete_comment' post.id comment.id %}" 
+                                    class="text-red-400 hover:text-red-300"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-gray-100 mt-2">{{ comment.content }}</p>
+                    
+                    {% with reply_count=comment.replies.count %}
+                        {% if reply_count > 0 %}
+                            <button 
+                                class="text-blue-300 text-sm mt-2 hover:text-blue-400"
+                                onclick="document.getElementById('replyModal-{{ comment.id }}').classList.remove('hidden')"
+                            >
+                                <i class="fas fa-reply"></i> {{ reply_count }} {% if reply_count == 1 %}Reply{% else %}Replies{% endif %}
+                            </button>
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Reply button -->
+                    {% if user.is_authenticated %}
+                        <button 
+                            class="text-green-300 text-sm mt-2 ml-4 hover:text-green-400"
+                            onclick="document.getElementById('replyForm-{{ comment.id }}').classList.toggle('hidden')"
+                        >
+                            <i class="fas fa-comment"></i> Reply
+                        </button>
+                        
+                        <!-- Hidden reply form -->
+                        <div id="replyForm-{{ comment.id }}" class="hidden mt-3">
+                            <form method="post" action="{% url 'blog:create_comment' post.id %}">
+                                {% csrf_token %}
+                                <textarea 
+                                    class="w-full p-2 rounded-lg bg-gray-600 text-white" 
+                                    name="comment" 
+                                    placeholder="Your reply..."
+                                    rows="3"
+                                ></textarea>
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <button 
+                                    type="submit" 
+                                    class="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500"
+                                >
+                                    Post Reply
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="text-gray-300 text-center">No comments yet</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Individual Reply Modals -->
+{% for comment in post.comments.all %}
+    {% if comment.replies.exists %}
+        <div id="replyModal-{{ comment.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-auto">
+            <div class="bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-white">Replies to {{ comment.author }}'s Comment</h3>
+                    <button 
+                        class="text-gray-400 hover:text-white" 
+                        onclick="document.getElementById('replyModal-{{ comment.id }}').classList.add('hidden')"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Original comment -->
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <p class="text-gray-300 font-semibold">{{ comment.author }}</p>
+                    <p class="text-gray-100">{{ comment.content }}</p>
+                </div>
+                
+                <!-- Replies -->
+                <div class="space-y-3 pl-4 border-l-2 border-gray-600">
+                    {% for reply in comment.replies.all %}
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-gray-300 font-semibold">
+                                        <a href="{% url 'blog:profile' reply.author.username %}">
+                                            {{ reply.author }}
+                                        </a>
+                                    </p>
+                                    <p class="text-gray-400 text-sm">{{ reply.created_at }}</p>
+                                </div>
+                                {% if user.is_authenticated and user == reply.author %}
+                                    <div class="flex gap-2">
+                                        <a 
+                                            href="{% url 'blog:update_comment' post.id reply.id %}" 
+                                            class="text-gray-400 hover:text-gray-200"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a 
+                                            href="{% url 'blog:delete_comment' post.id reply.id %}" 
+                                            class="text-red-400 hover:text-red-300"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <p class="text-gray-100 mt-2">{{ reply.content }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Reply form within modal -->
+                {% if user.is_authenticated %}
+                    <div class="mt-4">
+                        <form method="post" action="{% url 'blog:create_comment' post.id %}">
+                            {% csrf_token %}
+                            <textarea 
+                                class="w-full p-2 rounded-lg bg-gray-600 text-white" 
+                                name="comment" 
+                                placeholder="Add your reply..."
+                                rows="3"
+                            ></textarea>
+                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                            <button 
+                                type="submit" 
+                                class="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500"
+                            >
+                                Post Reply
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}

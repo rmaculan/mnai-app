@@ -29,7 +29,7 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path('chatbot/', include('chatbot.urls')),
     path('polls/', include('polls.urls', namespace='polls')),
-    path('subs/', include('subs.urls')),
+    # path('subs/', include('subs.urls')),
     path('notifications/', include('notification.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('marketplace/', include('marketplace.urls', namespace='marketplace')),

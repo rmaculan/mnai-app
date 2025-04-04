@@ -412,13 +412,34 @@
           document.querySelectorAll('.progress-bar-fill').forEach(bar => {
             bar.style.width = bar.dataset.width + '%';
           });
+          
+          // Close modals when clicking outside
+          window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('[id^="replyModal-"], #allCommentsModal');
+            modals.forEach(modal => {
+              if (event.target === modal) {
+                modal.classList.add('hidden');
+              }
+            });
+          });
+          
+          // Add keyboard event listener for Escape key to close modals
+          window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+              const modals = document.querySelectorAll('[id^="replyModal-"], #allCommentsModal');
+              modals.forEach(modal => {
+                if (!modal.classList.contains('hidden')) {
+                  modal.classList.add('hidden');
+                }
+              });
+            }
+          });
         });
 
-
         // Like and Dislike Form
-        document.getElementById('like-form')
-        .addEventListener(
-          'submit', function(e) {
+        const likeForm = document.getElementById('like-form');
+        if (likeForm) {
+          likeForm.addEventListener('submit', function(e) {
             e.preventDefault();
             fetch(this.action, {
                 method: 'POST',
@@ -428,11 +449,12 @@
               .then(response => response.json())
               .then(data => document.getElementById('likes-count')
                 .innerText = data.likes_count);
-        });
+          });
+        }
 
-        document.getElementById('dislike-form')
-        .addEventListener(
-          'submit', function(e) {
+        const dislikeForm = document.getElementById('dislike-form');
+        if (dislikeForm) {
+          dislikeForm.addEventListener('submit', function(e) {
             e.preventDefault();
             fetch(this.action, {
                 method: 'POST',
@@ -442,8 +464,8 @@
             .then(response => response.json())
             .then(data => document.getElementById('likes-count')
             .innerText = data.likes_count);
-        });
-
+          });
+        }
       </script>
       <script 
         src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 

@@ -10,13 +10,13 @@ from web3 import Web3
 import os
 import json
 import logging
-from .models import SubscriptionPlan, Subscription
+from .models import Subscription
 
 logger = logging.getLogger(__name__)
 
 # Payment system core views
 class PaymentMethodListView(generic.ListView):
-    model = SubscriptionPlan
+    model = Subscription
     template_name = 'subs/payment_methods.html'
     
     def get_context_data(self, **kwargs):
