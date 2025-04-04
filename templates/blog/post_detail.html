@@ -114,7 +114,7 @@
               shadow-lg"
               >
               <div class="font-bold mb-1">Verification Details</div>
-              <div>Score: {{ post.verification_score|floatformat:2 }}/1.0</div>
+              <div>Score: {{ post.verification_score|floatformat:2 }}</div>
               <div class="mt-1">
                 {% if post.verification_details %}
                   {% for category, data in post.verification_details.items %}

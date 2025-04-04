@@ -133,12 +133,14 @@ def read_blog_post(request, post_id):
         Choice.objects.create(
             question=poll,
             choice_text='Yes',
-            votes=0
+            votes=0,
+            verification_impact='positive'  # Set as positive impact for verification
         )
         Choice.objects.create(
             question=poll,
             choice_text='No',
-            votes=0
+            votes=0,
+            verification_impact='negative'  # Set as negative impact for verification
         )
     
     # Check if user has already voted
