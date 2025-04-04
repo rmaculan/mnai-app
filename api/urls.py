@@ -4,6 +4,7 @@ from . import views
 
 
 urlpatterns = [
+    # notes
     path('routes/', views.getRoutes),
     path('notes/', views.getNotes),
     path('note/create/', views.createNote),

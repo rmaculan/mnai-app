@@ -18,40 +18,10 @@ DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
 CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY') 
 OLLAMA_BASE_URL = os.environ.get('OLLAMA_BASE_URL', 'http://localhost:11434')
 
-# Stripe configuration
-STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
-
-# Payment settings
-STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID')  # Monthly subscription price ID
-PAY_AS_YOU_GO_RATE = 0.10  # $0.10 per message
-STRIPE_CURRENCY = 'usd'
-FREE_TRIAL_DAYS = 7  # Free trial period
-
-# Blockchain payment configuration (temporarily disabled)
-BLOCKCHAIN_ENABLED = False  # Feature flag to toggle blockchain payments
-BLOCKCHAIN_NETWORK = os.environ.get('BLOCKCHAIN_NETWORK', 'ethereum')
-WEB3_PROVIDER_URI = os.environ.get('WEB3_PROVIDER_URI', 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID')
-PAYMENT_CONTRACT_ADDRESS = os.environ.get('PAYMENT_CONTRACT_ADDRESS', '0x...')
-PAYMENT_CONTRACT_ABI = os.environ.get('PAYMENT_CONTRACT_ABI', '[]')
-PAYMENT_WALLET_ADDRESS = os.environ.get('PAYMENT_WALLET_ADDRESS', '0x...')
-PAYMENT_WALLET_PRIVATE_KEY = os.environ.get('PAYMENT_WALLET_PRIVATE_KEY', '')
-
-# Validate required payment settings only when enabled
-if BLOCKCHAIN_ENABLED and not PAYMENT_WALLET_PRIVATE_KEY:
-    raise ValueError("Blockchain payments require PAYMENT_WALLET_PRIVATE_KEY when enabled")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = []
-
-# LOGIN_REDIRECT_URL = 'index'
-
-# LOGOUT_REDIRECT_URL = 'chat-login'
-
-# LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -195,10 +165,23 @@ PAY_AS_YOU_GO_RATE = 0.10  # USD per message
 STRIPE_CURRENCY = 'usd'
 FREE_TRIAL_DAYS = 7
 
-# Blockchain Payments (Ethereum Mainnet)
-BLOCKCHAIN_ENABLED = os.environ.get('BLOCKCHAIN_ENABLED', 'False') == 'True'
-WEB3_PROVIDER_URI = os.environ.get('WEB3_PROVIDER_URI', 'https://mainnet.infura.io/v3/YOUR-ID')
+# Blockchain payment configuration (temporarily disabled)
+BLOCKCHAIN_ENABLED = False  # Feature flag to toggle blockchain payments
+BLOCKCHAIN_NETWORK = os.environ.get('BLOCKCHAIN_NETWORK', 'ethereum')
+WEB3_PROVIDER_URI = os.environ.get('WEB3_PROVIDER_URI', 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID')
 PAYMENT_CONTRACT_ADDRESS = os.environ.get('PAYMENT_CONTRACT_ADDRESS', '0x...')
+PAYMENT_CONTRACT_ABI = os.environ.get('PAYMENT_CONTRACT_ABI', '[]')
+PAYMENT_WALLET_ADDRESS = os.environ.get('PAYMENT_WALLET_ADDRESS', '0x...')
+PAYMENT_WALLET_PRIVATE_KEY = os.environ.get('PAYMENT_WALLET_PRIVATE_KEY', '')
+
+# Validate required payment settings only when enabled
+if BLOCKCHAIN_ENABLED and not PAYMENT_WALLET_PRIVATE_KEY:
+    raise ValueError("Blockchain payments require PAYMENT_WALLET_PRIVATE_KEY when enabled")
+
+# # Blockchain Payments (Ethereum Mainnet)
+# BLOCKCHAIN_ENABLED = os.environ.get('BLOCKCHAIN_ENABLED', 'False') == 'True'
+# WEB3_PROVIDER_URI = os.environ.get('WEB3_PROVIDER_URI', 'https://mainnet.infura.io/v3/YOUR-ID')
+# PAYMENT_CONTRACT_ADDRESS = os.environ.get('PAYMENT_CONTRACT_ADDRESS', '0x...')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
