@@ -21,6 +21,7 @@ urlpatterns = [
     path('create_blog_post/', views.create_blog_post, name='create_blog_post'),
     path('delete/<uuid:post_id>/', views.delete_blog_post, name='delete_blog_post'),
     path('<uuid:post_id>/like/', views.like_post, name='like_post'),
+    path('<uuid:post_id>/double_like/', views.double_like_post, name='double_like_post'),
     path('<uuid:post_id>/dislike/', views.dislike_post, name='dislike_post'),
     path('<uuid:post_id>/comment/', views.create_comment, name='create_comment'),
     path('<uuid:post_id>/comments/', views.read_comments, name='read_comments'),

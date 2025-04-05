@@ -203,8 +203,83 @@
                                 delete
                             </a>
                         </div>
-                        
                     
+                    {% elif notification.notification_types == 5 %}
+                        <div 
+                            class="
+                                alert-white 
+                                alert-dismissinle 
+                                fade 
+                                show" 
+                            role="alert" 
+                            style="
+                                border: 1px rgba(219, 219, 219, 0.699) 
+                                solid; border-radius: 25px;"
+                                >
+                            <a 
+                                href="{% url 'blog:profile' notification.sender.username %}"
+                                class="side-menu__user-avatar"
+                                >
+                                {% if notification.sender.profile.image %}
+                                    <img 
+                                        src="{{ notification.sender.profile.image.url }}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% else %}
+                                    <img 
+                                        src="{% static 'images/default.jpg' %}" 
+                                        alt="user avatar" 
+                                        class="rounded-full h-8 w-8"
+                                        />
+                                {% endif %}
+                            </a>
+                            <div 
+                                class="side-menu__user-idnfo" 
+                                style="text-align: start;"
+                                >
+                                <a 
+                                    href="{% url 'blog:profile' notification.sender.username %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"
+                                    >
+                                        {{ notification.sender.profile.user.username }}
+                                </a> <br>
+                                <a 
+                                    href="{% url 'blog:post_detail' notification.post.id %}" 
+                                    style="font-size: 15px; color: black; text-align: center;"><b><i 
+                                    class="bi bi-hand-thumbs-down-fill" 
+                                    style="color: red;"></i> 
+                                        Disliked your Post
+                                    </b>
+                                </a> <br>
+                                <p
+                                    style="font-size: 10px; color: rgb(75, 75, 75); ">
+                                        {{ notification.date }}
+                                </p>
+                            </div>
+                             <a 
+                                href="{% url 'blog:post_detail' notification.post.id %}" 
+                                class="side-menu__user-avatar" 
+                                style="margin-left: 20px;"
+                                >
+                                <h1><Strong>{{ notification.post.title }}</Strong></h1>
+                                <p class="text-sm">{{ notification.post.subtitle|truncatewords:3 }}</p>
+                                <img
+                                    class="h-15 w-25" 
+                                    src="{{ notification.post.picture.url }}" 
+                                    alt="User Picture"
+                                />
+                            </a>
+                            <a 
+                                href="{% url 'notification:delete-notification' notification.id %}" 
+                                type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="alert" 
+                                aria-label="Close"
+                                >
+                                delete
+                            </a>
+                        </div>
                     {% endif %}
                     
                     

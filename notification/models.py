@@ -7,7 +7,8 @@ class Notification(models.Model):
         (1, 'Like'), 
         (2, 'Comment'), 
         (3, 'Follow'),
-        (4, 'Message')
+        (4, 'Message'),
+        (5, 'Dislike')
         )
 
     post = models.ForeignKey(

@@ -197,7 +197,7 @@
                     </ul>
                   </div>
 
-                  {% if verification_data.history %}
+                  <!-- {% if verification_data.history %}
                   <div class="mt-4">
                     <h5 class="font-semibold mb-2">Author Verification History:</h5>
                     <div class="space-y-2">
@@ -211,7 +211,7 @@
                       {% endfor %}
                     </div>
                   </div>
-                  {% endif %}
+                  {% endif %} -->
                 </div>
               </div>
             {% else %}
@@ -230,7 +230,7 @@
           mx-auto 
           h-full"
           >
-          <form method="post" action="{% url 'blog:like_post' post.id %}">
+          <form id="like-form" method="post" action="{% url 'blog:like_post' post.id %}">
             {% csrf_token %}
             <button 
               type="submit" 
@@ -259,6 +259,36 @@
               </div>
             </button>
           </form>
+
+          <form id="double-like-form" method="post" action="{% url 'blog:double_like_post' post.id %}">
+            {% csrf_token %}
+            <button 
+              type="submit" 
+              class="flex items-center
+                mt-4
+                ml-2
+                px-4 py-2 
+                text-sm 
+                text-gray-700 
+                bg-gradient-to-l
+                  from-black-800 to-gray-100  
+                rounded-xl
+                shadow-xl 
+                border
+                hover:bg-gray-200 
+                focus:outline-none 
+                focus:ring-2 
+                focus:ring-gray-200 
+                dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 
+                dark:focus:ring-gray-600"
+              >
+                <i class="fas fa-heart"></i>
+              <div class="ml-2" >
+                <span>Double Like</span>
+              </div>
+            </button>
+          </form>
+          
           <form 
               id="dislike-form" 
               action="{% url 'blog:dislike_post' post.id %}" 
@@ -272,6 +302,7 @@
                   px-4 
                   py-2 
                   mt-4
+                  ml-2
                   text-sm 
                   text-gray-700 
                   bg-gradient-to-l
@@ -288,7 +319,7 @@
                   dark:focus:ring-gray-600"
               >
                 <i class="far fa-thumbs-down"></i>
-                <span class="ml-2">
+                <span id="dislikes-count" class="ml-2">
                   {{ post.dislikes_count }}
                 </span>
             </button>
@@ -436,10 +467,14 @@
           });
         });
 
-        // Like and Dislike Form
+        // Like, Double-Like, and Dislike Forms
         const likeForm = document.getElementById('like-form');
-        if (likeForm) {
-          likeForm.addEventListener('submit', function(e) {
+        const doubleLikeForm = document.getElementById('double-like-form');
+        const dislikeForm = document.getElementById('dislike-form');
+        
+        // Helper function to handle form submission and update counts
+        function handleFormSubmit(form) {
+          form.addEventListener('submit', function(e) {
             e.preventDefault();
             fetch(this.action, {
                 method: 'POST',
@@ -447,25 +482,17 @@
                 body: new FormData(this),
               })
               .then(response => response.json())
-              .then(data => document.getElementById('likes-count')
-                .innerText = data.likes_count);
+              .then(data => {
+                // Update likes counter with the response data
+                document.getElementById('likes-count').innerText = data.likes_count;
+              });
           });
         }
-
-        const dislikeForm = document.getElementById('dislike-form');
-        if (dislikeForm) {
-          dislikeForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetch(this.action, {
-                method: 'POST',
-                headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                body: new FormData(this),
-            })
-            .then(response => response.json())
-            .then(data => document.getElementById('likes-count')
-            .innerText = data.likes_count);
-          });
-        }
+        
+        // Apply the event handler to all three forms
+        if (likeForm) handleFormSubmit(likeForm);
+        if (doubleLikeForm) handleFormSubmit(doubleLikeForm);
+        if (dislikeForm) handleFormSubmit(dislikeForm);
       </script>
       <script 
         src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 

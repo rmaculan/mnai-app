@@ -372,6 +372,19 @@ def create_comment(request, post_id):
         
         if len(content.strip()) > 0:
             comment.save()
+            
+            # Create notification for the post author when someone comments on their post
+            # Only create notification if commenter is not the post author
+            if request.user != post.author:
+                # Create a comment notification
+                Notification.objects.create(
+                    post=post,
+                    sender=request.user,
+                    user=post.author,
+                    notification_types=2,  # Comment notification type
+                    text_preview=content[:90]  # Preview of the comment
+                )
+            
             return redirect('blog:post_detail', post_id=post_id)
     
     return render(request, 'blog/post_detail.html', {'post': post})
@@ -463,29 +476,133 @@ def like_post(request, post_id):
         # Toggle like
         if not created:
             liked_post.delete() 
-            post.likes_count -= 1  
+            post.likes_count -= 1
+            # Remove any like notifications when unliked
+            Notification.objects.filter(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=1
+            ).delete()
         else:
             liked_post.save()  
-            post.likes_count += 1  
+            post.likes_count += 1
+            # Only create notification if the liker is not the post author
+            if user != post.author:
+                # Check if a notification already exists to prevent duplicates
+                if not Notification.objects.filter(
+                    post=post,
+                    sender=user,
+                    user=post.author,
+                    notification_types=1
+                ).exists():
+                    Notification.objects.create(
+                        post=post,
+                        sender=user,
+                        user=post.author,
+                        notification_types=1,
+                        text_preview="Liked your post"
+                    )
         post.save()
         
-        return redirect(reverse('blog:post_detail', args=[post_id]))
+        # Return JSON response for AJAX
+        from django.http import JsonResponse
+        return JsonResponse({'likes_count': post.likes_count})
+        
+    # Fallback to redirect if not AJAX
+    return redirect(reverse('blog:post_detail', args=[post_id]))
+
+@login_required
+@csrf_exempt
+def double_like_post(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_id)
+        user = request.user
+        
+        # Check if user already liked the post
+        liked = Likes.objects.filter(post=post, user=user).exists()
+        
+        if liked:
+            # If already liked, add one more like (total becomes 2)
+            post.likes_count += 1
+        else:
+            # If not already liked, add two likes and create the like object
+            liked_post = Likes.objects.create(post=post, user=user)
+            post.likes_count += 2
+            
+            # Only create notification if the liker is not the post author
+            if user != post.author:
+                # Check if a notification already exists to prevent duplicates
+                if not Notification.objects.filter(
+                    post=post,
+                    sender=user,
+                    user=post.author,
+                    notification_types=1
+                ).exists():
+                    Notification.objects.create(
+                        post=post,
+                        sender=user,
+                        user=post.author,
+                        notification_types=1,
+                        text_preview="Double liked your post"
+                    )
+            
+        post.save()
+        
+        # Return JSON response for AJAX
+        from django.http import JsonResponse
+        return JsonResponse({'likes_count': post.likes_count})
+        
+    # Fallback to redirect if not AJAX
+    return redirect(reverse('blog:post_detail', args=[post_id]))
 
 @login_required
 @csrf_exempt
 def dislike_post(request, post_id):
     if request.method == 'POST':
         post = get_object_or_404(Post, pk=post_id)
-        if Likes.objects.filter(
-            post=post, 
-            user=request.user).exists():
-            Likes.objects.filter(
-                post=post, 
-                user=request.user).delete()
-            post.likes_count -= 1
-            post.save()
+        user = request.user
         
-        return redirect(reverse('blog:post_detail', args=[post_id]))
+        # Remove any existing likes
+        liked = Likes.objects.filter(post=post, user=user).exists()
+        if liked:
+            Likes.objects.filter(post=post, user=user).delete()
+            post.likes_count -= 1
+            # Remove any like notifications when disliked
+            Notification.objects.filter(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=1
+            ).delete()
+        
+        # Only create dislike notification if the disliker is not the post author
+        if user != post.author:
+            # Clear any existing dislike notifications to prevent duplicates
+            Notification.objects.filter(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=5  # Dislike type
+            ).delete()
+            
+            # Create a new dislike notification
+            Notification.objects.create(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=5,  # Dislike notification type
+                text_preview="Disliked your post"
+            )
+        
+        post.save()
+        
+        # Return JSON response for AJAX
+        from django.http import JsonResponse
+        return JsonResponse({'likes_count': post.likes_count})
+        
+    # Fallback to redirect if not AJAX
+    return redirect(reverse('blog:post_detail', args=[post_id]))
 
 # Follow a user
 @login_required
