@@ -196,7 +196,7 @@ class Post(models.Model):
         editable=False
         )
     verification_score = models.FloatField(
-        default=0.5,  # Changed to 0.5 to match test expectations
+        default=1,  # Default is 1 for perfect credibility until negative polls
         help_text="Post verification score based on polls (0.0-1.0)"
     )
     verification_status = models.CharField(

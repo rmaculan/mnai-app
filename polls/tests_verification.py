@@ -56,7 +56,7 @@ class VerificationPollTests(TestCase):
         self.profile.save()
         
         # Initial state
-        self.assertEqual(self.post.verification_score, 0.5)
+        self.assertEqual(self.post.verification_score, 1.0)
         self.assertEqual(self.post.verification_status, 'unverified')
         
         # Cast votes
