@@ -472,10 +472,28 @@
         const doubleLikeForm = document.getElementById('double-like-form');
         const dislikeForm = document.getElementById('dislike-form');
         
+        // Track if request is in progress to prevent duplicate submissions
+        let requestInProgress = false;
+        
         // Helper function to handle form submission and update counts
         function handleFormSubmit(form) {
+          if (!form) return;
+          
           form.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Prevent multiple submissions
+            if (requestInProgress) {
+              return;
+            }
+            
+            requestInProgress = true;
+            
+            // Disable all buttons to prevent rapid clicking
+            likeForm.querySelector('button').disabled = true;
+            doubleLikeForm.querySelector('button').disabled = true;
+            dislikeForm.querySelector('button').disabled = true;
+            
             fetch(this.action, {
                 method: 'POST',
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
@@ -485,14 +503,21 @@
               .then(data => {
                 // Update likes counter with the response data
                 document.getElementById('likes-count').innerText = data.likes_count;
+              })
+              .finally(() => {
+                // Re-enable buttons after response is received
+                requestInProgress = false;
+                likeForm.querySelector('button').disabled = false;
+                doubleLikeForm.querySelector('button').disabled = false;
+                dislikeForm.querySelector('button').disabled = false;
               });
           });
         }
         
-        // Apply the event handler to all three forms
-        if (likeForm) handleFormSubmit(likeForm);
-        if (doubleLikeForm) handleFormSubmit(doubleLikeForm);
-        if (dislikeForm) handleFormSubmit(dislikeForm);
+        // Apply the event handler to each form exactly once
+        handleFormSubmit(likeForm);
+        handleFormSubmit(doubleLikeForm);
+        handleFormSubmit(dislikeForm);
       </script>
       <script 
         src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" 

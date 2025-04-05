@@ -468,41 +468,50 @@ def delete_comment(request, post_id, comment_id):
 @csrf_exempt
 def like_post(request, post_id):
     if request.method == 'POST':
-        post = get_object_or_404(Post, pk=post_id)
-        user = request.user
-        liked_post, created = Likes.objects.get_or_create(
-            post=post, user=user)
+        from django.db import transaction
         
-        # Toggle like
-        if not created:
-            liked_post.delete() 
-            post.likes_count -= 1
-            # Remove any like notifications when unliked
-            Notification.objects.filter(
-                post=post,
-                sender=user,
-                user=post.author,
-                notification_types=1
-            ).delete()
-        else:
-            liked_post.save()  
-            post.likes_count += 1
-            # Only create notification if the liker is not the post author
+        # Use a transaction to ensure database consistency
+        with transaction.atomic():
+            post = get_object_or_404(Post, pk=post_id)
+            user = request.user
+            
+            # First, handle removing all related notifications to prevent duplicates
             if user != post.author:
-                # Check if a notification already exists to prevent duplicates
-                if not Notification.objects.filter(
+                # Delete ALL existing like notifications from this user to prevent duplicates
+                Notification.objects.filter(
                     post=post,
                     sender=user,
                     user=post.author,
                     notification_types=1
-                ).exists():
-                    Notification.objects.create(
+                ).delete()
+            
+            # Process the like action
+            liked_post, created = Likes.objects.get_or_create(
+                post=post, user=user)
+            
+            # Toggle like
+            if not created:
+                liked_post.delete() 
+                post.likes_count -= 1
+                # No need to create a notification when unliking
+            else:
+                post.likes_count += 1
+                # Only create notification if the liker is not the post author
+                if user != post.author:
+                    # Double-check no notifications exist before creating
+                    if not Notification.objects.filter(
                         post=post,
                         sender=user,
                         user=post.author,
-                        notification_types=1,
-                        text_preview="Liked your post"
-                    )
+                        notification_types=1
+                    ).exists():
+                        Notification.objects.create(
+                            post=post,
+                            sender=user,
+                            user=post.author,
+                            notification_types=1,
+                            text_preview="Liked your post"
+                        )
         post.save()
         
         # Return JSON response for AJAX
@@ -519,6 +528,15 @@ def double_like_post(request, post_id):
         post = get_object_or_404(Post, pk=post_id)
         user = request.user
         
+        # First, remove any existing notifications to prevent duplicates
+        if user != post.author:
+            Notification.objects.filter(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=1
+            ).delete()
+        
         # Check if user already liked the post
         liked = Likes.objects.filter(post=post, user=user).exists()
         
@@ -530,22 +548,15 @@ def double_like_post(request, post_id):
             liked_post = Likes.objects.create(post=post, user=user)
             post.likes_count += 2
             
-            # Only create notification if the liker is not the post author
-            if user != post.author:
-                # Check if a notification already exists to prevent duplicates
-                if not Notification.objects.filter(
-                    post=post,
-                    sender=user,
-                    user=post.author,
-                    notification_types=1
-                ).exists():
-                    Notification.objects.create(
-                        post=post,
-                        sender=user,
-                        user=post.author,
-                        notification_types=1,
-                        text_preview="Double liked your post"
-                    )
+        # Create a notification regardless of previous like status
+        if user != post.author:
+            Notification.objects.create(
+                post=post,
+                sender=user,
+                user=post.author,
+                notification_types=1,
+                text_preview="Double liked your post"
+            )
             
         post.save()
         
