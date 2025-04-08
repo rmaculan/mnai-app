@@ -124,6 +124,37 @@
                             </div>
                         {% endif %}
                         
+                        <!-- User Results -->
+                        {% if categorized_results.users %}
+                            <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> Users</h4>
+                            <div class="list-group">
+                                {% for result in categorized_results.users %}
+                                    <a href="{{ result.url }}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3">
+                                                {% if result.image_url %}
+                                                    <img src="{{ result.image_url }}" class="rounded-circle" width="50" height="50" alt="{{ result.title }}">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1">{{ result.title }}</h5>
+                                                <small class="text-muted">
+                                                    {{ result.text_content|truncatechars:50 }}
+                                                </small>
+                                            </div>
+                                            <div class="ml-auto">
+                                                <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
                         <!-- Empty results message -->
                         {% if not categorized_results.blog and not categorized_results.marketplace %}
                             <div class="alert alert-warning mt-4">

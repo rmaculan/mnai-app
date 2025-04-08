@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 from blog.models import Post, Tag
 from marketplace.models import Item, CategoryModel
@@ -79,18 +80,22 @@ def search_view(request):
     # Organize results into categories
     categorized_results = {
         'blog': [],
-        'marketplace': []
+        'marketplace': [],
+        'users': []
     }
     
     # Group results by content type
     blog_type = ContentType.objects.get_for_model(Post)
     marketplace_type = ContentType.objects.get_for_model(Item)
+    user_type = ContentType.objects.get_for_model(User)
     
     for result in search_results:
         if result.content_type == blog_type:
             categorized_results['blog'].append(result)
         elif result.content_type == marketplace_type:
             categorized_results['marketplace'].append(result)
+        elif result.content_type == user_type:
+            categorized_results['users'].append(result)
     
     # Get all available categories for filtering
     blog_tags = Tag.objects.all()

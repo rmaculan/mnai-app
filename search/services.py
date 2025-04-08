@@ -3,6 +3,7 @@ from django.db.models import Q
 from collections import defaultdict
 from blog.models import Post, Tag
 from marketplace.models import Item, CategoryModel
+from django.contrib.auth.models import User
 from .models import SearchIndex
 
 class SearchService:
@@ -33,7 +34,7 @@ class SearchService:
             tags.append(post.tags.name)
         
         search_index.tags = tags
-        search_index.url = f"/blog/post/{post.id}/"
+        search_index.url = f"/blog/{post.id}/"
         
         # Add image URL if available, otherwise use default
         if post.picture and hasattr(post.picture, 'url'):
@@ -70,7 +71,7 @@ class SearchService:
             search_index.category = item.category.name
         
         search_index.tags = tags
-        search_index.url = f"/marketplace/item/{item.id}/"
+        search_index.url = f"/marketplace/item_detail/{item.id}/"
         
         # Add image URL if available, otherwise use default
         if item.image and hasattr(item.image, 'url'):
@@ -80,6 +81,37 @@ class SearchService:
             
         # Add numeric field for price (useful for range searches)
         search_index.numeric_field = float(item.price)
+        
+        search_index.save()
+        return search_index
+    
+    @staticmethod
+    def index_user(user):
+        """Index a user for searching"""
+        content_type = ContentType.objects.get_for_model(User)
+        
+        # Get or create the search index
+        search_index, created = SearchIndex.objects.get_or_create(
+            content_type=content_type,
+            object_id=str(user.id)
+        )
+        
+        # Update the search index with user data
+        search_index.title = user.username
+        search_index.text_content = f"{user.first_name} {user.last_name} {user.email}"
+        search_index.author = user  # User is their own author
+        
+        # No tags for users, but can be extended later
+        search_index.tags = []
+        
+        # URL to user profile
+        search_index.url = f"/blog/profile/{user.username}"
+        
+        # Use default image
+        search_index.image_url = '/media/default.jpg'
+        
+        # No meaningful numeric field for users, set to 0
+        search_index.numeric_field = 0
         
         search_index.save()
         return search_index
@@ -97,6 +129,10 @@ class SearchService:
         # Index all items
         for item in Item.objects.all():
             SearchService.index_item(item)
+            
+        # Index all users
+        for user in User.objects.all():
+            SearchService.index_user(user)
     
     @staticmethod
     def hash_table_search(term=None, tags=None, category=None):
