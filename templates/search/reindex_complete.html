@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Reindexing Complete{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-check-circle"></i> Reindexing Complete
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-search fa-5x text-primary mb-4"></i>
+                    
+                    <h4>Search Indexing Complete</h4>
+                    <p class="lead">Successfully indexed {{ count }} items.</p>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'search:search_icon' %}" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Go to Search
+                        </a>
+                        <a href="{% url 'landing_page' %}" class="btn btn-secondary ml-2">
+                            <i class="fas fa-home"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

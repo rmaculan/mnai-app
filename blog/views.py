@@ -162,6 +162,10 @@ def read_blog_post(request, post_id):
         'history': profile.verification_history
     }
     
+    # Check if post has a valid picture
+    if not post.picture or not hasattr(post.picture, 'url'):
+        post.use_default_image = True
+    
     context = {
         'post': post,
         'profile': profile,

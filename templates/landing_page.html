@@ -114,6 +114,15 @@
             {% for blog_post in blog_posts %}
             <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
+                    {% if blog_post.use_default_image %}
+                    <img 
+                        src="{% static 'media/default.jpg' %}" 
+                        alt="{{ blog_post.title }}" 
+                        class="mb-4"
+                        height="1080"
+                        width="1920" 
+                        >
+                    {% else %}
                     <img 
                         src="{{ blog_post.picture.url }}" 
                         alt="{{ blog_post.title }}" 
@@ -121,6 +130,7 @@
                         height="1080"
                         width="1920" 
                         >
+                    {% endif %}
                     <div class="mb-2">
                        <h3 class="text-xl font-semibold">
                             {{ blog_post.title }}
@@ -185,7 +195,15 @@
                         
                     </div>
                     <!-- Image with link to profile -->
-                    
+                    {% if blog_post.use_default_image %}
+                    <img 
+                        src="{% static 'media/default.jpg' %}" 
+                        alt="{{ blog_post.title }}" 
+                        class="mb-4"
+                        height="1080"
+                        width="1920" 
+                        >
+                    {% else %}
                     <img 
                         src="{{ blog_post.picture.url }}" 
                         alt="{{ blog_post.title }}" 
@@ -193,6 +211,7 @@
                         height="1080"
                         width="1920" 
                         >
+                    {% endif %}
                     
                     <p class="mb-4">
                         {{ blog_post.content|truncatewords:20 }}
@@ -235,6 +254,15 @@
             {% for marketplace_item in marketplace_items %}
             <div class="col-span-full md:col-span-1">
                 <div class="bg-white p-4 rounded-lg shadow-xl">
+                    {% if marketplace_item.use_default_image %}
+                    <img 
+                        src="{% static 'media/defaults/default_item.jpg' %}" 
+                        alt="{{ marketplace_item.name }}" 
+                        class="mb-4"
+                        height="600"
+                        width="400" 
+                        >
+                    {% else %}
                     <img 
                         src="{{ marketplace_item.image.url }}" 
                         alt="{{ marketplace_item.name }}" 
@@ -242,6 +270,7 @@
                         height="600"
                         width="400" 
                         >
+                    {% endif %}
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold">
                             {{ marketplace_item.name }}

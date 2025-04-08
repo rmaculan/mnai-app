@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-search"></i> Search
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'search:search_view' %}" method="get" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" 
+                                placeholder="Search blogs and marketplace..." 
+                                value="{{ query|default:'' }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h5>Search Options</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Search Type</label>
+                                        <select name="type" class="form-control">
+                                            <option value="hybrid" {% if search_type == 'hybrid' %}selected{% endif %}>Hybrid Search</option>
+                                            <option value="hash" {% if search_type == 'hash' %}selected{% endif %}>Hash Table (Tags/Categories)</option>
+                                            <option value="binary" {% if search_type == 'binary' %}selected{% endif %}>Binary Search (Prices/Dates)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Content Type</label>
+                                        <select name="content" class="form-control">
+                                            <option value="all" {% if content_filter == 'all' %}selected{% endif %}>All Content</option>
+                                            <option value="blog" {% if content_filter == 'blog' %}selected{% endif %}>Blog Posts</option>
+                                            <option value="marketplace" {% if content_filter == 'marketplace' %}selected{% endif %}>Marketplace Items</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Sort By</label>
+                                        <select name="sort" class="form-control">
+                                            <option value="date_indexed">Newest First</option>
+                                            <option value="-date_indexed">Oldest First</option>
+                                            <option value="title">Title (A-Z)</option>
+                                            <option value="-title">Title (Z-A)</option>
+                                            <option value="numeric_field">Price/Score (Low-High)</option>
+                                            <option value="-numeric_field">Price/Score (High-Low)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="category" class="form-control">
+                                            <option value="">Any Category</option>
+                                            {% for category in marketplace_categories %}
+                                                <option value="{{ category.name }}" {% if category.name == category %}selected{% endif %}>
+                                                    {{ category.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tag</label>
+                                        <select name="tag" class="form-control">
+                                            <option value="">Any Tag</option>
+                                            {% for tag in blog_tags %}
+                                                <option value="{{ tag.name }}" {% if tag.name == tag %}selected{% endif %}>
+                                                    {{ tag.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Minimum Price/Score</label>
+                                        <input type="number" name="min_price" class="form-control" value="{{ min_price|default:'' }}" step="0.01" min="0">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Maximum Price/Score</label>
+                                        <input type="number" name="max_price" class="form-control" value="{{ max_price|default:'' }}" step="0.01" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <img src="{% static 'media/search_icon.png' %}" class="img-fluid mb-3" style="max-width: 150px;" alt="Search Icon">
+                        <h4>Start searching across blog posts and marketplace items</h4>
+                        <p class="text-muted">
+                            Our advanced search capabilities allow you to find content using:
+                        </p>
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Hash Table Search</h5>
+                                        <p class="card-text">Fast exact-match lookups by tag or category with O(1) complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Binary Search</h5>
+                                        <p class="card-text">Efficient range searches for prices and dates with O(log n) complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Hybrid Search</h5>
+                                        <p class="card-text">Combines multiple search techniques for optimal results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

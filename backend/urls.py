@@ -33,6 +33,7 @@ urlpatterns = [
     path('notifications/', include('notification.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('marketplace/', include('marketplace.urls', namespace='marketplace')),
+    path('search/', include('search.urls', namespace='search')),
     path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
 
     # region: add later

@@ -129,12 +129,21 @@
           </div>
         {% endif %}
       </div>
+      {% if post.use_default_image %}
+      <img
+        src="{% static 'media/default.jpg' %}"
+        alt="{{ post.title }}"
+        width="1000"
+        height="600"
+      />
+      {% else %}
       <img
         src="{{ post.picture.url }}"
         alt="{{ post.title }}"
         width="1000"
         height="600"
       />
+      {% endif %}
       <p class="text-gray-500">
         {{ post.caption }}
       </p>

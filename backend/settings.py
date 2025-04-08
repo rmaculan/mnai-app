@@ -29,6 +29,7 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
 # Application definition
 INSTALLED_APPS = [
+    'search',
     'subs',
     'daphne',
     'channels',

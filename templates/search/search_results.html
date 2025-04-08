@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-search"></i> Search Results
+                        </h3>
+                        <a href="{% url 'search:search_icon' %}" class="btn btn-light">
+                            <i class="fas fa-filter"></i> Modify Search
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Search form for quick searching -->
+                    <form action="{% url 'search:search_view' %}" method="get" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" 
+                                placeholder="Search blogs and marketplace..." 
+                                value="{{ query|default:'' }}">
+                            <input type="hidden" name="type" value="{{ search_type }}">
+                            <input type="hidden" name="content" value="{{ content_filter }}">
+                            <input type="hidden" name="category" value="{{ category }}">
+                            <input type="hidden" name="tag" value="{{ tag }}">
+                            <input type="hidden" name="min_price" value="{{ min_price }}">
+                            <input type="hidden" name="max_price" value="{{ max_price }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Search statistics -->
+                    <div class="alert alert-info">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ search_count }}</strong> results found 
+                                {% if query %}for <strong>"{{ query }}"</strong>{% endif %}
+                                {% if category %}in category <strong>{{ category }}</strong>{% endif %}
+                                {% if tag %}with tag <strong>{{ tag }}</strong>{% endif %}
+                            </div>
+                            <div>
+                                <span class="badge badge-primary">{{ search_type|title }} Search</span>
+                                {% if content_filter != 'all' %}
+                                <span class="badge badge-secondary">{{ content_filter|title }} Only</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if page_obj %}
+                        <!-- Blog Results -->
+                        {% if categorized_results.blog and content_filter != 'marketplace' %}
+                            <h4 class="mt-4 mb-3"><i class="fas fa-blog"></i> Blog Posts</h4>
+                            <div class="list-group">
+                                {% for result in categorized_results.blog %}
+                                    <a href="{{ result.url }}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">{{ result.title }}</h5>
+                                            <small class="text-muted">
+                                                {{ result.date_indexed|date:"M d, Y" }}
+                                            </small>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            {% if result.author %}
+                                                <small class="text-muted mr-3">
+                                                    By {{ result.author.username }}
+                                                </small>
+                                            {% endif %}
+                                            {% if result.tags %}
+                                                {% for tag in result.tags %}
+                                                    <span class="badge badge-secondary mr-1">{{ tag }}</span>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <small class="ml-auto">
+                                                Verification: {{ result.numeric_field|floatformat:2 }}
+                                            </small>
+                                        </div>
+                                        <p class="mb-1">{{ result.text_content|truncatechars:200 }}</p>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Marketplace Results -->
+                        {% if categorized_results.marketplace and content_filter != 'blog' %}
+                            <h4 class="mt-4 mb-3"><i class="fas fa-shopping-bag"></i> Marketplace Items</h4>
+                            <div class="row">
+                                {% for result in categorized_results.marketplace %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card h-100">
+                                            {% if result.image_url %}
+                                                <img src="{{ result.image_url }}" class="card-img-top" alt="{{ result.title }}">
+                                            {% else %}
+                                                <div class="card-img-top bg-light text-center py-4">
+                                                    <i class="fas fa-image fa-4x text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ result.title }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-primary">${{ result.numeric_field|floatformat:2 }}</h6>
+                                                <p class="card-text">{{ result.text_content|truncatechars:100 }}</p>
+                                            </div>
+                                            <div class="card-footer bg-white">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    {% if result.category %}
+                                                        <span class="badge badge-info">{{ result.category }}</span>
+                                                    {% endif %}
+                                                    <a href="{{ result.url }}" class="btn btn-sm btn-outline-primary">View Item</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Empty results message -->
+                        {% if not categorized_results.blog and not categorized_results.marketplace %}
+                            <div class="alert alert-warning mt-4">
+                                <i class="fas fa-exclamation-triangle"></i> No results found for your search criteria.
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Pagination -->
+                        {% if page_obj.paginator.num_pages > 1 %}
+                            <nav aria-label="Search results pages" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?q={{ query }}&page={{ page_obj.previous_page_number }}&type={{ search_type }}&content={{ content_filter }}&category={{ category }}&tag={{ tag }}&min_price={{ min_price }}&max_price={{ max_price }}">
+                                                <i class="fas fa-chevron-left"></i> Previous
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for i in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ i }}</span>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?q={{ query }}&page={{ i }}&type={{ search_type }}&content={{ content_filter }}&category={{ category }}&tag={{ tag }}&min_price={{ min_price }}&max_price={{ max_price }}">
+                                                    {{ i }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?q={{ query }}&page={{ page_obj.next_page_number }}&type={{ search_type }}&content={{ content_filter }}&category={{ category }}&tag={{ tag }}&min_price={{ min_price }}&max_price={{ max_price }}">
+                                                Next <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">Next <i class="fas fa-chevron-right"></i></a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <img src="{% static 'media/search_icon.png' %}" class="img-fluid mb-3" style="max-width: 150px;" alt="Search Icon">
+                            <h4>Start your search</h4>
+                            <p class="text-muted">
+                                Enter a search term above to find blog posts and marketplace items.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

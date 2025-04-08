@@ -191,7 +191,6 @@
         {%endfor%}
         </div>
         <form action="" id="msg-form" method="post">
-          <!-- For the sake of security, all Django Post forms must have a csfr token tag -->
           {% csrf_token %}
           <textarea
             name="message"
