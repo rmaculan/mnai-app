@@ -32,8 +32,8 @@
     {% include 'blog/navbar.html' %}
 
        <!-- Greeting message for users and guests -->
-      <div class="container mx-auto px-2 py-4">
-          <h1 class="text-3xl font-bold mb-4">
+      <div class="container ml-2">
+          <h1 class="text-xl font-bold">
             {% if user.is_authenticated %}
               Welcome, {{ user.username }}!
             {% else %}
@@ -45,8 +45,8 @@
        
 
       <!-- Blog Content -->
-      <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">
+      <main class="container p-2">
+        <h1 class="text-2xl font-bold mb-4">
           Latest Articles
         </h1>
         <div class="container mx-auto px-4 md-2">
