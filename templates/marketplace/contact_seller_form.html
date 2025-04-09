@@ -82,12 +82,12 @@
   
     
 
-    <div class="chats-container">
+    <div class="chats-container p-4">
       <h1>Contact Seller</h1>
       <form class="msg-form" method="POST">
         {% csrf_token %}
         
-        <div class="mb-3">
+        <div class="mb-3 p-4">
           <label for="message" class="form-label">
             Message
           </label>
@@ -103,11 +103,7 @@
         </button>
       </form>
     </div>
-    <footer>
-      <div class="container">
-        <p>&copy; 2022 Marketspace</p>
-      </div>
-    </footer>
+    
     <script>
 
       const socketURL = `ws://${window.location.host}/ws/messages/{{room_name}}/`;

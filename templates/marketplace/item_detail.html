@@ -31,7 +31,7 @@
             {% if user.is_authenticated %}
             <form action="{% url 'marketplace:contact_seller_form' item.id %}" method="post">
               {% csrf_token %}
-              <button type="submit">Contact Seller</button>
+              <button type="submit" class="mt-4 p-4 bg-gradient-to-r shadow-xl rounded-lg">Contact Seller</button>
             </form>
           
             {% else %}
