@@ -5,11 +5,19 @@
       <div class="container">
         <div class="row">
           <div class="col-md-4">
+            {% if item.image %}
             <img
               src="{{ item.image.url }}"
               class="card-img-top"
               alt="{{ item.name }}"
             />
+            {% else %}
+            <img
+              src="/media/defaults/default_item.jpg"
+              class="card-img-top"
+              alt="{{ item.name }}"
+            />
+            {% endif %}
             <div class="card-body">
               <h3>{{ item.name }}</h3>
               <strong>price: {{ item.price }}</strong>
