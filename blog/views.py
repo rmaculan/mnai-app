@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, CommentForm, ProfileForm
-from .models import Stream, Post, Comment, Likes, Follow, Profile, Tag
+from .models import Stream, Post, Comment, Like, Follow, Profile, Tag
 from polls.models import Question, VoteRecord, Choice
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, HttpResponseServerError
@@ -118,7 +118,7 @@ def read_blog_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     profile = Profile.objects.get(user=post.author)
     comments = Comment.objects.filter(post=post)
-    is_liked = Likes.objects.filter(
+    is_liked = Like.objects.filter(
         post=post, 
         user=request.user).exists()
     is_following = Follow.objects.filter(
@@ -497,7 +497,7 @@ def like_post(request, post_id):
                 ).delete()
             
             # Process the like action
-            liked_post, created = Likes.objects.get_or_create(
+            liked_post, created = Like.objects.get_or_create(
                 post=post, user=user)
             
             # Toggle like
@@ -549,14 +549,14 @@ def double_like_post(request, post_id):
             ).delete()
         
         # Check if user already liked the post
-        liked = Likes.objects.filter(post=post, user=user).exists()
+        liked = Like.objects.filter(post=post, user=user).exists()
         
         if liked:
             # If already liked, add one more like (total becomes 2)
             post.likes_count += 1
         else:
             # If not already liked, add two likes and create the like object
-            liked_post = Likes.objects.create(post=post, user=user)
+            liked_post = Like.objects.create(post=post, user=user)
             post.likes_count += 2
             
         # Create a notification regardless of previous like status
@@ -586,9 +586,9 @@ def dislike_post(request, post_id):
         user = request.user
         
         # Remove any existing likes
-        liked = Likes.objects.filter(post=post, user=user).exists()
+        liked = Like.objects.filter(post=post, user=user).exists()
         if liked:
-            Likes.objects.filter(post=post, user=user).delete()
+            Like.objects.filter(post=post, user=user).delete()
             post.likes_count -= 1
             # Remove any like notifications when disliked
             Notification.objects.filter(

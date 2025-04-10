@@ -494,7 +494,7 @@ class Comment(models.Model):
             )
         notify.delete()
     
-class Likes(models.Model):
+class Like(models.Model):
     user = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
@@ -586,12 +586,12 @@ class Follow(models.Model):
 #         pass
 
 post_save.connect(
-    Likes.user_liked_post, 
-    sender=Likes
+    Like.user_liked_post, 
+    sender=Like
     )
 post_delete.connect(
-    Likes.user_unliked_post, 
-    sender=Likes
+    Like.user_unliked_post, 
+    sender=Like
     )
 
 post_save.connect(

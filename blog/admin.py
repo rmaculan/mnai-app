@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, ProfileGroup, ProfilePermission, Post, Comment, Likes, Follow, Tag
+from .models import Profile, ProfileGroup, ProfilePermission, Post, Comment, Like, Follow, Tag
 
 class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'author__username']
@@ -14,6 +14,6 @@ class ProfileAdmin(admin.ModelAdmin):
     readonly_fields = ['verification_history']
 
 # Register your models here.
-admin.site.register([ProfileGroup, ProfilePermission, Comment, Likes, Follow, Tag])
+admin.site.register([ProfileGroup, ProfilePermission, Comment, Like, Follow, Tag])
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Post, PostAdmin)

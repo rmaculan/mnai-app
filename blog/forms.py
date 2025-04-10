@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Post, Comment, Likes, Follow
+from .models import Profile, Post, Comment, Like, Follow
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
@@ -161,5 +161,5 @@ class CommentForm(forms.ModelForm):
 
 class LikeForm(forms.ModelForm):
     class Meta:
-        model = Likes
+        model = Like
         fields = ['post', 'user']
