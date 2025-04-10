@@ -73,6 +73,12 @@ def read_blog_posts(request):
     author = request.user
     all_authors = User.objects.all()
     blog_posts = Post.objects.filter(status='published').order_by('-publish_date')
+    
+    # Add pagination with 10 posts per page for blog index
+    paginator = Paginator(blog_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     profiles = Profile.objects.all()
     
     if request.user.is_authenticated:
@@ -100,10 +106,11 @@ def read_blog_posts(request):
         page_number = request.GET.get('page')
     
     context = {
-        'posts': blog_posts,
+        'posts': page_obj,  # Use paginated page object
         'follow_status': follow_status,
         'profiles': profiles,
         'all_authors': all_authors,
+        'blog_posts': page_obj,  # Add pagination context for landing page
     }
     return render(request, 'blog/index.html', context)
 

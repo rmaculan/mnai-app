@@ -111,8 +111,8 @@
             </h2>
         </div>
         <div class="container mx-auto px-4">
-            {% for blog_post in blog_posts %}
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for blog_post in blog_posts|slice:":3" %}
                 <div class="bg-white p-4 rounded-lg shadow-xl">
                     {% if blog_post.use_default_image %}
                     <img 
@@ -154,8 +154,23 @@
                 </div>
             </div>
             {% endfor %}
-            
         </div>
+        
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center space-x-4">
+            {% if blog_posts.has_previous %}
+                <a href="?page={{ blog_posts.previous_page_number }}" class="btn btn-primary">Previous</a>
+            {% endif %}
+            
+            <span class="self-center">
+                Page {{ blog_posts.number }} of {{ blog_posts.paginator.num_pages }}
+            </span>
+            
+            {% if blog_posts.has_next %}
+                <a href="?page={{ blog_posts.next_page_number }}" class="btn btn-primary">Next</a>
+            {% endif %}
+        </div>
+
         <div class="container">
             <a 
                 href="{% url 'blog:index' %}" 
@@ -179,8 +194,8 @@
             </p>  
         </div>
         <div class="container mx-auto px-4">
-            {% for blog_post in blog_posts %}
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for blog_post in blog_posts|slice:":3" %}
                 <div class="bg-white p-4 rounded-lg shadow-xl">
                     <div class="mb-2">
                        <h3 class="text-xl font-semibold">
@@ -227,8 +242,23 @@
                 </div>
             </div>
             {% endfor %}
-            
         </div>
+        
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center space-x-4">
+            {% if blog_posts.has_previous %}
+                <a href="?page={{ blog_posts.previous_page_number }}" class="btn btn-primary">Previous</a>
+            {% endif %}
+            
+            <span class="self-center">
+                Page {{ blog_posts.number }} of {{ blog_posts.paginator.num_pages }}
+            </span>
+            
+            {% if blog_posts.has_next %}
+                <a href="?page={{ blog_posts.next_page_number }}" class="btn btn-primary">Next</a>
+            {% endif %}
+        </div>
+
         <div class="container">
             <a 
                 href="{% url 'blog:index' %}" 

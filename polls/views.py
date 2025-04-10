@@ -18,9 +18,7 @@ class IndexView(generic.ListView):
         (not including those set to be published in the future).
         """
         return Question.objects.filter(
-            pub_date__lte=timezone.now()).order_by("-pub_date")[
-        :5
-    ]
+            pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
 
 class DetailView(generic.DetailView):
     model = Question
