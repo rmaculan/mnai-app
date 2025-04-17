@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth.models import User
+from blog.models import User
 from .models import Note
 
 class UserSerializer(serializers.ModelSerializer):

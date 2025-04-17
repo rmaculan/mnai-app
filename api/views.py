@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics, permissions, status
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import NoteSerializer, UserSerializer, CustomTokenObtainPairSerializer
 from .models import Note
-from blog.models import User
 
 # Authentication Views
 class UserRegistrationView(generics.CreateAPIView):
@@ -20,15 +20,25 @@ class UserRegistrationView(generics.CreateAPIView):
             "message": "User created successfully"
         }, status=status.HTTP_201_CREATED)
 
+from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token_data = serializer.validated_data
+        return JsonResponse(token_data, safe=False, status=status.HTTP_200_OK)
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user
+        return blog.User.objects.get(pk=self.request.user.pk)
 
 @api_view(['GET'])
 def getRoutes(request):
