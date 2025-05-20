@@ -8,8 +8,14 @@ from notification.models import Notification
 class MessageTest(TestCase):
     def setUp(self):
         # Create test users
-        self.user1 = User.objects.create_user(username='testuser1', password='password123')
-        self.user2 = User.objects.create_user(username='testuser2', password='password123')
+        self.user1 = User.objects.create_user(
+            username='testuser1', 
+            password='password123'
+            )
+        self.user2 = User.objects.create_user(
+            username='testuser2', 
+            password='password123'
+            )
         
         # Create a test post
         self.post = Post.objects.create(
@@ -36,7 +42,11 @@ class MessageTest(TestCase):
         )
         
         # Check if BlogMessage was created
-        self.assertTrue(BlogMessage.objects.filter(sender=self.user2, receiver=self.user1, post=self.post).exists())
+        self.assertTrue(BlogMessage.objects.filter(
+            sender=self.user2, 
+            receiver=self.user1, 
+            ost=self.post).exists()
+            )
         
         # Check if notification was created
         self.assertTrue(Notification.objects.filter(

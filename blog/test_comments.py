@@ -3,17 +3,25 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Post, Comment
 
+ # Mock picture for test post to avoid template errors
+from django.core.files.uploadedfile import SimpleUploadedFile
+from io import BytesIO
+from PIL import Image as PILImage
+from django.core.files.base import ContentFile
+
 class CommentTest(TestCase):
     def setUp(self):
         # Create test users
-        self.user1 = User.objects.create_user(username='testuser1', password='password123')
-        self.user2 = User.objects.create_user(username='testuser2', password='password123')
+        self.user1 = User.objects.create_user(
+            username='testuser1', 
+            password='password123'
+            )
+        self.user2 = User.objects.create_user(
+            username='testuser2', 
+            password='password123'
+            )
         
-        # Mock picture for test post to avoid template errors
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from io import BytesIO
-        from PIL import Image as PILImage
-        from django.core.files.base import ContentFile
+       
         
         # Create a simple image file for testing
         image_file = BytesIO()
@@ -29,7 +37,11 @@ class CommentTest(TestCase):
             content='Test Content',
             status='published'
         )
-        self.post.picture.save('test_image.jpg', ContentFile(image_file.read()), save=True)
+        self.post.picture.save(
+            'test_image.jpg', 
+            ContentFile(image_file.read()), 
+            save=True
+            )
         
         # Create sample comments
         self.comment1 = Comment.objects.create(

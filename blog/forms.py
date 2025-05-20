@@ -99,6 +99,8 @@ class ProfileForm(forms.ModelForm):
             ]
 
 class PostForm(forms.ModelForm):
+
+    # region: post form regions
     # title = forms.CharField(
     #     widget=forms.TextInput(
     #         attrs={
@@ -139,6 +141,7 @@ class PostForm(forms.ModelForm):
     #             }), 
     #     required=True
     #     )
+    # endregion
     
     class Meta:
         model = Post

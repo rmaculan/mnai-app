@@ -239,6 +239,7 @@ class Post(models.Model):
         verbose_name="Picture", 
         default=""
         )
+    # change to video field and set up for webosckets for documentary channels
     video = models.URLField(
         blank=True, 
         null=True, 

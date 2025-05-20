@@ -1,0 +1,42 @@
+# Ignore Python cache directories
+__pycache__/
+*.pyc
+
+# Ignore virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Ignore Git files
+.git/
+.gitignore
+
+# Ignore IDE files (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+
+# Ignore media and static files generated during development
+media/
+static/
+
+# Ignore database files (if using SQLite)
+*.sqlite3
+
+# Ignore environment variables file
+.env
+
+# Ignore build artifacts
+dist/
+build/
+
+# Ignore test reports
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Ignore Pipenv files if not using pip install -r requirements.txt
+Pipfile
+Pipfile.lock
+
+# Ignore any other files or directories specific to your local setup
